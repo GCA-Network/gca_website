@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Events — Global Communication Association</title>
+  <title>Alumni Stories &amp; Events — GCA International Alumni Network</title>
+  <meta name="description" content="Read alumni stories, discover reunions and mentoring opportunities, and follow updates from the GCA International Alumni Network." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -163,18 +164,18 @@
   <div class="nav-inner">
     <a href="/" class="nav-logo" aria-label="GCA Home">
       <img src="/brand_assets/GCA Logo.png" alt="GCA Logo" id="nav-logo-img" />
-      <span class="nav-logo-name">Global Communication<br>Association</span>
+      <span class="nav-logo-name">GCA International<br>Alumni Network</span>
     </a>
     <ul class="nav-links" role="list">
       <li><a href="/">About</a></li>
       <li><a href="/events.html" style="color:var(--fg)">Events</a></li>
       <li><a href="/#cadence">Programs</a></li>
-      <li><a href="/#chapter">Chapter</a></li>
+      <li><a href="/#chapter">Network</a></li>
       <li><a href="/#join">Join</a></li>
     </ul>
     <div class="nav-cta">
       <a href="/members.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn">Login</a>
-      <a href="/#join" class="btn btn-sm btn-primary">Join GCA</a>
+      <a href="/#join" class="btn btn-sm btn-primary">Join Network</a>
     </div>
     <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu">
       <span class="hamburger-line"></span>
@@ -187,12 +188,12 @@
       <li><a href="/">About</a></li>
       <li><a href="/events.html" class="active">Events</a></li>
       <li><a href="/#cadence">Programs</a></li>
-      <li><a href="/#chapter">Chapter</a></li>
+      <li><a href="/#chapter">Network</a></li>
       <li><a href="/#join">Join</a></li>
     </ul>
     <div class="mobile-menu-cta">
       <a href="/members.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn-mobile">Login</a>
-      <a href="/#join" class="btn btn-sm btn-primary">Join GCA</a>
+      <a href="/#join" class="btn btn-sm btn-primary">Join Network</a>
     </div>
   </div>
 </nav>
@@ -224,7 +225,7 @@
         <span class="modal-author-name" id="modal-author"></span>
       </div>
       <div style="display:flex;gap:0.5rem;align-items:center">
-        <a id="modal-edit-btn" href="#" class="btn btn-sm btn-outline" style="display:none;text-decoration:none">Edit Post</a>
+        <a id="modal-edit-btn" href="#" class="btn btn-sm btn-outline" style="display:none;text-decoration:none">Edit Story</a>
         <button class="btn btn-sm btn-outline js-close-modal" id="modal-close-foot">Close</button>
       </div>
     </div>
@@ -235,23 +236,23 @@
   <div class="container">
 
     <div class="blog-hero">
-      <div class="sec-label"><span class="sec-label-dot"></span> GCA Events &amp; Insights</div>
-      <h1>Stories from the<br><em style="font-style:italic;color:var(--fg-subtle)">Global Stage</em></h1>
-      <p>Recaps, reflections, and updates from GCA cultural exchanges, speaker series, networking events, and more. Click any card to read more.</p>
+      <div class="sec-label"><span class="sec-label-dot"></span> GCA Alumni Stories &amp; Events</div>
+      <h1>Stories from the<br><em style="font-style:italic;color:var(--fg-subtle)">Alumni Network</em></h1>
+      <p>Reunions, alumni journeys, career perspectives, mentoring notes, and community updates from across the GCA network.</p>
     </div>
 
     <div class="blog-filter">
-      <button class="filter-btn active" data-filter="all">All Posts</button>
-      <button class="filter-btn" data-filter="cultural">Cultural Exchange</button>
-      <button class="filter-btn" data-filter="speakers">Speaker Series</button>
-      <button class="filter-btn" data-filter="networking">Networking</button>
-      <button class="filter-btn" data-filter="workshop">Workshops</button>
-      <button class="filter-btn" data-filter="community">Community</button>
+      <button class="filter-btn active" data-filter="all">All Stories</button>
+      <button class="filter-btn" data-filter="cultural">Reunions &amp; Culture</button>
+      <button class="filter-btn" data-filter="speakers">Alumni Spotlights</button>
+      <button class="filter-btn" data-filter="networking">Career Network</button>
+      <button class="filter-btn" data-filter="workshop">Mentorship</button>
+      <button class="filter-btn" data-filter="community">Community News</button>
     </div>
 
     <div id="empty-state" style="display:none;padding:4rem 0;text-align:center;border:1px dashed var(--border);border-radius:var(--r);margin:3rem 0 6rem">
-      <p style="font-size:0.9rem;color:var(--fg-subtle);margin-bottom:0.5rem">No posts yet.</p>
-      <p style="font-size:0.8rem;color:var(--fg-subtle)">Posts published from the <a href="/dashboard.html" style="color:var(--accent);font-weight:600">member dashboard</a> will appear here.</p>
+      <p style="font-size:0.9rem;color:var(--fg-subtle);margin-bottom:0.5rem">No alumni stories yet.</p>
+      <p style="font-size:0.8rem;color:var(--fg-subtle)">Stories published from the <a href="/dashboard.html" style="color:var(--accent);font-weight:600">alumni dashboard</a> will appear here.</p>
     </div>
 
     <div class="blog-grid" id="blog-grid"></div>
@@ -262,15 +263,15 @@
   <div class="foot-inner">
     <div class="foot-top">
       <div>
-        <div class="foot-logo"><img src="/brand_assets/GCA Logo.png" alt="GCA" /><span class="foot-logo-name">Global Communication<br>Association</span></div>
-        <p class="foot-tag">Uniting great minds for global good since 2024. A nonprofit dedicated to advancing communication worldwide.</p>
+        <div class="foot-logo"><img src="/brand_assets/GCA Logo.png" alt="GCA" /><span class="foot-logo-name">GCA International<br>Alumni Network</span></div>
+        <p class="foot-tag">A member-led international alumni network connecting graduates across countries, cohorts, and careers.</p>
       </div>
-      <div class="foot-col"><h4>Organization</h4><ul><li><a href="/#about">About GCA</a></li><li><a href="/#pillars">Our Pillars</a></li><li><a href="#">Leadership</a></li><li><a href="#">Annual Reports</a></li></ul></div>
-      <div class="foot-col"><h4>Programs</h4><ul><li><a href="/#programs">GCA Journal</a></li><li><a href="/#programs">World Congress</a></li><li><a href="/#programs">Fellowships</a></li><li><a href="/#community">Podcast</a></li></ul></div>
-      <div class="foot-col"><h4>Membership</h4><ul><li><a href="/#join">Apply Free</a></li><li><a href="#">Contact</a></li></ul></div>
+      <div class="foot-col"><h4>Network</h4><ul><li><a href="/#about">About the Network</a></li><li><a href="/#chapter">Global Community</a></li><li><a href="/events.html">Stories &amp; Events</a></li><li><a href="/#join">Join the Network</a></li></ul></div>
+      <div class="foot-col"><h4>Ways to Connect</h4><ul><li><a href="/events.html">Reunions &amp; Culture</a></li><li><a href="/events.html">Alumni Spotlights</a></li><li><a href="/events.html">Career Network</a></li><li><a href="/events.html">Mentorship</a></li></ul></div>
+      <div class="foot-col"><h4>Membership</h4><ul><li><a href="/#join">Join the Network</a></li><li><a href="/members.html">Alumni Login</a></li><li><a href="#">Contact</a></li></ul></div>
     </div>
     <div class="foot-bottom">
-      <p>&copy; 2026 Global Communication Association. All rights reserved.</p>
+      <p>&copy; 2026 GCA International Alumni Network. All rights reserved.</p>
       <div class="foot-legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
     </div>
   </div>
@@ -378,7 +379,7 @@
   }
 
   function openModal(el) {
-    document.getElementById('modal-tag').textContent        = el.dataset.category || '';
+    document.getElementById('modal-tag').textContent        = categoryLabel(el.dataset.category);
     document.getElementById('modal-title-text').innerHTML   = el.dataset.title    || '';
     document.getElementById('modal-date').textContent       = el.dataset.date     || '';
     document.getElementById('modal-read').textContent       = el.dataset.read     || '';
@@ -430,6 +431,20 @@
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  var categoryLabels = {
+    cultural:  'Reunions & Culture',
+    speakers:  'Alumni Spotlights',
+    networking:'Career Network',
+    workshop:  'Mentorship',
+    community: 'Community News'
+  };
+  function categoryLabel(value) {
+    return String(value || '').split(',').map(function(category) {
+      category = category.trim();
+      return categoryLabels[category] || category;
+    }).filter(Boolean).join(' · ');
+  }
+
   function makeCard(p) {
     var el = document.createElement('div');
     el.className = 'post-card dynamic-card';
@@ -442,13 +457,14 @@
     if (p.content) el.dataset.content = p.content;
     if (p.image)   el.dataset.image   = p.image;
     if (p.blocks && p.blocks.length) el.dataset.blocks = JSON.stringify(p.blocks);
+    var label = categoryLabel(p.category);
     var coverSrc = p.image
       ? escHtml(p.image)
-      : 'https://placehold.co/600x338/f4f4f5/a1a1aa?text=' + encodeURIComponent(p.category);
+      : 'https://placehold.co/600x338/f4f4f5/a1a1aa?text=' + encodeURIComponent(label || 'Alumni Story');
     el.innerHTML =
       '<div class="post-img">' +
         '<img src="' + coverSrc + '" alt="" style="width:100%;height:100%;object-fit:contain;display:block;background:#f4f4f5" />' +
-        '<span class="post-tag-overlay">' + escHtml(p.category) + '</span>' +
+        '<span class="post-tag-overlay">' + escHtml(label) + '</span>' +
       '</div>' +
       '<div class="post-body">' +
         '<div class="post-meta">' +

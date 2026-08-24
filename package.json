@@ -1,7 +1,7 @@
 {
   "name": "gca-website",
   "version": "1.0.0",
-  "description": "Global Communication Association landing page",
+  "description": "GCA International Alumni Network website",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
