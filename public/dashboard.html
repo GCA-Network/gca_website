@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Member Dashboard — Global Communication Association</title>
+  <title>Alumni Dashboard — GCA International Alumni Network</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -402,18 +402,18 @@
   <div class="nav-inner">
     <a href="/" class="nav-logo" aria-label="GCA Home">
       <img src="/brand_assets/GCA Logo.png" alt="GCA Logo" id="nav-logo-img" />
-      <span class="nav-logo-name">Global Communication<br>Association</span>
+      <span class="nav-logo-name">GCA International<br>Alumni Network</span>
     </a>
     <ul class="nav-links" role="list">
       <li><a href="/">About</a></li>
       <li><a href="/events.html">Events</a></li>
       <li><a href="/#cadence">Programs</a></li>
-      <li><a href="/#chapter">Chapter</a></li>
+      <li><a href="/#chapter">Network</a></li>
       <li><a href="/#join">Join</a></li>
     </ul>
     <div class="nav-cta">
       <a href="/members.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn">Login</a>
-      <a href="/#join" class="btn btn-sm btn-primary">Join GCA</a>
+      <a href="/#join" class="btn btn-sm btn-primary">Join Network</a>
     </div>
     <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu">
       <span class="hamburger-line"></span>
@@ -426,12 +426,12 @@
       <li><a href="/">About</a></li>
       <li><a href="/events.html">Events</a></li>
       <li><a href="/#cadence">Programs</a></li>
-      <li><a href="/#chapter">Chapter</a></li>
+      <li><a href="/#chapter">Network</a></li>
       <li><a href="/#join">Join</a></li>
     </ul>
     <div class="mobile-menu-cta">
       <a href="/members.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn-mobile">Login</a>
-      <a href="/#join" class="btn btn-sm btn-primary">Join GCA</a>
+      <a href="/#join" class="btn btn-sm btn-primary">Join Network</a>
     </div>
   </div>
 </nav>
@@ -440,10 +440,10 @@
 
   <!-- Sidebar -->
   <aside class="dash-sidebar">
-    <p class="sidebar-label">Dashboard</p>
-    <a href="#" class="sidebar-link active" id="tab-posts-btn"><span class="icon">&#9998;</span> New Post</a>
-    <a href="#" class="sidebar-link" id="tab-apps-btn"><span class="icon">&#128506;</span> Applications</a>
-    <a href="/events.html" class="sidebar-link"><span class="icon">&#128240;</span> View Events</a>
+    <p class="sidebar-label">Alumni Dashboard</p>
+    <a href="#" class="sidebar-link active" id="tab-posts-btn"><span class="icon">&#9998;</span> New Story</a>
+    <a href="#" class="sidebar-link" id="tab-apps-btn"><span class="icon">&#128506;</span> Membership Requests</a>
+    <a href="/events.html" class="sidebar-link"><span class="icon">&#128240;</span> Stories &amp; Events</a>
 
     <p class="sidebar-label">Account</p>
     <a href="#" class="sidebar-link"><span class="icon">&#128100;</span> Profile</a>
@@ -454,8 +454,8 @@
     <div class="sidebar-user">
       <div class="sidebar-avatar">M</div>
       <div>
-        <p class="sidebar-user-name">GCA Member</p>
-        <p class="sidebar-user-role">Professional</p>
+        <p class="sidebar-user-name">GCA Alumni</p>
+        <p class="sidebar-user-role">Network Member</p>
       </div>
     </div>
   </aside>
@@ -464,30 +464,30 @@
   <main class="dash-main" id="dash-main">
     <div class="dash-header">
       <div>
-        <h1>Member Dashboard</h1>
-        <p>Welcome back. Publish a new blog post below.</p>
+        <h1>Alumni Dashboard</h1>
+        <p>Welcome back. Share a story or update with the alumni network.</p>
       </div>
-      <a href="/events.html" class="btn btn-sm btn-outline">View Live Events &#8599;</a>
+      <a href="/events.html" class="btn btn-sm btn-outline">View Stories &amp; Events &#8599;</a>
     </div>
 
     <!-- New post form -->
     <div class="post-form" id="post-form-card">
       <div class="edit-mode-banner" id="edit-banner">
-        <span>&#9998; Editing existing post &mdash; changes will be saved immediately.</span>
-        <button type="button" id="cancel-edit-btn" style="background:none;border:none;cursor:pointer;font-size:0.75rem;color:var(--accent);font-family:var(--ff);font-weight:600;text-decoration:underline">Cancel &amp; New Post</button>
+        <span>&#9998; Editing existing story &mdash; changes will be saved immediately.</span>
+        <button type="button" id="cancel-edit-btn" style="background:none;border:none;cursor:pointer;font-size:0.75rem;color:var(--accent);font-family:var(--ff);font-weight:600;text-decoration:underline">Cancel &amp; New Story</button>
       </div>
       <div class="post-form-header">
         <div>
-          <h2 id="form-title-text">New Blog Post</h2>
-          <p id="form-sub-text">Your post will appear on the GCA blog immediately after publishing.</p>
+          <h2 id="form-title-text">New Alumni Story</h2>
+          <p id="form-sub-text">Your story will appear on the GCA Stories &amp; Events page immediately after publishing.</p>
         </div>
       </div>
 
       <form id="post-form" novalidate>
         <div class="post-form-body">
           <div class="field">
-            <label for="p-title">Post title <span style="color:var(--accent)">*</span></label>
-            <input id="p-title" type="text" placeholder="e.g. Reflections from the 2026 World Congress" maxlength="120" />
+            <label for="p-title">Story title <span style="color:var(--accent)">*</span></label>
+            <input id="p-title" type="text" placeholder="e.g. Highlights from our London alumni gathering" maxlength="120" />
             <p class="char-count"><span id="title-count">0</span> / 120</p>
           </div>
 
@@ -496,11 +496,11 @@
               <label>Category <span style="color:var(--accent)">*</span></label>
               <input type="hidden" id="p-category" />
               <div id="category-pills" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:2px">
-                <button type="button" class="cat-pill" data-value="cultural">Cultural Exchange</button>
-                <button type="button" class="cat-pill" data-value="speakers">Speaker Series</button>
-                <button type="button" class="cat-pill" data-value="networking">Networking</button>
-                <button type="button" class="cat-pill" data-value="workshop">Workshop</button>
-                <button type="button" class="cat-pill" data-value="community">Community</button>
+                <button type="button" class="cat-pill" data-value="cultural">Reunions &amp; Culture</button>
+                <button type="button" class="cat-pill" data-value="speakers">Alumni Spotlights</button>
+                <button type="button" class="cat-pill" data-value="networking">Career Network</button>
+                <button type="button" class="cat-pill" data-value="workshop">Mentorship</button>
+                <button type="button" class="cat-pill" data-value="community">Community News</button>
               </div>
             </div>
             <div class="field">
@@ -510,12 +510,12 @@
           </div>
 
           <div class="field">
-            <label for="p-date">Post date <span style="color:var(--accent)">*</span></label>
+            <label for="p-date">Story date <span style="color:var(--accent)">*</span></label>
             <input id="p-date" type="date" />
           </div>
 
           <div class="field">
-            <label for="p-excerpt">Excerpt <span style="color:var(--accent)">*</span> <span style="font-weight:400;color:var(--fg-subtle)">&mdash; shown on the blog index (1–2 sentences)</span></label>
+            <label for="p-excerpt">Excerpt <span style="color:var(--accent)">*</span> <span style="font-weight:400;color:var(--fg-subtle)">&mdash; shown on the stories page (1–2 sentences)</span></label>
             <textarea id="p-excerpt" rows="2" placeholder="A short summary that draws readers in&hellip;" maxlength="300"></textarea>
             <p class="char-count"><span id="excerpt-count">0</span> / 300</p>
           </div>
@@ -537,7 +537,7 @@
           </div>
 
           <div class="field">
-            <label>Post content <span style="color:var(--accent)">*</span> <span style="font-weight:400;color:var(--fg-subtle)">&mdash; add text and image blocks in order</span></label>
+            <label>Story content <span style="color:var(--accent)">*</span> <span style="font-weight:400;color:var(--fg-subtle)">&mdash; add text and image blocks in order</span></label>
             <div id="blocks-container" style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:0.75rem"></div>
             <div class="block-add-row">
               <button type="button" id="add-text-btn" class="btn btn-sm btn-outline">&#43; Add Text</button>
@@ -547,13 +547,13 @@
         </div>
 
         <div class="post-success" id="post-success">
-          <p>Post published!</p>
-          <p>Your post is now live on the GCA events page. <a href="/events.html" style="color:var(--accent);font-weight:600">View it here &rarr;</a></p>
+          <p>Story published!</p>
+          <p>Your story is now live on the GCA Stories &amp; Events page. <a href="/events.html" style="color:var(--accent);font-weight:600">View it here &rarr;</a></p>
         </div>
 
         <div class="post-form-footer">
           <p>Fields marked <span style="color:var(--accent);font-weight:700">*</span> are required.</p>
-          <button type="submit" class="btn btn-primary btn-md" id="post-submit">Publish Post</button>
+          <button type="submit" class="btn btn-primary btn-md" id="post-submit">Publish Story</button>
         </div>
       </form>
     </div>
@@ -561,7 +561,7 @@
     <!-- Recent posts by this member -->
     <div class="recent-section">
       <h3>Recently Published</h3>
-      <div id="recent-list"><div class="recent-empty">No posts yet. Publish your first post above.</div></div>
+      <div id="recent-list"><div class="recent-empty">No stories yet. Publish your first story above.</div></div>
     </div>
   </main>
 
@@ -569,8 +569,8 @@
   <main class="dash-main" id="panel-apps" style="display:none">
     <div class="dash-header">
       <div>
-        <h1>Applications</h1>
-        <p>Membership applications submitted through the website.</p>
+        <h1>Membership Requests</h1>
+        <p>Alumni network membership requests submitted through the website.</p>
       </div>
     </div>
 
@@ -692,10 +692,14 @@
     return '';
   }
 
+  function statusLabel(status) {
+    return status === 'Interview Scheduled' ? 'Conversation Requested' : status;
+  }
+
   function updateCardUI(card, a) {
     var statusEl = card.querySelector('.app-status');
     if (statusEl) {
-      statusEl.textContent  = a.status;
+      statusEl.textContent  = statusLabel(a.status);
       statusEl.className    = 'app-status ' + statusClass(a.status);
     }
     // Disable accept/reject if finalised
@@ -728,18 +732,18 @@
                 '<p class="app-name">' + escHtml(a.firstName) + ' ' + escHtml(a.lastName) + '</p>' +
                 '<p class="app-date">Submitted ' + escHtml(a.submittedAt) + '</p>' +
               '</div>' +
-              '<span class="app-status ' + statusClass(a.status) + '">' + escHtml(a.status) + '</span>' +
+              '<span class="app-status ' + statusClass(a.status) + '">' + escHtml(statusLabel(a.status)) + '</span>' +
             '</div>' +
             '<div class="app-fields">' +
               '<div><p class="app-field-label">Email</p><p class="app-field-value">' + escHtml(a.email) + '</p></div>' +
-              '<div><p class="app-field-label">Role</p><p class="app-field-value">' + escHtml(a.role || '—') + '</p></div>' +
-              '<div><p class="app-field-label">Organization</p><p class="app-field-value">' + escHtml(a.org || '—') + '</p></div>' +
+              '<div><p class="app-field-label">Network Connection</p><p class="app-field-value">' + escHtml(a.role || '—') + '</p></div>' +
+              '<div><p class="app-field-label">University / Institution</p><p class="app-field-value">' + escHtml(a.org || '—') + '</p></div>' +
             '</div>' +
-            (a.why ? '<div class="app-why"><p class="app-field-label">Why they want to join</p><p class="app-field-value">' + escHtml(a.why) + '</p></div>' : '') +
+            (a.why ? '<div class="app-why"><p class="app-field-label">How they would like to take part</p><p class="app-field-value">' + escHtml(a.why) + '</p></div>' : '') +
             '<div class="app-actions">' +
               '<button class="app-btn accept"' + (done ? ' disabled style="opacity:0.4;cursor:default"' : '') + '>&#10003; Accept</button>' +
               '<button class="app-btn reject"' + (done ? ' disabled style="opacity:0.4;cursor:default"' : '') + '>&#10007; Reject</button>' +
-              '<button class="app-btn interview">&#128197; Schedule Interview</button>' +
+              '<button class="app-btn interview">&#128197; Request Conversation</button>' +
             '</div>';
 
           var fullName = a.firstName + ' ' + a.lastName;
@@ -805,13 +809,27 @@
   });
 
   // Load and render existing posts
+  var categoryLabels = {
+    cultural:  'Reunions & Culture',
+    speakers:  'Alumni Spotlights',
+    networking:'Career Network',
+    workshop:  'Mentorship',
+    community: 'Community News'
+  };
+  function categoryLabel(value) {
+    return String(value || '').split(',').map(function(category) {
+      category = category.trim();
+      return categoryLabels[category] || category;
+    }).filter(Boolean).join(' · ');
+  }
+
   function loadRecent() {
     fetch('/api/posts')
       .then(function(r) { return r.json(); })
       .then(function(posts) {
         var list = document.getElementById('recent-list');
         if (!posts.length) {
-          list.innerHTML = '<div class="recent-empty">No posts yet. Publish your first post above.</div>';
+          list.innerHTML = '<div class="recent-empty">No stories yet. Publish your first story above.</div>';
           return;
         }
         list.innerHTML = '';
@@ -827,7 +845,7 @@
               '<p class="recent-item-meta">' + escHtml(p.date) + ' &middot; ' + escHtml(p.readTime) + ' &middot; by ' + escHtml(p.author) + '</p>' +
             '</div>' +
             '<div class="recent-item-right">' +
-              '<span class="recent-item-tag">' + escHtml(p.category) + '</span>' +
+              '<span class="recent-item-tag">' + escHtml(categoryLabel(p.category)) + '</span>' +
               '<button class="edit-btn" data-id="' + p.id + '">Edit</button>' +
               '<button class="delete-btn" data-id="' + p.id + '">Delete</button>' +
             '</div>';
@@ -842,7 +860,7 @@
         ul.querySelectorAll('.delete-btn').forEach(function(btn) {
           btn.addEventListener('click', function() {
             var id = btn.dataset.id;
-            if (!confirm('Delete this post? This cannot be undone.')) return;
+            if (!confirm('Delete this story? This cannot be undone.')) return;
             btn.disabled    = true;
             btn.textContent = 'Deleting\u2026';
             fetch('/api/posts/' + id, { method: 'DELETE' })
@@ -852,7 +870,7 @@
                 gsap.to(item, { opacity:0, x:-12, duration:0.25, ease:'power2.in', onComplete: function() {
                   item.remove();
                   if (!ul.children.length) {
-                    list.innerHTML = '<div class="recent-empty">No posts yet. Publish your first post above.</div>';
+                    list.innerHTML = '<div class="recent-empty">No stories yet. Publish your first story above.</div>';
                   }
                 }});
               })
@@ -1183,7 +1201,7 @@
   function enterEditMode(post) {
     editingId = post.id;
     editBanner.classList.add('active');
-    formTitle.textContent = 'Edit Post';
+    formTitle.textContent = 'Edit Story';
     formSub.textContent   = 'Changes are saved immediately.';
     document.getElementById('post-submit').textContent = 'Save Changes';
 
@@ -1321,9 +1339,9 @@
   function exitEditMode() {
     editingId = null;
     editBanner.classList.remove('active');
-    formTitle.textContent = 'New Blog Post';
-    formSub.textContent   = 'Your post will appear on the GCA blog immediately after publishing.';
-    document.getElementById('post-submit').textContent = 'Publish Post';
+    formTitle.textContent = 'New Alumni Story';
+    formSub.textContent   = 'Your story will appear on the GCA Stories & Events page immediately after publishing.';
+    document.getElementById('post-submit').textContent = 'Publish Story';
     form.querySelectorAll('input[type="text"]').forEach(function(el) { el.value = ''; });
     document.getElementById('p-category').value = '';
     document.getElementById('p-date').value = isoToday();
@@ -1428,11 +1446,11 @@
         success.style.display = 'none';
         btn.style.display     = '';
         btn.disabled          = false;
-        btn.textContent       = 'Publish Post';
+        btn.textContent       = 'Publish Story';
       }, 5000);
     } catch(err) {
       btn.disabled    = false;
-      btn.textContent = editingId ? 'Save Changes' : 'Publish Post';
+      btn.textContent = editingId ? 'Save Changes' : 'Publish Story';
       alert(err && err.message ? err.message : 'Something went wrong. Please try again.');
     }
   });

@@ -45,7 +45,7 @@ function json(res, status, obj) {
 }
 
 function buildEmailHtml(firstName, bodyHtml) {
-  return `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px;color:#1a1a1a;"><div style="border-bottom:2px solid #e5e7eb;padding-bottom:16px;margin-bottom:24px;"><h2 style="margin:0;font-size:20px;color:#111;">Global Communication Association</h2></div><p style="font-size:16px;">Hi ${firstName},</p>${bodyHtml}<div style="margin-top:32px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:13px;color:#6b7280;">Global Communication Association</div></div>`;
+  return `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px;color:#1a1a1a;"><div style="border-bottom:2px solid #e5e7eb;padding-bottom:16px;margin-bottom:24px;"><h2 style="margin:0;font-size:20px;color:#111;">GCA International Alumni Network</h2></div><p style="font-size:16px;">Hi ${firstName},</p>${bodyHtml}<div style="margin-top:32px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:13px;color:#6b7280;">GCA International Alumni Network</div></div>`;
 }
 
 async function sendResendEmail(app, adminEmail) {
@@ -54,14 +54,14 @@ async function sendResendEmail(app, adminEmail) {
 
   let subject, html;
   if (app.status === 'Accepted') {
-    subject = 'Your GCA Application — Congratulations!';
-    html = buildEmailHtml(app.firstName, `<p style="font-size:16px;line-height:1.6;">We are pleased to inform you that your application to the <strong>Global Communication Association</strong> has been <strong style="color:#16a34a;">accepted</strong>.</p><p style="font-size:16px;line-height:1.6;">Welcome to the team! We will be in touch shortly with next steps.</p>`);
+    subject = 'Your GCA Alumni Network Membership — Welcome!';
+    html = buildEmailHtml(app.firstName, `<p style="font-size:16px;line-height:1.6;">We are pleased to inform you that your membership request for the <strong>GCA International Alumni Network</strong> has been <strong style="color:#16a34a;">accepted</strong>.</p><p style="font-size:16px;line-height:1.6;">Welcome to the network! We will be in touch shortly with next steps.</p>`);
   } else if (app.status === 'Rejected') {
-    subject = 'Your GCA Application — Update';
-    html = buildEmailHtml(app.firstName, `<p style="font-size:16px;line-height:1.6;">Thank you for your interest in the <strong>Global Communication Association</strong> and for taking the time to apply.</p><p style="font-size:16px;line-height:1.6;">After careful consideration, we are unable to move forward with your application at this time. We appreciate your effort and encourage you to apply again in the future.</p>`);
+    subject = 'Your GCA Alumni Network Membership — Update';
+    html = buildEmailHtml(app.firstName, `<p style="font-size:16px;line-height:1.6;">Thank you for your interest in the <strong>GCA International Alumni Network</strong> and for taking the time to request membership.</p><p style="font-size:16px;line-height:1.6;">After careful consideration, we are unable to move forward with your membership request at this time. We appreciate your effort and encourage you to apply again in the future.</p>`);
   } else if (app.status === 'Interview Scheduled') {
-    subject = 'Interview Request — Global Communication Association';
-    html = buildEmailHtml(app.firstName, `<p style="font-size:16px;line-height:1.6;">We have reviewed your application to the <strong>Global Communication Association</strong> and would love to schedule an interview with you as the next step in our process.</p><p style="font-size:16px;line-height:1.6;"><strong>Please reply to this email with 2–3 dates and times that work for you</strong> and we will confirm a time as soon as possible.</p><p style="font-size:16px;line-height:1.6;">We look forward to speaking with you!</p>`);
+    subject = 'Membership Conversation — GCA International Alumni Network';
+    html = buildEmailHtml(app.firstName, `<p style="font-size:16px;line-height:1.6;">We have reviewed your membership request for the <strong>GCA International Alumni Network</strong> and would love to schedule a conversation with you as the next step in our process.</p><p style="font-size:16px;line-height:1.6;"><strong>Please reply to this email with 2–3 dates and times that work for you</strong> and we will confirm a time as soon as possible.</p><p style="font-size:16px;line-height:1.6;">We look forward to speaking with you!</p>`);
   } else {
     return;
   }
@@ -71,7 +71,7 @@ async function sendResendEmail(app, adminEmail) {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'GCA Team <onboarding@resend.dev>',
+        from: 'GCA Alumni Network <onboarding@resend.dev>',
         to: [app.email],
         reply_to: adminEmail || undefined,
         subject,
