@@ -154,21 +154,54 @@
     .tr p { font-size:14px; line-height:1.7; color:var(--fg-muted); }
     .tr .ttime { position:absolute; top:28px; right:24px; font-family:var(--mono); font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-4); }
 
-    /* ─── §04 CHAPTER CARD ──────────────────────────────────────── */
-    .chapter { padding:0 0 120px; }
-    .ch-card { display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--border); background:#fbf9f3; border-radius:4px; overflow:hidden; }
-    .ch-left { padding:52px 48px; }
-    .ch-left h3 { font-family:var(--display); font-weight:400; font-size:48px; line-height:1; letter-spacing:-.02em; color:var(--fg); margin:18px 0 18px; }
-    .ch-left h3 em { font-style:italic; color:var(--accent); }
-    .ch-left p { font-size:15px; line-height:1.75; color:var(--fg-muted); max-width:44ch; margin-bottom:22px; }
-    .ch-meta { display:grid; grid-template-columns:1fr 1fr; gap:18px; padding-top:22px; border-top:1px solid var(--border); }
-    .ch-meta > div b { display:block; font-family:var(--display); font-size:26px; color:var(--fg); letter-spacing:-.01em; margin-bottom:2px; font-weight:400; }
-    .ch-meta > div span { font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-4); }
-    .ch-right { position:relative; border-left:1px solid var(--border); background:repeating-linear-gradient(135deg, rgba(123,63,160,.06) 0 2px, transparent 2px 14px), #f3ede0; min-height:420px; }
-    .ch-right .pill { position:absolute; top:24px; left:24px; font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--fg-subtle); background:rgba(255,255,255,.7); padding:6px 10px; border:1px solid var(--border); border-radius:3px; }
-    .ch-right .mono-note { position:absolute; bottom:24px; left:24px; right:24px; font-family:var(--mono); font-size:11px; letter-spacing:.02em; color:var(--fg-subtle); line-height:1.7; }
-    .ch-right .mono-note b { color:var(--accent); }
-    .ch-svg { position:absolute; inset:0; }
+    /* ─── §05 VOICES ────────────────────────────────────────────── */
+    .voices { padding:0 0 120px; }
+    .voices-top { display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:26px; }
+    .voices-cta span { display:inline-block; transition:transform .28s cubic-bezier(.34,1.56,.64,1); }
+    .voices-cta:hover span, .voices-cta:focus-visible span { transform:translate(2px,-2px); }
+    .voices-head { display:grid; grid-template-columns:1fr 1.6fr; gap:64px; align-items:end; margin-bottom:56px; }
+    .voices-head h2 { font-family:var(--display); font-weight:400; font-size:clamp(42px,5.2vw,72px); line-height:.98; letter-spacing:-.025em; color:var(--fg); }
+    .voices-head h2 em { font-style:italic; color:var(--accent); }
+    .voices-head p { font-size:15.5px; line-height:1.75; color:var(--fg-muted); max-width:56ch; padding-bottom:10px; }
+    .voices-head p i { font-style:italic; color:var(--fg); padding-right:.12em; }
+    .vgrid { display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--border); border-left:1px solid var(--border); }
+    /* The grid carries .rv only as the scroll trigger — the cells do the moving. */
+    .vgrid.rv, .vtags.rv { opacity:1; transform:none; transition:none; }
+    .vq { position:relative; display:flex; flex-direction:column; gap:18px; margin:0; padding:34px 30px 38px; border-right:1px solid var(--border); border-bottom:1px solid var(--border); opacity:0; transform:translateY(18px); transition:opacity .75s cubic-bezier(.2,.7,.2,1), transform .75s cubic-bezier(.2,.7,.2,1), background .25s ease; }
+    .vgrid.in .vq { opacity:1; transform:none; }
+    .vgrid.in .vq:nth-child(2) { transition-delay:.07s; }
+    .vgrid.in .vq:nth-child(3) { transition-delay:.14s; }
+    .vgrid.in .vq:nth-child(4) { transition-delay:.21s; }
+    .vgrid.in .vq:nth-child(5) { transition-delay:.28s; }
+    .vgrid.in .vq:nth-child(6) { transition-delay:.35s; }
+    .vq::before { content:""; position:absolute; left:-1px; top:0; bottom:0; width:2px; background:var(--accent); transform:scaleY(0); transform-origin:50% 0; transition:transform .35s cubic-bezier(.2,.7,.2,1); }
+    .vq:hover { background:rgba(255,255,255,.55); }
+    .vq:hover::before { transform:scaleY(1); }
+    .vq:hover .vq-n span:last-child { color:var(--accent); }
+    .vq-n { display:flex; justify-content:space-between; gap:12px; font-family:var(--mono); font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-4); }
+    .vq-n span:last-child { transition:color .25s ease; }
+    .vq-n .acc { color:var(--accent); }
+    .vq blockquote { font-family:var(--display); font-weight:400; font-size:20px; line-height:1.45; letter-spacing:-.005em; color:var(--fg); margin:0; }
+    .vtags { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:36px; }
+    .vtags-label { display:inline-flex; align-items:center; gap:9px; font-family:var(--mono); font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--fg-subtle); margin-right:4px; }
+    .vtags-label::before { content:""; width:22px; height:1px; background:var(--fg-subtle); }
+    .vtag { font-size:13px; line-height:1.4; color:var(--fg-muted); background:rgba(255,255,255,.5); border:1px solid var(--border); border-radius:100px; padding:7px 14px; opacity:0; transform:translateY(8px); transition:opacity .5s cubic-bezier(.2,.7,.2,1), transform .5s cubic-bezier(.2,.7,.2,1), border-color .18s ease, background .18s ease, color .18s ease; }
+    .vtags.in .vtag { opacity:1; transform:none; }
+    .vtags.in .vtag:nth-child(2) { transition-delay:.04s; }
+    .vtags.in .vtag:nth-child(3) { transition-delay:.08s; }
+    .vtags.in .vtag:nth-child(4) { transition-delay:.12s; }
+    .vtags.in .vtag:nth-child(5) { transition-delay:.16s; }
+    .vtags.in .vtag:nth-child(6) { transition-delay:.20s; }
+    .vtags.in .vtag:nth-child(7) { transition-delay:.24s; }
+    .vtags.in .vtag:nth-child(8) { transition-delay:.28s; }
+    .vtags.in .vtag:nth-child(9) { transition-delay:.32s; }
+    .vtag:hover { border-color:var(--accent-line); background:var(--accent-dim); color:var(--accent-hi); transform:translateY(-2px); }
+    @media (prefers-reduced-motion:reduce) {
+      .vgrid .vq, .vtags .vtag { opacity:1; transform:none; transition:background .25s ease, border-color .18s ease, color .18s ease; }
+      .vq::before, .voices-cta span { transition:none; }
+      .vtag:hover { transform:none; }
+    }
+
 
     /* ─── §05 APPLICATION FORM ──────────────────────────────────── */
     .apply { padding:110px 0 130px; border-top:1px solid var(--border); background:linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%); }
@@ -237,8 +270,8 @@
       .track { grid-template-columns:repeat(2,1fr); }
       .tr { border-right:none; border-bottom:1px solid var(--border); }
       .tr:nth-child(odd) { border-right:1px solid var(--border); }
-      .ch-card { grid-template-columns:1fr; }
-      .ch-right { border-left:none; border-top:1px solid var(--border); min-height:300px; }
+      .voices-head { grid-template-columns:1fr; gap:24px; }
+      .vgrid { grid-template-columns:repeat(2,1fr); }
       .apply-grid { grid-template-columns:1fr; gap:36px; }
       .apply-side { position:static; }
       .af-foot { align-items:stretch; }
@@ -252,7 +285,8 @@
       .af-row-2 { grid-template-columns:1fr; }
       .apply-form { padding:26px 22px 22px; }
       .tr { border-right:none !important; }
-      .ch-left { padding:36px 24px; }
+      .vgrid { grid-template-columns:1fr; }
+      .vq { padding:28px 22px 32px; }
     }
   </style>
 </head>
@@ -276,7 +310,7 @@
       <li><a href="/events.html">Events</a></li>
       <li><a href="/member-wall.html">Members</a></li>
       <li><a href="#cadence">Programs</a></li>
-      <li><a href="#chapter">Chapter</a></li>
+      <li><a href="#voices">Voices</a></li>
       <li><a href="#join">Join</a></li>
     </ul>
     <div class="nav-cta">
@@ -295,7 +329,7 @@
       <li><a href="/events.html">Events</a></li>
       <li><a href="/member-wall.html">Members</a></li>
       <li><a href="#cadence">Programs</a></li>
-      <li><a href="#chapter">Chapter</a></li>
+      <li><a href="#voices">Voices</a></li>
       <li><a href="#join">Join</a></li>
     </ul>
     <div class="mobile-menu-cta">
@@ -534,53 +568,61 @@
   </div>
 </section>
 
-<!-- ═══════════════════════ §05 CHAPTER CARD ═════════════════ -->
-<section class="chapter" id="chapter">
+<!-- ═══════════════════════ §05 IN THEIR WORDS ═══════════════ -->
+<section class="voices" id="voices">
   <div class="wrap">
-    <div class="ch-card rv">
-      <div class="ch-left">
-        <div class="eyebrow ey-accent">§ 05 — Inaugural chapter</div>
-        <h3>Shenzhen<br/><em>— a place to begin.</em></h3>
-        <p>Our inaugural chapter is rooted in Shenzhen — a city built on openness, speed, and the conviction that great things happen when you bring the right people together. It is the right place to start.</p>
-        <div class="ch-meta">
-          <div><b>Shenzhen</b><span>Location</span></div>
-          <div><b>2024</b><span>Founded</span></div>
-          <div><b>20+</b><span>Active members</span></div>
-          <div><b>10+</b><span>Nationalities</span></div>
-        </div>
+    <div class="voices-top rv">
+      <div class="eyebrow ey-accent">§ 05 — In their words</div>
+      <a href="/member-wall.html" class="btn btn-sm btn-outline voices-cta">Meet the members <span aria-hidden="true">&#8599;</span></a>
+    </div>
+    <div class="voices-head">
+      <div class="rv">
+        <h2>Why they want<br/>to <em>join GCA.</em></h2>
       </div>
-      <div class="ch-right" aria-hidden="true">
-        <div class="pill">Map · Sketch</div>
-        <svg class="ch-svg" viewBox="0 0 500 420" preserveAspectRatio="xMidYMid slice">
-          <defs>
-            <pattern id="g2" width="20" height="20" patternUnits="userSpaceOnUse">
-              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#c8bfac" stroke-width=".4" opacity=".55"/>
-            </pattern>
-          </defs>
-          <rect width="500" height="420" fill="url(#g2)"/>
-          <path d="M 0 260 C 80 230, 140 260, 200 240 S 320 200, 380 220 S 500 200, 500 200 L 500 420 L 0 420 Z" fill="#e6dfce" opacity=".7"/>
-          <path d="M 0 260 C 80 230, 140 260, 200 240 S 320 200, 380 220 S 500 200, 500 200" fill="none" stroke="#9a9383" stroke-width=".8" stroke-dasharray="1 4"/>
-          <!-- Roads -->
-          <line x1="50" y1="0" x2="50" y2="420" stroke="#d9d3c5" stroke-width=".6"/>
-          <line x1="150" y1="0" x2="150" y2="420" stroke="#d9d3c5" stroke-width=".6"/>
-          <line x1="300" y1="0" x2="300" y2="420" stroke="#d9d3c5" stroke-width=".6"/>
-          <line x1="420" y1="0" x2="420" y2="420" stroke="#d9d3c5" stroke-width=".6"/>
-          <line x1="0" y1="100" x2="500" y2="100" stroke="#d9d3c5" stroke-width=".6"/>
-          <line x1="0" y1="200" x2="500" y2="200" stroke="#d9d3c5" stroke-width=".6"/>
-          <line x1="0" y1="320" x2="500" y2="320" stroke="#d9d3c5" stroke-width=".6"/>
-          <!-- Location pin -->
-          <line x1="260" y1="220" x2="260" y2="120" stroke="#7B3FA0" stroke-width=".8"/>
-          <circle cx="260" cy="210" r="16" fill="#7B3FA0" opacity=".12"/>
-          <circle cx="260" cy="210" r="8"  fill="#7B3FA0"/>
-          <circle cx="260" cy="210" r="3"  fill="#fff"/>
-          <!-- Label -->
-          <text x="276" y="206" font-family="'JetBrains Mono',monospace" font-size="9" fill="#4a2363" letter-spacing=".12em">SHENZHEN</text>
-        </svg>
-        <div class="mono-note">Not to scale. A chapter is a posture, not a pin — <b>begin here, then outward.</b></div>
-      </div>
+      <p class="rv">Everyone who applies answers the same question &mdash; <i>what excites you most about our mission?</i> A few responses from the 2025&ndash;26 intake, excerpted in their own words.</p>
+    </div>
+
+    <div class="vgrid rv">
+      <figure class="vq">
+        <div class="vq-n"><span>V &middot; 01</span><span class="acc">Beyond campus</span></div>
+        <blockquote>&ldquo;The chance to transform student experiences into something that extends beyond the campus. The idea of connecting people from different backgrounds and disciplines to create tangible global impact is quite crucial in a top university like Tsinghua SIGS, and also to the student experience.&rdquo;</blockquote>
+      </figure>
+      <figure class="vq">
+        <div class="vq-n"><span>V &middot; 02</span><span class="acc">Bridging viewpoints</span></div>
+        <blockquote>&ldquo;The focus on creating tangible global impact through uniting diverse perspectives. Having worked in international relations and cultural exchange, I&rsquo;ve seen how bridging different viewpoints leads to meaningful progress.&rdquo;</blockquote>
+      </figure>
+      <figure class="vq">
+        <div class="vq-n"><span>V &middot; 03</span><span class="acc">Dialogue into action</span></div>
+        <blockquote>&ldquo;The mission to turn &lsquo;meaningful dialogue into impactful actions.&rsquo; I am thrilled by the prospect of using my skills in marketing and live-stream production to amplify these crucial cross-border dialogues, ensuring they reach a global audience and translate that talk into tangible engagement and results.&rdquo;</blockquote>
+      </figure>
+      <figure class="vq">
+        <div class="vq-n"><span>V &middot; 04</span><span>Without limits</span></div>
+        <blockquote>&ldquo;To help create a place where great minds can thrive without limits.&rdquo;</blockquote>
+      </figure>
+      <figure class="vq">
+        <div class="vq-n"><span>V &middot; 05</span><span>Interdisciplinary</span></div>
+        <blockquote>&ldquo;The potential to translate interdisciplinary dialogue into tangible, global solutions.&rdquo;</blockquote>
+      </figure>
+      <figure class="vq">
+        <div class="vq-n"><span>V &middot; 06</span><span>Brilliant minds</span></div>
+        <blockquote>&ldquo;I believe through this platform I can meet some of the brilliant minds that could help me enhance and reshape my skills.&rdquo;</blockquote>
+      </figure>
+    </div>
+
+    <div class="vtags rv">
+      <span class="vtags-label">Also said</span>
+      <span class="vtag">Connecting scholars</span>
+      <span class="vtag">Multicultural environment</span>
+      <span class="vtag">Spread inspiration</span>
+      <span class="vtag">Connect scholars across borders</span>
+      <span class="vtag">Exploring different mindsets across cultures</span>
+      <span class="vtag">Promoting globalization and communication</span>
+      <span class="vtag">Connect global students together</span>
+      <span class="vtag">The collaboration across the world</span>
     </div>
   </div>
 </section>
+
 
 <!-- ═══════════════════════ §06 APPLICATION ══════════════════ -->
 <section class="apply" id="join">

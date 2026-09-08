@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Member Wall — Global Communication Association</title>
-  <meta name="description" content="Meet the people behind GCA: core member profiles and a living wall of the wider network." />
+  <meta name="description" content="The GCA member wall: the leadership team, the 2024–25 team and the 2025–26 team." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
   <style>
-    /* ─── Member Wall — scoped under .mw, mapped onto the site's design tokens ─── */
+    /* ─── Member Wall — scoped under .mw, built on the site's design tokens ─── */
     .mw {
       --paper: rgba(255, 255, 255, 0.55);
       --line: var(--border);
@@ -26,10 +26,11 @@
       padding: 1rem 2rem 6rem;
     }
 
-    .mw .meta-strip,
-    .mw .section-tag,
     .mw .eyebrow,
-    .mw .profile-kicker {
+    .mw .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
       font-family: var(--mono);
       text-transform: uppercase;
       letter-spacing: 0.18em;
@@ -38,12 +39,6 @@
       color: var(--fg-subtle);
     }
 
-    .mw .eyebrow,
-    .mw .section-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-    }
     .mw .eyebrow::before,
     .mw .section-tag::before {
       content: "";
@@ -52,14 +47,7 @@
       background: var(--fg-subtle);
     }
 
-    .mw .hero-note,
-    .mw .profile-meta,
-    .mw .impact-card p,
-    .mw .member-note p,
-    .mw-modal .modal-sub {
-      color: var(--fg-muted);
-    }
-
+    /* ── Hero ─────────────────────────────────────────────────────────────── */
     .mw .mw-hero {
       padding: 3.5rem 0 2.5rem;
       display: grid;
@@ -70,7 +58,7 @@
 
     .mw .mw-hero h1,
     .mw .section-head h2,
-    .mw .impact-title {
+    .mw .cohort-name {
       margin: 0;
       font-family: var(--display);
       font-weight: 400;
@@ -85,8 +73,7 @@
     }
 
     .mw .mw-hero h1 em,
-    .mw .section-head h2 em,
-    .mw .impact-title em {
+    .mw .section-head h2 em {
       font-style: italic;
       color: var(--accent-hi);
     }
@@ -98,23 +85,15 @@
     }
 
     .mw .hero-note {
-      max-width: 40ch;
+      max-width: 42ch;
       font-size: 15px;
       line-height: 1.75;
+      color: var(--fg-muted);
       margin: 0;
     }
 
-    .mw .meta-strip {
-      display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-      padding-top: 12px;
-      border-top: 1px solid var(--line);
-    }
-
-    .mw section {
-      padding: 3rem 0 0;
-    }
+    /* ── Section headers ──────────────────────────────────────────────────── */
+    .mw section { padding: 3rem 0 0; }
 
     .mw .section-head {
       display: grid;
@@ -136,116 +115,23 @@
       color: var(--fg-muted);
     }
 
-    .mw .core-layout {
+    /* ── Department blocks ────────────────────────────────────────────────── */
+    .mw .cohorts {
       display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
       gap: 22px;
-      align-items: start;
     }
 
-    .mw .core-side {
-      display: grid;
-      gap: 18px;
-    }
-
-    .mw .card {
+    .mw .cohort {
       position: relative;
       background: var(--paper);
       border: 1px solid var(--line);
       border-radius: var(--card-r);
-      padding: 24px;
+      padding: 26px;
       box-shadow: var(--shadow);
       overflow: hidden;
-      transition: border-color 0.18s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
-    }
-    .mw .card:hover { border-color: var(--border-hi); }
-
-    .mw .card--feature {
-      padding: 28px;
-      display: grid;
-      gap: 20px;
     }
 
-    .mw .card--compact {
-      padding: 20px 22px;
-    }
-
-    .mw .card--compact .profile-top {
-      margin-bottom: 14px;
-    }
-
-    .mw .card--compact .profile-name {
-      font-size: 24px;
-      margin-bottom: 6px;
-    }
-
-    .mw .card--compact .avatar {
-      width: 64px;
-      height: 64px;
-      font-size: 22px;
-    }
-
-    .mw .feature-lead {
-      margin: 0;
-      font-family: var(--display);
-      font-size: 22px;
-      line-height: 1.45;
-      letter-spacing: -0.01em;
-      color: var(--fg);
-    }
-
-    .mw .profile-columns {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-      padding-top: 14px;
-      border-top: 1px solid var(--line);
-    }
-
-    .mw .profile-columns strong,
-    .mw .quote-box strong,
-    .mw .member-note strong,
-    .mw .impact-card strong,
-    .mw-modal .modal-block strong {
-      display: block;
-      margin-bottom: 8px;
-      font-family: var(--mono);
-      font-weight: 500;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--fg-subtle);
-    }
-
-    .mw .profile-columns p {
-      margin: 0;
-      font-size: 15px;
-      line-height: 1.7;
-      color: var(--fg-muted);
-    }
-
-    .mw .feature-note {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      padding-top: 2px;
-    }
-
-    .mw .feature-note span {
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--fg-subtle);
-      background: rgba(255,255,255,.35);
-    }
-
-    .mw .card::before,
-    .mw .impact-card::before,
-    .mw .member-orbit::before {
+    .mw .cohort::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -253,270 +139,195 @@
       pointer-events: none;
     }
 
-    .mw .profile-top {
+    .mw .cohort--current {
+      border-color: var(--accent-line);
+    }
+
+    .mw .cohort-head {
+      position: relative;
       display: flex;
+      align-items: baseline;
       justify-content: space-between;
       gap: 18px;
-      align-items: start;
-      margin-bottom: 18px;
+      flex-wrap: wrap;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mw .cohort-name { font-size: clamp(1.7rem, 2.6vw, 2.3rem); }
+
+    .mw .cohort-sub {
+      display: block;
+      margin-top: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+    }
+
+    .mw .cohort-count {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+    }
+
+    .mw .cohort-count b {
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    /* ── Member cards ─────────────────────────────────────────────────────── */
+    .mw .roster-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
+      gap: 14px;
+    }
+
+    .mw .mcard {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      text-align: left;
+      font-family: var(--ff);
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid var(--line);
+      border-radius: var(--card-r);
+      padding: 16px;
+      cursor: pointer;
+      color: var(--fg);
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), border-color 0.18s ease, box-shadow 0.25s ease, background 0.18s ease;
+    }
+
+    .mw .mcard:hover,
+    .mw .mcard:focus-visible {
+      transform: translateY(-3px);
+      border-color: var(--accent-mid);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 12px 28px rgba(123, 63, 160, 0.12);
+    }
+
+    .mw .mcard:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .mw .mcard:active { transform: translateY(-1px) scale(0.99); }
+
+    .mw .mcard-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     .mw .avatar,
     .mw-modal .avatar {
-      width: 72px;
-      height: 72px;
       border-radius: 50%;
       display: grid;
       place-items: center;
       font-family: var(--display);
-      font-size: 26px;
       font-weight: 400;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.01em;
       background: linear-gradient(135deg, var(--accent-hi), var(--accent));
       color: #fff;
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 8px 20px rgba(123,63,160,0.22);
       flex: none;
     }
 
-    .mw .profile-name {
-      font-size: 28px;
-      line-height: 1;
-      margin: 0 0 8px;
+    .mw .mcard .avatar {
+      width: 44px;
+      height: 44px;
+      font-size: 16px;
+    }
+
+    /* Real photo when a member has one; initials stand in until then. */
+    .mw .mcard-photo,
+    .mw-modal .modal-photo {
+      border-radius: 50%;
+      object-fit: cover;
+      /* Most portraits are tall, so a centred crop lands on the torso —
+         bias the frame upward to keep faces in the circle. */
+      object-position: 50% 22%;
+      flex: none;
+      background: var(--surface);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 8px 20px rgba(20,18,15,0.14);
+    }
+
+    .mw .mcard-photo { width: 44px; height: 44px; }
+    .mw-modal .modal-photo { width: 72px; height: 72px; }
+
+    .mw .mcard-name {
+      margin: 0 0 3px;
       font-family: var(--display);
+      font-size: 19px;
       font-weight: 400;
-      letter-spacing: -0.02em;
+      line-height: 1.1;
+      letter-spacing: -0.015em;
       color: var(--fg);
     }
 
-    .mw .profile-meta {
-      font-size: 13px;
-    }
-
-    .mw .profile-body {
-      display: grid;
-      gap: 14px;
-    }
-
-    .mw .profile-body p {
-      margin: 0;
-      font-size: 15px;
-      line-height: 1.7;
+    .mw .mcard-major {
+      font-size: 12px;
+      line-height: 1.5;
       color: var(--fg-muted);
     }
 
-    .mw .quote-box {
-      display: grid;
-      gap: 12px;
-      padding-top: 14px;
-      border-top: 1px solid var(--line);
-    }
-
-    .mw .quote-box p {
-      font-size: 15px;
-      font-family: var(--display);
-      font-style: italic;
-      line-height: 1.55;
-      color: var(--fg);
-    }
-
-    .mw .members-wrap {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 22px;
-      align-items: stretch;
-    }
-
-    .mw .member-orbit {
-      position: relative;
-      background: linear-gradient(180deg, rgba(255,255,255,0.58), rgba(255,255,255,0.3));
-      border: 1px solid var(--line);
-      border-radius: var(--card-r);
-      min-height: 560px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    .mw .orbit-field {
-      position: absolute;
-      inset: 8px 16px;
-    }
-
-    .mw .orbit-ring {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      border-radius: 50%;
-      border: 1px solid rgba(20, 18, 15, 0.08);
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-
-    .mw .orbit-ring--1 { width: 272px; height: 272px; }
-    .mw .orbit-ring--2 { width: 376px; height: 376px; }
-    .mw .orbit-ring--3 { width: 478px; height: 478px; }
-
-    .mw .member-center {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 204px;
-      height: 204px;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      border: 1px solid var(--accent-line);
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 26px;
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    .mw .member-center strong {
-      display: block;
-      font-size: 32px;
-      font-family: var(--display);
-      font-weight: 400;
-      line-height: 1;
-      letter-spacing: -0.04em;
-      color: var(--accent);
-      margin-bottom: 6px;
-    }
-
-    .mw .member-center span {
-      display: block;
+    .mw .mcard-meta {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1.5;
       color: var(--fg-subtle);
-      font-size: 11px;
-      line-height: 1.45;
-      max-width: 142px;
     }
 
-    .mw .member-node {
-      position: absolute;
-      width: 104px;
-      margin: -28px 0 0 -52px;
-      border: none;
-      background: transparent;
-      display: block;
-      text-align: center;
-      cursor: pointer;
-      padding: 0;
-      font-family: var(--ff);
-      color: var(--fg);
-      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
-      animation: mw-drift 7s ease-in-out infinite;
-      animation-delay: var(--delay, 0s);
+    .mw .prefs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
-    .mw .member-node:hover,
-    .mw .member-node:focus-visible { transform: translateY(-6px); }
-    .mw .member-node:focus-visible { outline: none; }
-    .mw .member-node:active { transform: translateY(-2px) scale(0.98); }
-
-    .mw .node-initial {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      color: #fff;
-      background: linear-gradient(135deg, var(--accent-hi), var(--accent));
-      font-family: var(--display);
-      font-weight: 400;
-      margin: 0 auto 8px;
-      font-size: 19px;
-      box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.7), 0 12px 24px rgba(20, 18, 15, 0.12);
-      transition: box-shadow 0.25s ease;
-    }
-
-    .mw .member-node:hover .node-initial,
-    .mw .member-node:focus-visible .node-initial {
-      box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.95), 0 16px 30px rgba(123, 63, 160, 0.3);
-    }
-    .mw .member-node:focus-visible .node-initial { outline: 2px solid var(--accent); outline-offset: 6px; }
-
-    .mw .node-name {
-      display: block;
+    .mw .pref {
       font-family: var(--mono);
       font-size: 9px;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      line-height: 1.35;
-      color: var(--fg-subtle);
-      transition: color 0.15s ease;
-    }
-
-    .mw .member-node:hover .node-name,
-    .mw .member-node:focus-visible .node-name { color: var(--accent); }
-
-    .mw .member-side {
-      display: grid;
-      gap: 18px;
-      align-content: start;
-    }
-
-    .mw .member-note,
-    .mw .impact-card {
-      background: var(--paper);
+      padding: 5px 9px;
       border: 1px solid var(--line);
-      border-radius: var(--card-r);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
+      border-radius: 999px;
+      color: var(--fg-subtle);
+      background: rgba(255, 255, 255, 0.35);
     }
 
-    .mw .member-note p,
-    .mw .impact-card p {
-      margin: 0;
-      font-size: 15px;
-      line-height: 1.7;
+    .mw .pref--first {
+      border-color: var(--accent-mid);
+      background: var(--accent-dim);
+      color: var(--accent);
     }
 
-    .mw .member-note ul {
-      list-style: none;
-      padding: 0;
-      margin: 18px 0 0;
-      display: grid;
-      gap: 12px;
+    .mw .mcard-dept {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
     }
 
-    .mw .member-note li {
-      padding-top: 12px;
+    .mw .mcard-intro {
+      padding-top: 10px;
       border-top: 1px solid var(--line);
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.65;
       color: var(--fg-muted);
     }
 
-    .mw .impact-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
+    /* Members with nothing beyond a name render as plain cards, not buttons. */
+    .mw .mcard--static { cursor: default; }
+    .mw .mcard--static:hover { transform: none; border-color: var(--line); background: rgba(255, 255, 255, 0.62); box-shadow: none; }
 
-    .mw .impact-title {
-      font-size: 34px;
-      line-height: 1.05;
-      margin-bottom: 16px;
-    }
-
-    .mw .impact-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .mw .impact-list span {
-      padding-top: 10px;
-      border-top: 1px solid var(--line);
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--fg-muted);
-    }
-
-    /* Modal */
+    /* ── Modal ────────────────────────────────────────────────────────────── */
     .mw-modal {
       position: fixed;
       inset: 0;
@@ -533,7 +344,7 @@
     .mw-modal.is-open { display: flex; }
 
     .mw-modal .modal-panel {
-      width: min(720px, 100%);
+      width: min(660px, 100%);
       background: var(--bg);
       border-radius: var(--card-r);
       border: 1px solid var(--border-hi);
@@ -566,19 +377,19 @@
       display: flex;
       gap: 18px;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
       padding-right: 48px;
     }
 
     .mw-modal .modal-head .avatar {
-      width: 78px;
-      height: 78px;
-      font-size: 28px;
+      width: 72px;
+      height: 72px;
+      font-size: 26px;
     }
 
     .mw-modal .modal-name {
       margin: 0 0 8px;
-      font-size: 36px;
+      font-size: 34px;
       line-height: 1;
       font-family: var(--display);
       font-weight: 400;
@@ -589,6 +400,7 @@
     .mw-modal .modal-sub {
       margin: 0;
       font-size: 14px;
+      color: var(--fg-muted);
     }
 
     .mw-modal .modal-grid {
@@ -602,6 +414,19 @@
       border-top: 1px solid var(--line);
     }
 
+    .mw-modal .modal-block--wide { grid-column: 1 / -1; }
+
+    .mw-modal .modal-block strong {
+      display: block;
+      margin-bottom: 8px;
+      font-family: var(--mono);
+      font-weight: 500;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--fg-subtle);
+    }
+
     .mw-modal .modal-block p {
       margin: 0;
       font-size: 15px;
@@ -609,97 +434,55 @@
       color: var(--fg-muted);
     }
 
-    @keyframes mw-drift {
-      0%, 100% { transform: translate3d(0, 0, 0); }
-      50% { transform: translate3d(0, -10px, 0); }
+    .mw-modal .modal-prefs {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+      counter-reset: pref;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .mw .member-node { animation: none; }
+    .mw-modal .modal-prefs li {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--fg-muted);
     }
 
+    .mw-modal .modal-prefs li::before {
+      counter-increment: pref;
+      content: counter(pref);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      flex: none;
+    }
+
+    .mw-modal .modal-prefs.is-unranked li::before { content: "·"; font-size: 14px; }
+
+    /* ── Responsive ───────────────────────────────────────────────────────── */
     @media (max-width: 960px) {
       .mw .mw-hero,
       .mw .section-head,
-      .mw .members-wrap,
-      .mw .impact-grid,
-      .mw-modal .modal-grid,
-      .mw .core-layout,
-      .mw .profile-columns {
+      .mw-modal .modal-grid {
         grid-template-columns: 1fr;
       }
 
       .mw .mw-hero { gap: 22px; }
-      .mw .member-orbit { min-height: 520px; }
-      .mw .orbit-field { inset: 8px 24px; }
-      .mw .orbit-ring--3 { width: 430px; height: 430px; }
     }
 
     @media (max-width: 640px) {
       .mw .page { padding: 0.5rem 1.25rem 4rem; }
       .mw .mw-hero h1 { font-size: 3.2rem; }
-
-      .mw .card,
-      .mw .member-note,
-      .mw .impact-card,
-      .mw-modal .modal-panel {
-        padding: 20px;
-      }
-
-      /* Narrow screens: the orbit has no room for labels — lay the nodes out
-         as a wrapped grid instead, with the summary as a band on top. */
-      .mw .member-orbit {
-        min-height: 0;
-        padding: 22px 16px 26px;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .mw .orbit-ring { display: none; }
-
-      .mw .member-center {
-        order: -1;
-        position: static;
-        transform: none;
-        width: 100%;
-        height: auto;
-        border-radius: var(--card-r);
-        padding: 18px;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-      }
-
-      .mw .member-center strong { font-size: 28px; }
-      .mw .member-center span { font-size: 12px; max-width: 34ch; }
-
-      .mw .orbit-field {
-        position: static;
-        inset: auto;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px 6px;
-        margin-top: 24px;
-      }
-
-      .mw .member-node {
-        position: static;
-        left: auto;
-        top: auto;
-        width: calc(33.333% - 6px);
-        margin: 0;
-        animation: none;
-      }
-
-      .mw .node-initial {
-        width: 46px;
-        height: 46px;
-        font-size: 16px;
-        margin-bottom: 8px;
-        box-shadow: 0 0 0 5px rgba(255,255,255,0.72), 0 10px 20px rgba(20,18,15,0.12);
-      }
-
-      .mw .node-name { font-size: 8.5px; letter-spacing: 0.06em; }
+      .mw .cohort { padding: 20px; }
+      .mw-modal .modal-panel { padding: 20px; }
+      .mw-modal .modal-name { font-size: 28px; }
+      .mw-modal .modal-head .avatar { width: 60px; height: 60px; font-size: 22px; }
+      .mw .roster-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -717,7 +500,7 @@
       <li><a href="/events.html">Events</a></li>
       <li><a href="/member-wall.html" style="color:var(--fg)">Members</a></li>
       <li><a href="/#cadence">Programs</a></li>
-      <li><a href="/#chapter">Chapter</a></li>
+      <li><a href="/#voices">Voices</a></li>
       <li><a href="/#join">Join</a></li>
     </ul>
     <div class="nav-cta">
@@ -736,7 +519,7 @@
       <li><a href="/events.html">Events</a></li>
       <li><a href="/member-wall.html" class="active">Members</a></li>
       <li><a href="/#cadence">Programs</a></li>
-      <li><a href="/#chapter">Chapter</a></li>
+      <li><a href="/#voices">Voices</a></li>
       <li><a href="/#join">Join</a></li>
     </ul>
     <div class="mobile-menu-cta">
@@ -755,226 +538,24 @@
         <h1>Brilliant minds,<br /><em>now in view.</em></h1>
       </div>
       <div class="hero-copy">
-        <p class="hero-note">
-          延续 GCA 官网的编辑感与极简气质，这个页面把成员分成两层呈现：
-          核心成员以 profile 卡片展开，其余成员像一片持续呼吸的社群星图，可以点开头像查看更完整的信息。
-        </p>
-        <div class="meta-strip">
-          <span>Nodes · 20+</span>
-          <span>Focus · Connection / Dialogue / Action</span>
-          <span>Mode · Editorial / Interactive</span>
+        <div class="hero-stats">
+          <div class="h-stat"><div class="h-stat-n ac" id="stat-current">22</div><div class="h-stat-l">2025–26 team</div></div>
+          <div class="h-stat"><div class="h-stat-n" id="stat-prev">10</div><div class="h-stat-l">2024–25 team</div></div>
+          <div class="h-stat"><div class="h-stat-n" id="stat-people">30</div><div class="h-stat-l">People listed</div></div>
         </div>
       </div>
     </section>
 
-    <section id="core">
+    <section id="roster">
       <div class="section-head">
-        <div class="section-tag">§ 02 — Core Members</div>
-        <h2>A few <em>profiles</em>,<br />fully in focus.</h2>
-        <p>
-          这里不再做平均铺开的信息卡，而是用一个主 profile 带出气质，
-          其余成员作为辅助 profile 收在侧边，版面会更像 editorial spread。
-        </p>
+        <div class="section-tag">§ 02 — The Team</div>
+        <h2>The people<br /><em>behind GCA.</em></h2>
       </div>
 
-      <div class="core-layout">
-        <article class="card card--feature">
-          <div class="profile-top">
-            <div>
-              <div class="profile-kicker">Core Member · 01</div>
-              <h3 class="profile-name">Amelia Chen</h3>
-              <div class="profile-meta">Strategic Communication · Researcher · Shenzhen / Singapore</div>
-            </div>
-            <div class="avatar">AC</div>
-          </div>
-          <div class="profile-body">
-            <p class="feature-lead">
-              关注跨文化传播与公共叙事，长期在学术研究与青年项目之间搭桥，
-              擅长把抽象议题翻译成可被公众理解的交流场景。
-            </p>
-            <div class="feature-note">
-              <span>Cross-cultural narrative</span>
-              <span>Research bridge</span>
-              <span>Public storytelling</span>
-            </div>
-            <div class="profile-columns">
-              <div>
-                <strong>Why Amelia joined</strong>
-                <p>“我加入 GCA，是因为我想找到一群既认真思考世界、也愿意一起把对话做成行动的人。”</p>
-              </div>
-              <div>
-                <strong>What Amelia brings</strong>
-                <p>研究方法、国际传播视角，以及把复杂议题做成清晰 narrative 的能力。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <div class="core-side">
-          <article class="card card--compact">
-            <div class="profile-top">
-              <div>
-                <div class="profile-kicker">Core Member · 02</div>
-                <h3 class="profile-name">Daniel Owusu</h3>
-                <div class="profile-meta">Media Producer · Community Builder · Accra / Shenzhen</div>
-              </div>
-              <div class="avatar">DO</div>
-            </div>
-            <div class="profile-body">
-              <p>用影像、声音和现场感把陌生人变成彼此愿意继续说话的人。</p>
-              <div class="quote-box">
-                <div>
-                  <strong>Why Daniel joined</strong>
-                  <p>“GCA 不是单向度的 network，它更像一个让人真正被听见的 room。”</p>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card card--compact">
-            <div class="profile-top">
-              <div>
-                <div class="profile-kicker">Core Member · 03</div>
-                <h3 class="profile-name">Lina Haddad</h3>
-                <div class="profile-meta">Policy & Advocacy · Dialogue Facilitator · Beirut / Hong Kong</div>
-              </div>
-              <div class="avatar">LH</div>
-            </div>
-            <div class="profile-body">
-              <p>擅长设计让“有分歧的人也能继续说下去”的对话机制。</p>
-              <div class="quote-box">
-                <div>
-                  <strong>What Lina brings</strong>
-                  <p>议题策划、moderation 经验，以及在复杂环境中推动共识生成的耐心。</p>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card card--compact">
-            <div class="profile-top">
-              <div>
-                <div class="profile-kicker">Core Member · 04</div>
-                <h3 class="profile-name">Yuki Mori</h3>
-                <div class="profile-meta">Design Systems · Creative Technologist · Tokyo / Shenzhen</div>
-              </div>
-              <div class="avatar">YM</div>
-            </div>
-            <div class="profile-body">
-              <p>把组织气质做成能被看见、被感知、被传播的体验语言。</p>
-              <div class="quote-box">
-                <div>
-                  <strong>What Yuki brings</strong>
-                  <p>视觉系统、网页体验和叙事设计，让成员之间的连接更有识别度与延展性。</p>
-                </div>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="wall">
-      <div class="section-head">
-        <div class="section-tag">§ 03 — The Wider Network</div>
-        <h2>The rest,<br /><em>in motion.</em></h2>
-        <p>
-          其余成员不做成普通列表，而是做成漂浮式成员墙。头像带轻微浮动动画，
-          既像词云，也像 network map；点击任一成员都会打开详细信息。
-        </p>
-      </div>
-
-      <div class="members-wrap">
-        <div class="member-orbit" id="memberOrbit">
-          <div class="orbit-ring orbit-ring--1"></div>
-          <div class="orbit-ring orbit-ring--2"></div>
-          <div class="orbit-ring orbit-ring--3"></div>
-          <div class="orbit-field" id="orbitField"></div>
-          <div class="member-center">
-            <div>
-              <strong>10+</strong>
-              <span>selected nodes across media, policy, design, language, education, and research</span>
-            </div>
-          </div>
-        </div>
-
-        <aside class="member-side">
-          <div class="member-note">
-            <strong>Interaction concept</strong>
-            <p>
-              页面初始先展示一个有层次感的成员星图，避免信息过载。用户被名字和头像吸引后，再通过弹层获取详情，
-              这会比一次性摊开全部 bio 更轻，也更像社群在“呼吸”。
-            </p>
-            <ul>
-              <li>节点数量收在 10 个左右，视觉更松弛，也更像 curated network。</li>
-              <li>点击头像：查看成员背景、加入动机、可贡献资源。</li>
-              <li>后续可扩展：按国家、专业、兴趣标签筛选。</li>
-            </ul>
-          </div>
-
-          <div class="impact-card">
-            <strong>Word cloud logic</strong>
-            <div class="impact-title">Names as a <em>living cloud.</em></div>
-            <p>
-              如果你想更“词云”一点，可以把头像旁边增加成员关键词，
-              比如 media literacy、cross-cultural dialogue、AI communication，
-              让节点在视觉上同时承担“人”和“议题”的双重表达。
-            </p>
-            <div class="impact-list">
-              <span>Avatar + Initials</span>
-              <span>Keyword hover state</span>
-              <span>Modal detail view</span>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section id="impact">
-      <div class="section-head">
-        <div class="section-tag">§ 04 — Motivation & Contribution</div>
-        <h2>Why they join.<br />What they <em>bring.</em></h2>
-        <p>
-          这一段专门回答“大家为什么加入 GCA、希望给 GCA 带来什么”，
-          视觉上做成两栏并置，既有归因，也有面向未来的行动感。
-        </p>
-      </div>
-
-      <div class="impact-grid">
-        <article class="impact-card">
-          <strong>Why members join</strong>
-          <div class="impact-title">They come for <em>real dialogue</em>.</div>
-          <p>
-            大多数成员加入 GCA，不只是为了认识更多人，而是为了进入一个可以认真交流、
-            允许差异并鼓励跨学科协作的环境。他们希望在这里找到长期同行者，而不是一次性社交连接。
-          </p>
-          <div class="impact-list">
-            <span>寻找跨文化、跨专业的长期连接</span>
-            <span>在更真实的对话中形成共同理解</span>
-            <span>把个人经验放进更大的全球议题里</span>
-            <span>在校园、城市与国际网络之间建立桥梁</span>
-          </div>
-        </article>
-
-        <article class="impact-card">
-          <strong>What members bring</strong>
-          <div class="impact-title">They bring <em>energy into action</em>.</div>
-          <p>
-            成员希望带来的，不只是简历上的身份，而是具体的方法、资源与创造力。
-            有人带来研究能力，有人带来内容生产、设计、活动组织、跨语种表达和国际协作经验。
-          </p>
-          <div class="impact-list">
-            <span>研究、写作与议题策划能力</span>
-            <span>活动组织与社群运营经验</span>
-            <span>视觉设计、影像和网页表达</span>
-            <span>跨语言沟通与全球视野</span>
-          </div>
-        </article>
-      </div>
+      <div class="cohorts" id="cohorts"></div>
     </section>
 
   </div>
-
 </main>
 
 <div class="mw-modal" id="memberModal" aria-hidden="true">
@@ -984,25 +565,25 @@
       <div class="avatar" id="modalAvatar">M</div>
       <div>
         <h3 class="modal-name" id="modalName">Member Name</h3>
-        <p class="modal-sub" id="modalMeta">Role · City</p>
+        <p class="modal-sub" id="modalMeta">Year · University</p>
       </div>
     </div>
     <div class="modal-grid">
       <div class="modal-block">
-        <strong>Background</strong>
-        <p id="modalBio"></p>
+        <strong id="modalDeptLabel">Department</strong>
+        <p id="modalDept"></p>
       </div>
-      <div class="modal-block">
-        <strong>Keywords</strong>
-        <p id="modalTags"></p>
+      <div class="modal-block" id="modalMajorBlock">
+        <strong>Major</strong>
+        <p id="modalMajor"></p>
       </div>
-      <div class="modal-block">
-        <strong>Why joined GCA</strong>
-        <p id="modalWhy"></p>
+      <div class="modal-block modal-block--wide" id="modalIntroBlock">
+        <strong>Self-introduction</strong>
+        <p id="modalIntro"></p>
       </div>
-      <div class="modal-block">
-        <strong>What they bring</strong>
-        <p id="modalBring"></p>
+      <div class="modal-block modal-block--wide" id="modalPrefBlock">
+        <strong id="modalPrefLabel">Stated preferences</strong>
+        <ol class="modal-prefs" id="modalPrefs"></ol>
       </div>
     </div>
   </div>
@@ -1061,12 +642,12 @@
   var hamburger  = document.getElementById('nav-hamburger');
   var mobileMenu = document.getElementById('mobile-menu');
   if (hamburger && mobileMenu) {
-    function closeMenu() {
+    var closeMenu = function() {
       mobileMenu.classList.remove('open');
       hamburger.setAttribute('aria-expanded', 'false');
       mobileMenu.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
-    }
+    };
     hamburger.addEventListener('click', function() {
       var isOpen = mobileMenu.classList.toggle('open');
       hamburger.setAttribute('aria-expanded', String(isOpen));
@@ -1076,84 +657,175 @@
     mobileMenu.querySelectorAll('a').forEach(function(a) { a.addEventListener('click', closeMenu); });
   }
 
-  // ── Member wall data ─────────────────────────────────────────────────────
-  var members = [
-    { name: "Nora Alvarez",  initials: "NA", meta: "Journalism · Mexico City / Shenzhen",
-      bio: "独立记者与播客制作者，关注青年叙事、城市文化与媒体表达。",
-      tags: "storytelling · audio · youth media",
-      why: "希望在一个真正国际化的语境里，把来自不同地方的故事放在同一张桌子上。",
-      bring: "采访能力、内容策展和跨语境叙事经验。", x: 18, y: 19, delay: "0.2s" },
-    { name: "Ravi Patel",    initials: "RP", meta: "Product Strategy · Mumbai / Hong Kong",
-      bio: "科技行业产品策略从业者，长期观察数字平台如何影响公共沟通。",
-      tags: "platforms · strategy · digital policy",
-      why: "希望与来自学界和实践界的人共同讨论 AI 时代的传播问题。",
-      bring: "产品思维、平台经验和跨界协作网络。", x: 39, y: 11, delay: "1.1s" },
-    { name: "Fatou Ndiaye",  initials: "FN", meta: "Education · Dakar / Guangzhou",
-      bio: "教育项目顾问，聚焦语言学习、文化流动与青年国际项目。",
-      tags: "education · language · exchange",
-      why: "想参与一个能够让不同教育背景的人彼此学习的社区。",
-      bring: "课程设计、跨文化培训与项目执行经验。", x: 63, y: 11, delay: "0.6s" },
-    { name: "Owen Lee",      initials: "OL", meta: "Brand & PR · Seoul / Shenzhen",
-      bio: "品牌传播顾问，擅长为成长型组织建立清晰且可信的对外表达。",
-      tags: "branding · PR · positioning",
-      why: "被 GCA 的国际视角和非功利性的社群氛围吸引。",
-      bring: "品牌框架、媒体关系与传播策略。", x: 82, y: 20, delay: "1.7s" },
-    { name: "Sara Müller",   initials: "SM", meta: "Cultural Studies · Berlin / Shenzhen",
-      bio: "文化研究背景，研究艺术空间、城市流动与全球青年文化。",
-      tags: "culture · cities · research",
-      why: "希望把学术研究带到更开放、更公共的讨论现场里。",
-      bring: "研究洞察、策展想法与文化项目经验。", x: 88, y: 42, delay: "0.4s" },
-    { name: "Ming Zhao",     initials: "MZ", meta: "Data Visualization · Shenzhen",
-      bio: "信息设计师，专注于把复杂数据和公共议题做成更易理解的可视内容。",
-      tags: "visualization · systems · interaction",
-      why: "想用设计帮助一个有思想密度的组织更清晰地表达自己。",
-      bring: "信息可视化、交互设计与数字体验搭建。", x: 78, y: 71, delay: "1.4s" },
-    { name: "Aisha Rahman",  initials: "AR", meta: "Public Affairs · Kuala Lumpur / Shenzhen",
-      bio: "公共事务与国际合作从业者，关注区域交流与青年政策参与。",
-      tags: "policy · diplomacy · youth",
-      why: "想把跨区域协作做得更具体、更有人味。",
-      bring: "公共事务经验、对外合作资源与沟通框架。", x: 58, y: 84, delay: "0.9s" },
-    { name: "Leo Martins",   initials: "LM", meta: "Creative Coding · São Paulo / Shenzhen",
-      bio: "创意技术开发者，在艺术、教育与互动媒体之间工作。",
-      tags: "creative tech · web · installation",
-      why: "希望把技术用在真正有公共价值的社群项目上。",
-      bring: "网页互动、创意编码和数字装置思维。", x: 34, y: 83, delay: "1.9s" },
-    { name: "Hana Sato",     initials: "HS", meta: "Linguistics · Kyoto / Shenzhen",
-      bio: "语言学研究者，关注多语环境中的身份、礼貌与理解机制。",
-      tags: "linguistics · multilingualism · discourse",
-      why: "GCA 给了我一个把语言研究带入真实人群互动的入口。",
-      bring: "语言分析能力、多语交流视角与 workshop 设计。", x: 14, y: 67, delay: "0.3s" },
-    { name: "Karim Soliman", initials: "KS", meta: "Documentary · Cairo / Shenzhen",
-      bio: "纪录片导演，关注迁移、记忆与跨文化生活经验。",
-      tags: "film · documentary · narratives",
-      why: "我想通过影像记录一个正在生成中的国际社群。",
-      bring: "纪录片叙事、视觉采访与长期观察能力。", x: 13, y: 40, delay: "0.7s" }
+  // ── Roster, grouped by academic year ────────────────────────────────────
+  // Each member: name, plus whatever we actually hold — year, uni, dept,
+  // prefs (stated position choices; `ranked` when they numbered them),
+  // intro (self-introduction) and photo ("/members/<file>", any square image).
+  var COHORTS = [
+    {
+      term: "2025–26",
+      sub: "Current team",
+      current: true,
+      members: [
+        // Officers first, then the departments.
+        { name: "Felix Gan", photo: "/assets/members/felix.jpg", uni: "Tsinghua University",
+          role: "President" },
+        { name: "Alex Feldman", year: "Class of 2023", uni: "Tsinghua University",
+          role: "VP of Outreach" },
+        { name: "Immer Feng", photo: "/assets/members/immer-feng.jpg", uni: "Peking University",
+          role: "Secretary General" },
+        { name: "Sophia Dooly", uni: "Tsinghua University",
+          role: "Consultants" },
+
+        { name: "Mikolaj Palacz", year: "Class of 2025", uni: "Tsinghua University", dept: "Operations",
+          prefs: ["Social Events Organization"] },
+        { name: "Melliou Katerina", photo: "/assets/members/katerina.jpg", year: "Class of 2022", uni: "Tsinghua University", dept: "Operations",
+          prefs: ["Social Events Organization"] },
+        { name: "Li Yuan", photo: "/assets/members/li-yuan.jpg", year: "Class of 2023", uni: "Harbin Institute of Technology", dept: "Operations",
+          prefs: ["Social Events Organization", "Outreach"] },
+        { name: "Roman", photo: "/assets/members/roman.jpg", year: "Class of 2025", uni: "Tsinghua University", dept: "Operations",
+          prefs: ["Operations — logistics", "Marketing — promotion", "Outreach — reaching out & sponsorship"] },
+        { name: "Alper Avci", photo: "/assets/members/alper.jpg", year: "Class of 2025", uni: "Tsinghua University", dept: "Operations",
+          prefs: ["Operations"] },
+        { name: "Aya", photo: "/assets/members/aya.jpg", year: "Class of 2024", uni: "Harbin Institute of Technology", dept: "Operations",
+          prefs: ["Operations"] },
+        { name: "Akter Nayema", photo: "/assets/members/nayema-akter.jpg", year: "Class of 2025", uni: "Tsinghua University", dept: "Operations",
+          prefs: ["Operations"] },
+
+        { name: "Timotius Kelvin", photo: "/assets/members/timotius-kelvin.jpg", year: "Class of 2025", uni: "Tsinghua University", dept: "Marketing & Branding",
+          prefs: ["Marketing", "Outreach", "Operations"], ranked: true },
+        { name: "Durdieva Kumush Khemraevna", photo: "/assets/members/kumush.jpg", year: "Class of 2025", uni: "Tsinghua University", dept: "Marketing & Branding",
+          prefs: ["Marketing", "Operations", "Outreach"], ranked: true },
+        { name: "Naomi imali okanda", photo: "/assets/members/naomi.jpg", year: "Class of 2025", uni: "Tsinghua University", dept: "Marketing & Branding",
+          prefs: ["Marketing"] },
+        { name: "Jonathan Lan", photo: "/assets/members/jonathan.jpg", year: "Class of 2024", uni: "Tsinghua University", dept: "Marketing & Branding",
+          prefs: ["Marketing"] },
+        { name: "Oualid", photo: "/assets/members/oualid.jpg", year: "3rd year bachelor", uni: "Harbin Institute of Technology", dept: "Marketing & Branding",
+          prefs: ["Marketing"] },
+        { name: "Laylo Saidova", photo: "/assets/members/laylo.jpg", year: "Class of 2025", uni: "Tsinghua University", dept: "Marketing & Branding",
+          prefs: ["Marketing", "Operations"] },
+
+        { name: "Anita Keo", photo: "/assets/members/anita.jpg", year: "Class of 2025", uni: "Tsinghua University", dept: "Outreach & Curation",
+          prefs: ["Outreach", "Operations", "Marketing"], ranked: true },
+        { name: "Ziganshin Artur Radikovich", photo: "/assets/members/artur.jpg", year: "Class of 2025", uni: "Tsinghua University", dept: "Outreach & Curation",
+          prefs: ["Outreach"] },
+        { name: "yaochen", photo: "/assets/members/yaochen.jpg", year: "Class of 2025", uni: "Tsinghua University", dept: "Outreach & Curation",
+          prefs: ["Outreach"] },
+        { name: "Taleb Alhajji", photo: "/assets/members/taleb.jpg", year: "Class of 2025", uni: "Tsinghua University", dept: "Outreach & Curation",
+          prefs: ["Outreach"] },
+        { name: "Sia", year: "Class of 2025", uni: "Tsinghua University", dept: "Outreach & Curation",
+          prefs: ["Operations"] }
+      ]
+    },
+    {
+      term: "2024–25",
+      sub: "Previous team",
+      members: [
+        { name: "Felix Gan", photo: "/assets/members/felix.jpg", uni: "Tsinghua University",
+          role: "President" },
+        { name: "Alex Feldman", year: "Class of 2023", uni: "Tsinghua University",
+          role: "VP of Outreach" },
+        { name: "Jiani Mao", uni: "Tsinghua University",
+          role: "Finance Director" },
+
+        { name: "Brendon Tao", year: "Class of 2024", uni: "Tsinghua University", dept: "Operations" },
+        { name: "Roger Liu", photo: "/assets/members/roger.jpg", year: "Class of 2024", uni: "Tsinghua University", dept: "Operations" },
+        { name: "Peter Marsh", year: "Class of 2022", uni: "Tsinghua University", dept: "Operations" },
+        { name: "Leo", year: "Class of 2023", uni: "Tsinghua University", dept: "Operations" },
+        { name: "Eric Ling", year: "Class of 2024", uni: "Tsinghua University", dept: "Marketing & Branding" },
+        { name: "Rice", year: "Class of 2023", uni: "Tsinghua University", dept: "Marketing & Branding" },
+        { name: "Dario", year: "Class of 2024", uni: "Tsinghua University", dept: "Outreach & Curation" }
+      ]
+    }
   ];
 
-  var orbit       = document.getElementById("orbitField");
-  var modal       = document.getElementById("memberModal");
-  var modalClose  = document.getElementById("modalClose");
-  var modalAvatar = document.getElementById("modalAvatar");
-  var modalName   = document.getElementById("modalName");
-  var modalMeta   = document.getElementById("modalMeta");
-  var modalBio    = document.getElementById("modalBio");
-  var modalTags   = document.getElementById("modalTags");
-  var modalWhy    = document.getElementById("modalWhy");
-  var modalBring  = document.getElementById("modalBring");
+  function initials(name) {
+    var parts = name.trim().split(/\s+/).slice(0, 2);
+    return parts.map(function(w) { return w.charAt(0).toUpperCase(); }).join("");
+  }
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function metaLine(member) {
+    return [member.year, member.uni].filter(Boolean).join(" · ");
+  }
+
+  function hasDetail(member) {
+    return !!(member.intro || (member.prefs && member.prefs.length));
+  }
+
+  function faceFor(member, cls) {
+    if (member.photo) {
+      var img = el("img", cls === "avatar" ? "mcard-photo" : "modal-photo");
+      img.src = member.photo;
+      img.alt = member.name;
+      img.loading = "lazy";
+      return img;
+    }
+    return el("div", "avatar", initials(member.name));
+  }
+
+  // ── Modal ────────────────────────────────────────────────────────────────
+  var modal      = document.getElementById("memberModal");
+  var modalClose = document.getElementById("modalClose");
+  var mFace      = document.getElementById("modalAvatar");
+  var mName      = document.getElementById("modalName");
+  var mMeta      = document.getElementById("modalMeta");
+  var mDept      = document.getElementById("modalDept");
+  var mDeptLabel = document.getElementById("modalDeptLabel");
+  var mMajorBlock = document.getElementById("modalMajorBlock");
+  var mMajor     = document.getElementById("modalMajor");
+  var mPrefBlock = document.getElementById("modalPrefBlock");
+  var mPrefLabel = document.getElementById("modalPrefLabel");
+  var mPrefs     = document.getElementById("modalPrefs");
+  var mIntroBlock = document.getElementById("modalIntroBlock");
+  var mIntro     = document.getElementById("modalIntro");
   var lastTrigger = null;
 
-  function openModal(member, trigger) {
+  function openModal(member, term, trigger) {
     lastTrigger = trigger || null;
-    modalAvatar.textContent = member.initials;
-    modalName.textContent   = member.name;
-    modalMeta.textContent   = member.meta;
-    modalBio.textContent    = member.bio;
-    modalTags.textContent   = member.tags;
-    modalWhy.textContent    = member.why;
-    modalBring.textContent  = member.bring;
+
+    var face = faceFor(member);
+    face.id = "modalAvatar";
+    mFace.replaceWith(face);
+    mFace = face;
+
+    mName.textContent = member.name;
+    mMeta.textContent = [term + " team", metaLine(member)].filter(Boolean).join(" · ");
+    mDept.textContent = member.role || member.dept || "—";
+    mDeptLabel.textContent = member.role ? "Role" : "Department";
+    if (member.major) {
+      mMajor.textContent = member.major;
+      mMajorBlock.hidden = false;
+    } else {
+      mMajorBlock.hidden = true;
+    }
+
+    if (member.prefs && member.prefs.length) {
+      mPrefLabel.textContent = member.ranked ? "Stated preferences (ranked)" : "Stated preferences";
+      mPrefs.className = "modal-prefs" + (member.ranked ? "" : " is-unranked");
+      mPrefs.textContent = "";
+      member.prefs.forEach(function(pref) { mPrefs.appendChild(el("li", null, pref)); });
+      mPrefBlock.hidden = false;
+    } else {
+      mPrefBlock.hidden = true;
+    }
+
+    if (member.intro) {
+      mIntro.textContent = member.intro;
+      mIntroBlock.hidden = false;
+    } else {
+      mIntroBlock.hidden = true;
+    }
+
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     modalClose.focus();
   }
 
@@ -1161,31 +833,73 @@
     if (!modal.classList.contains("is-open")) return;
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = '';
+    document.body.style.overflow = "";
     if (lastTrigger) lastTrigger.focus();
   }
 
-  members.forEach(function(member) {
-    var node = document.createElement("button");
-    node.className = "member-node";
-    node.type = "button";
-    node.style.setProperty("left", member.x + "%");
-    node.style.setProperty("top",  member.y + "%");
-    node.style.setProperty("--delay", member.delay);
-    node.setAttribute("aria-label", member.name + " — " + member.meta);
+  modalClose.addEventListener("click", closeModal);
+  modal.addEventListener("click", function(e) { if (e.target === modal) closeModal(); });
+  window.addEventListener("keydown", function(e) { if (e.key === "Escape") closeModal(); });
 
-    var wrap = document.createElement("span");
-    var ini  = document.createElement("span"); ini.className = "node-initial"; ini.textContent = member.initials;
-    var nm   = document.createElement("span"); nm.className  = "node-name";    nm.textContent  = member.name;
-    wrap.appendChild(ini); wrap.appendChild(nm); node.appendChild(wrap);
+  // ── Build one row per cohort ─────────────────────────────────────────────
+  var host = document.getElementById("cohorts");
+  var counts = {};
+  var uniquePeople = {};
 
-    node.addEventListener("click", function() { openModal(member, node); });
-    orbit.appendChild(node);
+  COHORTS.forEach(function(cohort) {
+    counts[cohort.term] = cohort.members.length;
+    cohort.members.forEach(function(m) { uniquePeople[m.name] = true; });
+
+    var block = el("article", "cohort" + (cohort.current ? " cohort--current" : ""));
+
+    var head = el("div", "cohort-head");
+    var title = el("div");
+    title.appendChild(el("h3", "cohort-name", cohort.term));
+    title.appendChild(el("span", "cohort-sub", cohort.sub));
+    head.appendChild(title);
+    var count = el("div", "cohort-count");
+    count.appendChild(el("b", null, String(cohort.members.length)));
+    count.appendChild(document.createTextNode(" members"));
+    head.appendChild(count);
+    block.appendChild(head);
+
+    var grid = el("div", "roster-grid");
+    cohort.members.forEach(function(member) {
+      var detailed = hasDetail(member);
+      var card = el(detailed ? "button" : "div", "mcard" + (detailed ? "" : " mcard--static"));
+      if (detailed) {
+        card.type = "button";
+        card.setAttribute("aria-label", member.name + " — view details");
+      }
+
+      var top = el("div", "mcard-top");
+      top.appendChild(faceFor(member, "avatar"));
+      var who = el("div");
+      who.appendChild(el("h4", "mcard-name", member.name));
+      var meta = metaLine(member);
+      if (meta) who.appendChild(el("div", "mcard-meta", meta));
+      if (member.major) who.appendChild(el("div", "mcard-major", member.major));
+      top.appendChild(who);
+      card.appendChild(top);
+
+      var line = member.role || member.dept;
+      if (line) card.appendChild(el("div", "mcard-dept", line));
+      if (member.intro) card.appendChild(el("p", "mcard-intro", member.intro));
+
+      if (detailed) {
+        card.addEventListener("click", function() { openModal(member, cohort.term, card); });
+      }
+      grid.appendChild(card);
+    });
+
+    block.appendChild(grid);
+    host.appendChild(block);
   });
 
-  modalClose.addEventListener("click", closeModal);
-  modal.addEventListener("click", function(event) { if (event.target === modal) closeModal(); });
-  window.addEventListener("keydown", function(event) { if (event.key === "Escape") closeModal(); });
+  document.getElementById("stat-current").textContent = counts["2025–26"];
+  document.getElementById("stat-prev").textContent    = counts["2024–25"];
+  document.getElementById("stat-people").textContent  = Object.keys(uniquePeople).length;
+
 })();
 </script>
 </body>
