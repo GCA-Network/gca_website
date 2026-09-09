@@ -4,7 +4,7 @@ The banner on the home page looks for a logo per institution and falls back to
 a wordmark when it does not find one. Nothing else needs editing — drop a file
 in this folder and it appears on the next page load.
 
-Naming: `<slug>.svg` is tried first, then `<slug>.png`.
+Naming: `<slug>.png` is tried first, then `<slug>.svg`.
 SVG is preferred; PNG should be transparent and at least 300px on its long side.
 Plates are a fixed 206x66, and logos are capped at 158x38 inside them, so any
 aspect ratio is fine.

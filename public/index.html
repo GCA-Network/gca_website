@@ -66,19 +66,21 @@
     .inst-row + .inst-row { margin-top:14px; }
     .inst-track { display:flex; width:max-content; gap:14px; padding-right:14px; animation:inst-left 72s linear infinite; will-change:transform; }
     .inst-track--rev { animation-name:inst-right; }
-    .insts:hover .inst-track { animation-play-state:paused; }
     @keyframes inst-left  { from{transform:translateX(0);}    to{transform:translateX(-50%);} }
     @keyframes inst-right { from{transform:translateX(-50%);} to{transform:translateX(0);} }
     /* Fixed plate size, so every institution reads at the same weight
        whether it shows a logo or a wordmark. */
-    .inst { flex:0 0 auto; display:flex; align-items:center; justify-content:center; width:206px; height:66px; padding:0 16px; background:rgba(255,255,255,.62); border:1px solid var(--border); border-radius:var(--r); }
-    .inst img { max-height:38px; max-width:158px; width:auto; height:auto; object-fit:contain; filter:grayscale(1); opacity:.85; }
-    .inst img[src$=".svg"], .inst img[src$=".png"] { display:block; }
+    .inst { flex:0 0 auto; display:flex; align-items:center; justify-content:center; width:206px; height:74px; padding:0 16px; background:rgba(255,255,255,.62); border:1px solid var(--border); border-radius:var(--r); }
+    .inst img { max-height:48px; max-width:168px; width:auto; height:auto; object-fit:contain; display:block; }
     .inst span { font-family:var(--display); font-size:15px; line-height:1.2; letter-spacing:-.01em; color:var(--fg-muted); text-align:center; }
-    @media (prefers-reduced-motion:reduce) { .inst-track { animation:none; } }
+    @media (prefers-reduced-motion:reduce) {
+      .inst-track { animation:none; }
+      .inst-row { overflow-x:auto; -webkit-mask-image:none; mask-image:none; }
+    }
     @media (max-width:640px) {
       .insts { padding:42px 0 48px; }
-      .inst { width:168px; height:58px; }
+      .inst { width:168px; height:64px; }
+      .inst img { max-height:40px; max-width:136px; }
       .inst span { font-size:13px; }
     }
 
@@ -785,16 +787,18 @@
       plate.appendChild(span);
       if (!inst.slug) return plate;
 
-      // try SVG, then PNG, then keep the wordmark
+      // Try PNG, then SVG, then fall back to the wordmark. These load eagerly:
+      // most of the track sits outside the viewport, and lazy images there
+      // never load, which would leave the band showing wordmarks as it scrolls.
       var img = document.createElement('img');
-      img.alt = ''; img.loading = 'lazy';
+      img.alt = ''; img.decoding = 'async';
+      span.style.display = 'none';
       var tried = 0;
       img.addEventListener('error', function() {
-        if (tried === 0) { tried = 1; img.src = '/assets/institutions/' + inst.slug + '.png'; }
+        if (tried === 0) { tried = 1; img.src = '/assets/institutions/' + inst.slug + '.svg'; }
         else { img.remove(); span.style.display = ''; }
       });
-      img.addEventListener('load', function() { span.style.display = 'none'; });
-      img.src = '/assets/institutions/' + inst.slug + '.svg';
+      img.src = '/assets/institutions/' + inst.slug + '.png';
       plate.appendChild(img);
       return plate;
     }
