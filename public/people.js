@@ -43,7 +43,7 @@ window.GCA = (function () {
       prefs:["Operations — logistics", "Marketing — promotion", "Outreach — reaching out & sponsorship"] },
     { id:"alper-avci", name:"Alper Avci", sort:"Avci", inducted:"2025", photo:"/assets/members/alper.jpg", uni:"Tsinghua University", teams:[{ term:"2025–26", dept:"Operations" }],
       prefs:["Operations"] },
-    { id:"aya", name:"Aya", sort:"Aya", inducted:"2024", photo:"/assets/members/aya.jpg", uni:"Harbin Institute of Technology", teams:[{ term:"2025–26", dept:"Operations" }],
+    { id:"aya", name:"Aya", sort:"Aya", inducted:"2024", photo:"/assets/members/aya.jpg", uni:"Harbin Institute of Technology", teams:[{ term:"2026–27", dept:"Operations" }, { term:"2025–26", dept:"Operations" }],
       prefs:["Operations"] },
     { id:"akter-nayema", name:"Akter Nayema", sort:"Akter", inducted:"2025", photo:"/assets/members/nayema-akter.jpg", uni:"Tsinghua University", teams:[{ term:"2025–26", dept:"Operations" }],
       prefs:["Operations"] },
@@ -71,7 +71,8 @@ window.GCA = (function () {
     { id:"taleb-alhajji", name:"Taleb Alhajji", sort:"Alhajji", inducted:"2025", photo:"/assets/members/taleb.jpg", uni:"Tsinghua University", teams:[{ term:"2025–26", dept:"Outreach & Curation" }],
       prefs:["Outreach"] },
     { id:"sia", name:"Sia", sort:"Sia", inducted:"2025", uni:"Tsinghua University",
-      teams:[{ term:"2025–26", dept:"Outreach & Curation" }], prefs:["Operations"] },
+      teams:[{ term:"2026–27", dept:"Outreach & Curation" }, { term:"2025–26", dept:"Outreach & Curation" }],
+      prefs:["Operations"] },
 
     // ── 2024–25 team ──────────────────────────────────────────────────────
     { id:"brendon-tao", name:"Brendon Tao", sort:"Tao", inducted:"2024",
@@ -128,8 +129,10 @@ window.GCA = (function () {
       .concat((p.teams || []).map(function (t) { return t.term; }));
   }
 
+  var PAST_TERMS = TERMS.filter(function (t) { return t !== CURRENT_TERM; });
+
   return {
-    TERMS: TERMS, CURRENT_TERM: CURRENT_TERM, PEOPLE: PEOPLE,
+    TERMS: TERMS, PAST_TERMS: PAST_TERMS, CURRENT_TERM: CURRENT_TERM, PEOPLE: PEOPLE,
     roleIn: roleIn, teamIn: teamIn, officersFor: officersFor, teamFor: teamFor,
     initials: initials, standing: standing, termsOf: termsOf
   };

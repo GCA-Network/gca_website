@@ -315,7 +315,7 @@
     .team-panel[hidden] { display: none; }
 
     .team-heading {
-      margin: 30px 0 0;
+      margin: 40px 0 0;
       font-family: var(--mono);
       font-size: 11px;
       font-weight: 500;
@@ -617,18 +617,22 @@
         </div>
       </div>
       <div class="lead-grid" id="leadGrid"></div>
+      <div class="team-panel" id="currentTeamPanel">
+        <h3 class="team-heading" id="currentTeamHeading"></h3>
+        <div class="team-grid" id="currentTeamGrid"></div>
+      </div>
     </section>
 
     <section id="archive">
       <div class="section-head">
         <div>
-          <div class="section-tag">§ 03 — Leadership Through the Years</div>
-          <h2>The <em>record.</em></h2>
+          <div class="section-tag">§ 03 — Past Leadership</div>
+          <h2>Previous <em>terms.</em></h2>
         </div>
       </div>
 
       <div class="arch">
-        <div class="yr-tabs" id="yrTabs" role="tablist" aria-label="Leadership term"></div>
+        <div class="yr-tabs" id="yrTabs" role="tablist" aria-label="Past leadership term"></div>
         <div id="archPanel" role="tabpanel">
           <div class="officers" id="officers"></div>
           <div class="team-panel" id="teamPanel">
@@ -731,7 +735,7 @@
 
   // Roster and helpers come from /people.js so this page and the member
   // directory never drift apart.
-  var TERMS = GCA.TERMS, CURRENT_TERM = GCA.CURRENT_TERM;
+  var PAST_TERMS = GCA.PAST_TERMS, CURRENT_TERM = GCA.CURRENT_TERM;
   var roleIn = GCA.roleIn, teamIn = GCA.teamIn;
   var officersFor = GCA.officersFor, teamFor = GCA.teamFor, initials = GCA.initials;
 
@@ -848,13 +852,44 @@
     leadGrid.appendChild(card);
   });
 
-  // ── 03 Archive by term ──────────────────────────────────────────────────
+  // The current term's team sits with the current leadership, never in the
+  // archive, so nobody is listed twice on the page.
+  function renderTeam(term, headingEl, gridEl, panelEl) {
+    var team = teamFor(term);
+    panelEl.hidden = team.length === 0;
+    headingEl.textContent = term + " team (" + team.length + ")";
+    gridEl.textContent = "";
+    team.forEach(function(person) {
+      var hasMore = !!(person.prefs && person.prefs.length);
+      var card = el(hasMore ? "button" : "div", "tcard" + (hasMore ? "" : " tcard--static"));
+      if (hasMore) {
+        card.type = "button";
+        card.setAttribute("aria-label", person.name + ", view profile");
+      }
+      var face = el("div", "tface");
+      faceInto(face, person, false);
+      card.appendChild(face);
+      var who = el("div");
+      who.appendChild(el("div", "tname", person.name));
+      who.appendChild(el("div", "tmeta", teamIn(person, term)));
+      card.appendChild(who);
+      if (hasMore) card.addEventListener("click", function() { openProfile(person, card); });
+      gridEl.appendChild(card);
+    });
+  }
+
+  renderTeam(CURRENT_TERM,
+    document.getElementById("currentTeamHeading"),
+    document.getElementById("currentTeamGrid"),
+    document.getElementById("currentTeamPanel"));
+
+  // ── 03 Past terms ───────────────────────────────────────────────────────
   var yrTabs = document.getElementById("yrTabs");
   var officersHost = document.getElementById("officers");
   var teamHeading = document.getElementById("teamHeading");
   var teamPanel = document.getElementById("teamPanel");
   var teamGrid = document.getElementById("teamGrid");
-  var activeTerm = TERMS[0];
+  var activeTerm = PAST_TERMS[0];
 
   function renderTerm(term) {
     activeTerm = term;
@@ -878,30 +913,10 @@
       officersHost.appendChild(row);
     });
 
-    var team = teamFor(term);
-    teamPanel.hidden = team.length === 0;
-    teamHeading.textContent = "Full " + term + " team (" + team.length + ")";
-    teamGrid.textContent = "";
-    team.forEach(function(person) {
-      var hasMore = !!(person.prefs && person.prefs.length);
-      var card = el(hasMore ? "button" : "div", "tcard" + (hasMore ? "" : " tcard--static"));
-      if (hasMore) {
-        card.type = "button";
-        card.setAttribute("aria-label", person.name + ", view profile");
-      }
-      var face = el("div", "tface");
-      faceInto(face, person, false);
-      card.appendChild(face);
-      var who = el("div");
-      who.appendChild(el("div", "tname", person.name));
-      who.appendChild(el("div", "tmeta", teamIn(person, term)));
-      card.appendChild(who);
-      if (hasMore) card.addEventListener("click", function() { openProfile(person, card); });
-      teamGrid.appendChild(card);
-    });
+    renderTeam(term, teamHeading, teamGrid, teamPanel);
   }
 
-  TERMS.forEach(function(term, i) {
+  PAST_TERMS.forEach(function(term, i) {
     var tab = el("button", "yr-tab", term);
     tab.type = "button";
     tab.setAttribute("role", "tab");
