@@ -5,3 +5,4 @@ temporary_screenshots/
 data/
 public/uploads/
 temporary screenshots/
+.DS_Store
