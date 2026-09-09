@@ -407,13 +407,19 @@
     <ul class="nav-links" role="list">
       <li><a href="/">About</a></li>
       <li><a href="/events.html">Events</a></li>
-      <li><a href="/member-wall.html">Members</a></li>
+      <li class="nav-item-sub">
+        <a href="/leadership.html">People</a>
+        <ul class="nav-sub" role="list">
+          <li><a href="/leadership.html">Leadership<span class="nav-sub-note">Officers &amp; past terms</span></a></li>
+          <li><a href="/members.html">Members<span class="nav-sub-note">Full directory</span></a></li>
+        </ul>
+      </li>
       <li><a href="/#cadence">Programs</a></li>
       <li><a href="/#voices">Voices</a></li>
       <li><a href="/#join">Join</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="/members.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn">Login</a>
+      <a href="/login.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn">Login</a>
       <a href="/#join" class="btn btn-sm btn-primary">Join Network</a>
     </div>
     <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu">
@@ -426,13 +432,15 @@
     <ul class="mobile-menu-links">
       <li><a href="/">About</a></li>
       <li><a href="/events.html">Events</a></li>
-      <li><a href="/member-wall.html">Members</a></li>
+      <li class="mm-group">People</li>
+      <li class="mm-sub"><a href="/leadership.html">Leadership</a></li>
+      <li class="mm-sub"><a href="/members.html">Members</a></li>
       <li><a href="/#cadence">Programs</a></li>
       <li><a href="/#voices">Voices</a></li>
       <li><a href="/#join">Join</a></li>
     </ul>
     <div class="mobile-menu-cta">
-      <a href="/members.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn-mobile">Login</a>
+      <a href="/login.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn-mobile">Login</a>
       <a href="/#join" class="btn btn-sm btn-primary">Join Network</a>
     </div>
   </div>
@@ -449,7 +457,7 @@
 
     <p class="sidebar-label">Account</p>
     <a href="#" class="sidebar-link"><span class="icon">&#128100;</span> Profile</a>
-    <a href="/members.html" class="sidebar-link" id="sign-out-btn"><span class="icon">&#8594;</span> Sign Out</a>
+    <a href="/login.html" class="sidebar-link" id="sign-out-btn"><span class="icon">&#8594;</span> Sign Out</a>
 
     <div class="sidebar-spacer"></div>
 
@@ -611,7 +619,7 @@
   var currentAdminEmail = null;
   onAuthStateChanged(auth, function(user) {
     if (!user) {
-      window.location.replace('/members.html');
+      window.location.replace('/login.html');
       return;
     }
     currentAdminEmail = user.email;
@@ -629,7 +637,7 @@
     signOutBtn.addEventListener('click', function(e) {
       e.preventDefault();
       signOut(auth).then(function() {
-        window.location.href = '/members.html';
+        window.location.href = '/login.html';
       });
     });
   }

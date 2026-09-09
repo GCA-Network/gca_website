@@ -40,6 +40,31 @@ body { font-family:var(--ff); background:var(--bg); color:var(--fg); -webkit-fon
 .nav-links a:hover { color:var(--fg); background:rgba(0,0,0,.04); }
 .nav-links a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 
+/* NAV — People submenu */
+.nav-item-sub { position:relative; }
+.nav-item-sub > a::after { content:"⌄"; margin-left:5px; font-size:11px; line-height:1; opacity:.6; }
+.nav-sub { position:absolute; top:100%; left:0; min-width:186px; padding:6px; margin-top:2px; list-style:none; background:rgba(246,244,239,.98); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid var(--border); border-radius:var(--r); box-shadow:0 1px 3px rgba(0,0,0,.04),0 18px 40px rgba(20,18,15,.12); opacity:0; visibility:hidden; transform:translateY(-5px); transition:opacity .16s ease, transform .22s cubic-bezier(0.34,1.56,0.64,1), visibility .16s; }
+.nav-item-sub:hover > .nav-sub, .nav-item-sub:focus-within > .nav-sub { opacity:1; visibility:visible; transform:none; }
+.nav-sub li { display:block; }
+.nav-sub a { display:block; padding:9px 12px; font-size:13px; font-weight:500; color:var(--fg-subtle); text-decoration:none; border-radius:var(--r); transition:color .15s ease, background .15s ease; }
+.nav-sub a:hover { color:var(--fg); background:rgba(0,0,0,.045); }
+.nav-sub a[aria-current="page"] { color:var(--accent); }
+.nav-sub a:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
+.nav-sub .nav-sub-note { display:block; font-family:var(--mono); font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-4); margin-top:2px; }
+
+/* Mobile menu — People group */
+.mobile-menu-links .mm-group { padding:13px 0 4px; border-bottom:none; font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--fg-subtle); }
+.mobile-menu-links .mm-sub a { padding-left:16px; font-size:14px; }
+
+/* PEOPLE — section switcher shared by Leadership and Members */
+.people-tabs { display:flex; gap:26px; align-items:center; border-bottom:1px solid var(--border); margin-bottom:6px; }
+.people-tabs a { position:relative; display:block; padding:0 0 14px; font-family:var(--mono); font-size:11px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:var(--fg-subtle); text-decoration:none; transition:color .15s ease; }
+.people-tabs a::after { content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform .3s cubic-bezier(0.2,0.7,0.2,1); }
+.people-tabs a:hover { color:var(--fg-muted); }
+.people-tabs a[aria-current="page"] { color:var(--accent); }
+.people-tabs a[aria-current="page"]::after { transform:scaleX(1); }
+.people-tabs a:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+
 
 /* BUTTONS */
 .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; font-family:var(--ff); font-weight:600; border:none; cursor:pointer; text-decoration:none; border-radius:var(--r); transition:background 0.15s ease,color 0.15s ease,box-shadow 0.15s ease,transform 0.2s cubic-bezier(0.34,1.56,0.64,1),border-color 0.15s ease; }

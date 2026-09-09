@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alumni Login — GCA International Alumni Network</title>
+  <meta name="description" content="Sign in to the GCA alumni dashboard to share stories and follow activity across the international alumni network." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    .members-page {
+      min-height: 100vh;
+      padding-top: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+    }
+
+    .login-wrap {
+      width: 100%;
+      max-width: 420px;
+      padding: 2rem;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      margin-bottom: 1.8rem;
+    }
+
+    .login-logo img { height: 36px; width: auto; }
+
+    .login-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-mid);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 1.2rem;
+    }
+
+    .login-badge-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: dot-blink 2.4s ease-in-out infinite;
+    }
+
+    .login-header h1 {
+      font-family: var(--display);
+      font-size: 2.2rem;
+      font-weight: 400;
+      letter-spacing: -0.025em;
+      color: var(--fg);
+      margin-bottom: 0.4rem;
+      line-height: 1.05;
+    }
+
+    .login-header p {
+      font-size: 0.83rem;
+      color: var(--fg-muted);
+      line-height: 1.65;
+    }
+
+    .login-card {
+      background: rgba(255,255,255,.55);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 2rem;
+    }
+
+    .field { margin-bottom: 1rem; }
+
+    .field label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+      margin-bottom: 0.35rem;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 10px 13px;
+      font-size: 0.85rem;
+      font-family: var(--ff);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      background: var(--bg);
+      color: var(--fg);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(123,63,160,0.1);
+    }
+
+    .field input::placeholder { color: var(--fg-subtle); }
+
+    .field-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.35rem;
+    }
+
+    .field-row label { margin-bottom: 0; }
+
+    .forgot-link {
+      font-size: 0.72rem;
+      color: var(--fg-subtle);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .forgot-link:hover { color: var(--accent); }
+
+
+
+    #login-submit {
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .login-divider hr {
+      flex: 1;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .login-divider span {
+      font-size: 0.68rem;
+      color: var(--fg-subtle);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .login-apply {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--fg-muted);
+    }
+
+    .login-apply a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .login-apply a:hover { color: var(--accent-hi); }
+
+    .login-error {
+      display: none;
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(200,40,40,0.2);
+      border-radius: var(--r);
+      background: rgba(200,40,40,0.05);
+      margin-bottom: 1rem;
+    }
+
+    .login-error p {
+      font-size: 0.78rem;
+      color: #b91c1c;
+    }
+
+    .login-success {
+      display: none;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgba(123,63,160,0.25);
+      border-radius: var(--r);
+      background: var(--accent-dim);
+      margin-bottom: 1rem;
+    }
+
+    .login-success p:first-child {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 2px;
+    }
+
+    .login-success p:last-child {
+      font-size: 0.75rem;
+      color: var(--fg-muted);
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 1.8rem;
+    }
+
+    .login-footer a {
+      font-size: 0.75rem;
+      color: var(--fg-subtle);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .login-footer a:hover { color: var(--fg-muted); }
+
+    @media (max-width: 480px) {
+      .login-wrap { padding: 1.5rem 1rem; }
+      .login-card  { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+<svg class="grain" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><filter id="g"><feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#g)"/></svg>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="GCA Home">
+      <img src="/brand_assets/GCA Logo.png" alt="GCA Logo" id="nav-logo-img" />
+      <span class="nav-logo-name">GCA International<br>Alumni Network</span>
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="/">About</a></li>
+      <li><a href="/events.html">Events</a></li>
+      <li class="nav-item-sub">
+        <a href="/leadership.html">People</a>
+        <ul class="nav-sub" role="list">
+          <li><a href="/leadership.html">Leadership<span class="nav-sub-note">Officers &amp; past terms</span></a></li>
+          <li><a href="/members.html">Members<span class="nav-sub-note">Full directory</span></a></li>
+        </ul>
+      </li>
+      <li><a href="/#cadence">Programs</a></li>
+      <li><a href="/#voices">Voices</a></li>
+      <li><a href="/#join">Join</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="/login.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn">Login</a>
+      <a href="/#join" class="btn btn-sm btn-primary">Join Network</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <ul class="mobile-menu-links">
+      <li><a href="/">About</a></li>
+      <li><a href="/events.html">Events</a></li>
+      <li class="mm-group">People</li>
+      <li class="mm-sub"><a href="/leadership.html">Leadership</a></li>
+      <li class="mm-sub"><a href="/members.html">Members</a></li>
+      <li><a href="/#cadence">Programs</a></li>
+      <li><a href="/#voices">Voices</a></li>
+      <li><a href="/#join">Join</a></li>
+    </ul>
+    <div class="mobile-menu-cta">
+      <a href="/login.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)">Login</a>
+      <a href="/#join" class="btn btn-sm btn-primary">Join Network</a>
+    </div>
+  </div>
+</nav>
+
+<div class="members-page">
+  <div class="login-wrap">
+
+    <div class="login-header">
+      <a href="/" class="login-logo">
+        <img src="/brand_assets/GCA Logo.png" alt="GCA Logo" />
+      </a>
+      <div><span class="login-badge"><span class="login-badge-dot"></span> Alumni Access</span></div>
+      <h1>Welcome back, alumni.</h1>
+      <p>Sign in to publish stories and manage updates from across the international alumni network.</p>
+    </div>
+
+    <div class="login-card" id="login-card">
+      <div class="login-error" id="login-error">
+        <p>Incorrect username or password. Please try again.</p>
+      </div>
+      <div class="login-success" id="login-success">
+        <p>Signed in successfully!</p>
+        <p>Redirecting to your alumni dashboard&hellip;</p>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="l-user">Username or email</label>
+          <input id="l-user" type="text" placeholder="your@email.com" autocomplete="username" />
+        </div>
+        <div class="field">
+          <div class="field-row">
+            <label for="l-pass">Password</label>
+            <a href="#" class="forgot-link">Forgot password?</a>
+          </div>
+          <input id="l-pass" type="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password" />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-md" id="login-submit">Sign In</button>
+      </form>
+
+      <div class="login-divider">
+        <hr /><span>Not in the network yet?</span><hr />
+      </div>
+      <p class="login-apply">
+        Request free membership on <a href="/#join">the alumni network page</a> &mdash; review takes under 10 business days.
+      </p>
+    </div>
+
+    <div class="login-footer">
+      <a href="/">&#8592; Back to the alumni network</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script src="/api/firebase-config"></script>
+<script type="module">
+  import { initializeApp }                        from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js';
+  import { getAnalytics }                         from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-analytics.js';
+  import { getAuth, onAuthStateChanged,
+           signInWithEmailAndPassword,
+           sendPasswordResetEmail,
+           browserSessionPersistence,
+           setPersistence }                       from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js';
+
+  const app       = initializeApp(window.firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth      = getAuth(app);
+
+  // If already logged in, go straight to dashboard
+  onAuthStateChanged(auth, function(user) {
+    if (user) window.location.replace('/dashboard.html');
+  });
+
+  gsap.from('#nav',        { opacity:0, y:-8,  duration:0.5,  ease:'power2.out' });
+  gsap.from('.login-wrap', { opacity:0, y:20,  duration:0.55, delay:0.15, ease:'power2.out' });
+
+  var logo = document.getElementById('nav-logo-img');
+  if (logo) {
+    logo.addEventListener('mouseenter', function() {
+      gsap.fromTo(logo, { rotate:0 },
+        { keyframes:{ rotate:[0,-9,9,-4,4,0] }, duration:0.52, ease:'power2.inOut' });
+    });
+  }
+
+  var form   = document.getElementById('login-form');
+  var card   = document.getElementById('login-card');
+  var errBox = document.getElementById('login-error');
+  var sucBox = document.getElementById('login-success');
+  var btn    = document.getElementById('login-submit');
+  var errMsg = errBox.querySelector('p');
+
+  // Focus styles
+  document.querySelectorAll('#login-form input[type="text"], #login-form input[type="password"]').forEach(function(el) {
+    el.addEventListener('focus', function() {
+      el.style.borderColor = 'var(--accent)';
+      el.style.boxShadow   = '0 0 0 3px rgba(123,63,160,0.1)';
+    });
+    el.addEventListener('blur', function() {
+      el.style.borderColor = '';
+      el.style.boxShadow   = '';
+    });
+  });
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var email = document.getElementById('l-user').value.trim();
+    var pass  = document.getElementById('l-pass').value;
+
+    errBox.style.display = 'none';
+
+    if (!email || !pass) {
+      gsap.fromTo(card, { x:0 }, { keyframes:{ x:[-7,7,-5,5,0] }, duration:0.38, ease:'power2.inOut' });
+      return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = 'Signing in\u2026';
+
+    setPersistence(auth, browserSessionPersistence)
+      .then(function() { return signInWithEmailAndPassword(auth, email, pass); })
+      .then(function() {
+        sucBox.style.display = 'block';
+        gsap.from(sucBox, { opacity:0, y:6, duration:0.35, ease:'power2.out' });
+        form.style.display = 'none';
+        setTimeout(function() { window.location.href = '/dashboard.html'; }, 1200);
+      })
+      .catch(function(err) {
+        btn.disabled    = false;
+        btn.textContent = 'Sign In';
+        var msg = 'Incorrect email or password. Please try again.';
+        if (err.code === 'auth/too-many-requests') msg = 'Too many failed attempts. Please try again later.';
+        if (err.code === 'auth/user-not-found')    msg = 'No account found with that email.';
+        if (err.code === 'auth/invalid-email')     msg = 'Please enter a valid email address.';
+        errMsg.textContent   = msg;
+        errBox.style.display = 'block';
+        gsap.fromTo(card, { x:0 }, { keyframes:{ x:[-7,7,-5,5,0] }, duration:0.38, ease:'power2.inOut' });
+      });
+  });
+
+  // Forgot password
+  document.querySelector('.forgot-link').addEventListener('click', function(e) {
+    e.preventDefault();
+    var email = document.getElementById('l-user').value.trim();
+    if (!email) {
+      errMsg.textContent   = 'Enter your email address above, then click "Forgot password".';
+      errBox.style.display = 'block';
+      document.getElementById('l-user').focus();
+      return;
+    }
+    sendPasswordResetEmail(auth, email)
+      .then(function() {
+        errBox.style.display = 'none';
+        sucBox.querySelector('p:first-child').textContent = 'Reset email sent!';
+        sucBox.querySelector('p:last-child').textContent  = 'Check your inbox for a password reset link.';
+        sucBox.style.display = 'block';
+        gsap.from(sucBox, { opacity:0, y:6, duration:0.35, ease:'power2.out' });
+      })
+      .catch(function() {
+        errMsg.textContent   = 'Could not send reset email. Check the address and try again.';
+        errBox.style.display = 'block';
+      });
+  });
+</script>
+<script>
+(function() {
+  var hamburger = document.getElementById('nav-hamburger');
+  var mobileMenu = document.getElementById('mobile-menu');
+  if (!hamburger || !mobileMenu) return;
+  function closeMenu() {
+    mobileMenu.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  hamburger.addEventListener('click', function() {
+    var isOpen = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(isOpen));
+    mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+  mobileMenu.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', closeMenu);
+  });
+})();
+</script>
+</body>
+</html>

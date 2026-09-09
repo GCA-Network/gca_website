@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leadership — Global Communication Association</title>
+  <meta name="description" content="The people stewarding the Global Communication Association today, and the leadership record of previous terms." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    /* ─── Leadership — scoped under .ld, built on the site's design tokens ─── */
+    .ld {
+      --paper: rgba(255, 255, 255, 0.55);
+      --line: var(--border);
+      --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 22px 60px rgba(20,18,15,0.06);
+      --r: 6px;
+      display: block;
+      padding-top: 68px;
+    }
+
+    .ld .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.75rem 2rem 6rem;
+    }
+
+    .ld .eyebrow,
+    .ld .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 11px;
+      color: var(--fg-subtle);
+    }
+
+    .ld .eyebrow::before,
+    .ld .section-tag::before {
+      content: "";
+      width: 22px;
+      height: 1px;
+      background: var(--fg-subtle);
+    }
+
+    /* ── Hero ─────────────────────────────────────────────────────────────── */
+    .ld-hero {
+      padding: 2.75rem 0 2.75rem;
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 36px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .ld-hero h1,
+    .ld .section-head h2 {
+      margin: 0;
+      font-family: var(--display);
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      color: var(--fg);
+    }
+
+    .ld-hero h1 {
+      font-size: clamp(3.2rem, 7vw, 6rem);
+      margin-top: 1.4rem;
+    }
+
+    .ld-hero h1 em,
+    .ld .section-head h2 em {
+      font-style: italic;
+      color: var(--accent-hi);
+    }
+
+    .ld-lede {
+      margin: 0;
+      max-width: 34ch;
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--fg-muted);
+    }
+
+    /* ── Section headers ──────────────────────────────────────────────────── */
+    .ld section { padding: 3.25rem 0 0; }
+
+    .ld .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .ld .section-head h2 { font-size: clamp(2rem, 3.4vw, 2.9rem); line-height: 1.02; }
+    .ld .section-head .section-tag { margin-bottom: 12px; }
+
+    /* ── 02 Current leadership — the prominent tier ───────────────────────── */
+    .lead-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 34px 20px;
+      align-items: start;
+    }
+
+    .lead-card {
+      display: block;
+      width: 100%;
+      text-align: center;
+      font-family: var(--ff);
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      color: var(--fg);
+    }
+
+    .lead-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: var(--r); }
+
+    .lead-portrait {
+      position: relative;
+      width: 112px;
+      height: 112px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background: var(--surface);
+      overflow: hidden;
+      box-shadow: 0 0 0 1px var(--line), 0 10px 26px rgba(20,18,15,.10);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
+    }
+
+    .lead-card:hover .lead-portrait,
+    .lead-card:focus-visible .lead-portrait {
+      transform: translateY(-4px);
+      box-shadow: 0 0 0 1px var(--accent-mid), 0 16px 34px rgba(123,63,160,.20);
+    }
+    .lead-card:active .lead-portrait { transform: translateY(-1px); }
+
+    .lead-portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 28%;
+      display: block;
+      /* Source photos vary; a light, uniform grade keeps the row coherent. */
+      filter: saturate(0.94) contrast(1.02);
+    }
+
+    .lead-monogram {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      font-family: var(--display);
+      font-size: 32px;
+      letter-spacing: -0.03em;
+      color: #fff;
+      background: linear-gradient(150deg, var(--accent-hi), var(--accent));
+    }
+
+    .lead-body { padding: 0 4px; }
+
+    .lead-name {
+      margin: 0 0 6px;
+      font-family: var(--display);
+      font-weight: 400;
+      font-size: 22px;
+      line-height: 1.15;
+      letter-spacing: -0.015em;
+      color: var(--fg);
+    }
+
+    .lead-role {
+      display: block;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--accent);
+      line-height: 1.35;
+    }
+
+    .lead-aff {
+      margin-top: 7px;
+      font-size: 11.5px;
+      line-height: 1.5;
+      color: var(--fg-subtle);
+    }
+
+    /* ── 03 Leadership through the years — the compact tier ───────────────── */
+    .arch {
+      border-top: 1px solid var(--line);
+      padding-top: 26px;
+    }
+
+    .yr-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+
+    .yr-tab {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 9px 16px;
+      border: 1px solid var(--line);
+      border-radius: 100px;
+      background: rgba(255,255,255,.5);
+      color: var(--fg-subtle);
+      cursor: pointer;
+      transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .yr-tab:hover { border-color: var(--border-hi); color: var(--fg-muted); transform: translateY(-1px); }
+    .yr-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .yr-tab:active { transform: translateY(0) scale(0.98); }
+
+    .yr-tab[aria-selected="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(123,63,160,0.26);
+    }
+
+    .officers { display: grid; gap: 0; }
+
+    .officer {
+      display: grid;
+      grid-template-columns: minmax(150px, 240px) minmax(0, 1fr);
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      text-align: left;
+      font-family: var(--ff);
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      padding: 14px 6px;
+      cursor: pointer;
+      color: var(--fg);
+      transition: background 0.18s ease, padding-left 0.25s cubic-bezier(0.2,0.7,0.2,1);
+    }
+
+    .officer:first-child { border-top: 1px solid var(--line); }
+    .officer:hover { background: rgba(255,255,255,.55); padding-left: 12px; }
+    .officer:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+    .officer-person {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .officer-face {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--surface);
+      display: grid;
+      place-items: center;
+      flex: none;
+    }
+
+    .officer-face img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(0.94); }
+
+    .officer-face span {
+      font-family: var(--display);
+      font-size: 17px;
+      color: #fff;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent-hi), var(--accent));
+    }
+
+    .officer-name {
+      font-family: var(--display);
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      line-height: 1.15;
+      color: var(--fg);
+    }
+
+    .officer-aff {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+      margin-top: 3px;
+    }
+
+    .officer-role {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* Full team for the selected term */
+    .team-panel[hidden] { display: none; }
+
+    .team-heading {
+      margin: 30px 0 0;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 20px;
+      border-top: 1px dashed var(--border-hi);
+    }
+
+    .tcard {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      text-align: left;
+      font-family: var(--ff);
+      background: rgba(255,255,255,.45);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 11px 13px;
+      cursor: pointer;
+      color: var(--fg);
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .tcard:hover, .tcard:focus-visible { transform: translateY(-2px); border-color: var(--accent-mid); background: rgba(255,255,255,.8); }
+    .tcard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .tcard--static { cursor: default; }
+    .tcard--static:hover { transform: none; border-color: var(--line); background: rgba(255,255,255,.45); }
+
+    .tface {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex: none;
+      background: var(--surface);
+    }
+    .tface img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(0.94); }
+    .tface span {
+      width: 100%; height: 100%; display: grid; place-items: center;
+      font-family: var(--display); font-size: 13px; color: #fff;
+      background: linear-gradient(135deg, var(--accent-hi), var(--accent));
+    }
+
+    .tname { font-size: 14px; font-weight: 500; line-height: 1.2; color: var(--fg); }
+    .tmeta {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+      margin-top: 3px;
+    }
+
+    /* ── Profile modal ────────────────────────────────────────────────────── */
+    .ld-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(20, 18, 15, 0.44);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 200;
+    }
+    .ld-modal.is-open { display: flex; }
+
+    .ld-modal .panel {
+      width: min(680px, 100%);
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      background: var(--bg);
+      border: 1px solid var(--border-hi);
+      border-radius: var(--r);
+      box-shadow: 0 28px 70px rgba(0,0,0,.2);
+      padding: 30px;
+      position: relative;
+    }
+
+    .ld-modal .close {
+      position: absolute;
+      top: 18px; right: 18px;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.7);
+      color: var(--fg);
+      font-size: 20px; line-height: 1;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .ld-modal .close:hover { background: #fff; transform: rotate(90deg); }
+    .ld-modal .close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .ld-modal .head {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      padding-right: 48px;
+      margin-bottom: 24px;
+    }
+
+    .ld-modal .head-face {
+      width: 92px; height: 92px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex: none;
+      background: var(--surface);
+    }
+    .ld-modal .head-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ld-modal .head-face span {
+      width: 100%; height: 100%; display: grid; place-items: center;
+      font-family: var(--display); font-size: 32px; color: #fff;
+      background: linear-gradient(135deg, var(--accent-hi), var(--accent));
+    }
+
+    .ld-modal h3 {
+      margin: 0 0 8px;
+      font-family: var(--display);
+      font-weight: 400;
+      font-size: 34px;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--fg);
+    }
+
+    .ld-modal .head-role {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .ld-modal .head-aff { font-size: 14px; color: var(--fg-muted); }
+
+    .ld-modal .block { padding-top: 18px; border-top: 1px solid var(--line); margin-top: 18px; }
+    .ld-modal .block:first-of-type { margin-top: 0; }
+
+    .ld-modal .block strong {
+      display: block;
+      margin-bottom: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+    }
+
+    .ld-modal .block p { margin: 0; font-size: 15px; line-height: 1.7; color: var(--fg-muted); }
+
+    .tenure { display: grid; gap: 0; }
+
+    .tenure-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+      color: var(--fg);
+    }
+    .tenure-row:last-child { border-bottom: none; }
+
+    .tenure-row .yr {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      align-self: center;
+    }
+
+    .prefs { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; counter-reset: pref; }
+    .prefs li {
+      display: flex; align-items: baseline; gap: 10px;
+      font-size: 15px; line-height: 1.6; color: var(--fg-muted);
+    }
+    .prefs li::before {
+      counter-increment: pref; content: counter(pref);
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: var(--accent); flex: none;
+    }
+    .prefs.is-unranked li::before { content: "·"; font-size: 14px; }
+
+    /* ── Responsive ───────────────────────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .ld-hero { grid-template-columns: 1fr; gap: 22px; align-items: start; }
+      .lead-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 30px 18px; }
+    }
+
+    @media (max-width: 640px) {
+      .ld .page { padding: 0.5rem 1.25rem 4rem; }
+      .ld-hero h1 { font-size: 3rem; }
+      .lead-grid { grid-template-columns: repeat(2, 1fr); gap: 26px 14px; }
+      .lead-name { font-size: 20px; }
+      .lead-role { font-size: 11px; letter-spacing: 0.05em; }
+      .lead-aff { font-size: 11px; }
+      .lead-portrait { width: 104px; height: 104px; margin-bottom: 12px; }
+      .officer { grid-template-columns: 1fr; gap: 10px; }
+      .officer-face { width: 40px; height: 40px; }
+      .officer-role { font-size: 9.5px; }
+      .team-grid { grid-template-columns: 1fr; }
+      .ld-modal .panel { padding: 22px; }
+      .ld-modal .head { gap: 14px; }
+      .ld-modal .head-face { width: 68px; height: 68px; }
+      .ld-modal h3 { font-size: 27px; }
+      .tenure-row { grid-template-columns: 92px 1fr; gap: 12px; font-size: 14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lead-card, .lead-portrait, .officer, .tcard, .yr-tab { transition: none; }
+      .lead-card:hover .lead-portrait { transform: none; }
+    }
+  </style>
+</head>
+<body>
+<svg class="grain" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><filter id="g"><feTurbulence type="fractalNoise" baseFrequency=".65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#g)"/></svg>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="GCA Home">
+      <img src="/brand_assets/GCA Logo.png" alt="GCA Logo" id="nav-logo-img" />
+      <span class="nav-logo-name">Global Communication<br>Association</span>
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="/">About</a></li>
+      <li><a href="/events.html">Events</a></li>
+      <li class="nav-item-sub">
+        <a href="/leadership.html" style="color:var(--fg)">People</a>
+        <ul class="nav-sub" role="list">
+          <li><a href="/leadership.html" aria-current="page">Leadership<span class="nav-sub-note">Officers &amp; past terms</span></a></li>
+          <li><a href="/members.html">Members<span class="nav-sub-note">Full directory</span></a></li>
+        </ul>
+      </li>
+      <li><a href="/#cadence">Programs</a></li>
+      <li><a href="/#voices">Voices</a></li>
+      <li><a href="/#join">Join</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="/login.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn">Login</a>
+      <a href="/#join" class="btn btn-sm btn-primary">Join GCA</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <ul class="mobile-menu-links">
+      <li><a href="/">About</a></li>
+      <li><a href="/events.html">Events</a></li>
+      <li class="mm-group">People</li>
+      <li class="mm-sub"><a href="/leadership.html" class="active">Leadership</a></li>
+      <li class="mm-sub"><a href="/members.html">Members</a></li>
+      <li><a href="/#cadence">Programs</a></li>
+      <li><a href="/#voices">Voices</a></li>
+      <li><a href="/#join">Join</a></li>
+    </ul>
+    <div class="mobile-menu-cta">
+      <a href="/login.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn-mobile">Login</a>
+      <a href="/#join" class="btn btn-sm btn-primary">Join GCA</a>
+    </div>
+  </div>
+</nav>
+
+<main class="ld">
+  <div class="page">
+
+    <nav class="people-tabs" aria-label="People sections">
+      <a href="/leadership.html" aria-current="page">Leadership</a>
+      <a href="/members.html">Members</a>
+    </nav>
+
+    <section class="ld-hero" id="top">
+      <div>
+        <div class="eyebrow">§ 01 — Our Leadership</div>
+        <h1>Our <em>leadership.</em></h1>
+      </div>
+      <p class="ld-lede">The people stewarding GCA today &mdash; and those who helped build it.</p>
+    </section>
+
+    <section id="current">
+      <div class="section-head">
+        <div>
+          <div class="section-tag">§ 02 — Current Leadership</div>
+          <h2>Serving <em id="currentTermLabel">&mdash;</em></h2>
+        </div>
+      </div>
+      <div class="lead-grid" id="leadGrid"></div>
+    </section>
+
+    <section id="archive">
+      <div class="section-head">
+        <div>
+          <div class="section-tag">§ 03 — Leadership Through the Years</div>
+          <h2>The <em>record.</em></h2>
+        </div>
+      </div>
+
+      <div class="arch">
+        <div class="yr-tabs" id="yrTabs" role="tablist" aria-label="Leadership term"></div>
+        <div id="archPanel" role="tabpanel">
+          <div class="officers" id="officers"></div>
+          <div class="team-panel" id="teamPanel">
+            <h3 class="team-heading" id="teamHeading"></h3>
+            <div class="team-grid" id="teamGrid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div class="ld-modal" id="profileModal" aria-hidden="true">
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="pfName">
+    <button class="close" id="pfClose" aria-label="Close">×</button>
+    <div class="head">
+      <div class="head-face" id="pfFace"></div>
+      <div>
+        <div class="head-role" id="pfRole"></div>
+        <h3 id="pfName">Name</h3>
+        <div class="head-aff" id="pfAff"></div>
+      </div>
+    </div>
+    <div class="block" id="pfTenureBlock">
+      <strong>GCA leadership</strong>
+      <div class="tenure" id="pfTenure"></div>
+    </div>
+    <div class="block" id="pfTeamBlock">
+      <strong>Team</strong>
+      <div class="tenure" id="pfTeam"></div>
+    </div>
+    <div class="block" id="pfPrefBlock">
+      <strong id="pfPrefLabel">Stated preferences</strong>
+      <ol class="prefs" id="pfPrefs"></ol>
+    </div>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo"><img src="/brand_assets/GCA Logo.png" alt="GCA" /><span class="foot-logo-name">Global Communication<br>Association</span></div>
+        <p class="foot-tag">Uniting great minds for global good since 2024. A nonprofit dedicated to advancing communication worldwide.</p>
+      </div>
+      <div class="foot-col"><h4>Organization</h4><ul><li><a href="/">About GCA</a></li><li><a href="/#pillars">Our Pillars</a></li><li><a href="/leadership.html">Leadership</a></li><li><a href="/events.html">Events</a></li></ul></div>
+      <div class="foot-col"><h4>Events</h4><ul><li><a href="/events.html">Cultural Exchange</a></li><li><a href="/events.html">Speaker Series</a></li><li><a href="/events.html">Networking</a></li><li><a href="/events.html">Workshops</a></li></ul></div>
+      <div class="foot-col"><h4>Membership</h4><ul><li><a href="/#join">Apply to Join</a></li><li><a href="/leadership.html">Leadership</a></li><li><a href="/#community">Our Community</a></li><li><a href="/login.html">Member Login</a></li></ul></div>
+    </div>
+    <div class="foot-bottom">
+      <p>&copy; 2026 Global Communication Association. All rights reserved.</p>
+      <div class="foot-legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="/people.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script src="/api/firebase-config"></script>
+<script type="module">
+  import { initializeApp }               from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js';
+  try {
+    const auth = getAuth(initializeApp(window.firebaseConfig));
+    onAuthStateChanged(auth, function(user) {
+      var b1 = document.getElementById('nav-login-btn'), b2 = document.getElementById('nav-login-btn-mobile');
+      if (user && b1) { b1.href = '/dashboard.html'; b1.textContent = 'Dashboard'; }
+      if (user && b2) { b2.href = '/dashboard.html'; b2.textContent = 'Dashboard'; }
+    });
+  } catch (e) { /* config unavailable in static preview */ }
+</script>
+<script>
+(function () {
+  if (window.gsap) {
+    gsap.from('#nav',     { opacity:0, y:-8, duration:0.5,  ease:'power2.out' });
+    gsap.from('.ld-hero', { opacity:0, y:16, duration:0.55, delay:0.15, ease:'power2.out' });
+    var logo = document.getElementById('nav-logo-img');
+    if (logo) logo.addEventListener('mouseenter', function() {
+      gsap.fromTo(logo, { rotate:0 }, { keyframes:{ rotate:[0,-9,9,-4,4,0] }, duration:0.52, ease:'power2.inOut' });
+    });
+  }
+
+  var hamburger = document.getElementById('nav-hamburger'), mobileMenu = document.getElementById('mobile-menu');
+  if (hamburger && mobileMenu) {
+    var closeMenu = function() {
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    };
+    hamburger.addEventListener('click', function() {
+      var open = mobileMenu.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', String(open));
+      mobileMenu.setAttribute('aria-hidden', String(!open));
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    mobileMenu.querySelectorAll('a').forEach(function(a) { a.addEventListener('click', closeMenu); });
+  }
+
+  // Roster and helpers come from /people.js so this page and the member
+  // directory never drift apart.
+  var TERMS = GCA.TERMS, CURRENT_TERM = GCA.CURRENT_TERM;
+  var roleIn = GCA.roleIn, teamIn = GCA.teamIn;
+  var officersFor = GCA.officersFor, teamFor = GCA.teamFor, initials = GCA.initials;
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function faceInto(node, person, alt) {
+    node.textContent = "";
+    if (person.photo) {
+      var img = document.createElement("img");
+      img.src = person.photo; img.alt = alt === false ? "" : person.name; img.loading = "lazy";
+      node.appendChild(img);
+    } else {
+      node.appendChild(el("span", null, initials(person.name)));
+    }
+  }
+
+
+  // ── Profile modal ───────────────────────────────────────────────────────
+  var modal = document.getElementById("profileModal");
+  var pfClose = document.getElementById("pfClose");
+  var pfFace = document.getElementById("pfFace"), pfName = document.getElementById("pfName");
+  var pfRole = document.getElementById("pfRole"), pfAff = document.getElementById("pfAff");
+  var pfTenureBlock = document.getElementById("pfTenureBlock"), pfTenure = document.getElementById("pfTenure");
+  var pfTeamBlock = document.getElementById("pfTeamBlock"), pfTeam = document.getElementById("pfTeam");
+  var pfPrefBlock = document.getElementById("pfPrefBlock"), pfPrefLabel = document.getElementById("pfPrefLabel"), pfPrefs = document.getElementById("pfPrefs");
+  var lastTrigger = null;
+
+  function rows(host, list, left, right) {
+    host.textContent = "";
+    list.forEach(function(item) {
+      var row = el("div", "tenure-row");
+      row.appendChild(el("span", "yr", left(item)));
+      row.appendChild(el("span", null, right(item)));
+      host.appendChild(row);
+    });
+  }
+
+  function openProfile(person, trigger) {
+    lastTrigger = trigger || null;
+    faceInto(pfFace, person);
+    pfName.textContent = person.name;
+
+    var current = roleIn(person, CURRENT_TERM) || (person.roles && person.roles[0] && person.roles[0].role)
+                || teamIn(person, CURRENT_TERM) || (person.teams && person.teams[0] && person.teams[0].dept) || "";
+    pfRole.textContent = current;
+    pfAff.textContent = [person.inducted ? "Inducted " + person.inducted : null, person.uni]
+                          .filter(Boolean).join(" · ");
+
+    if (person.roles && person.roles.length) {
+      rows(pfTenure, person.roles, function(r) { return r.term; }, function(r) { return r.role; });
+      pfTenureBlock.hidden = false;
+    } else { pfTenureBlock.hidden = true; }
+
+    if (person.teams && person.teams.length) {
+      rows(pfTeam, person.teams, function(t) { return t.term; }, function(t) { return t.dept; });
+      pfTeamBlock.hidden = false;
+    } else { pfTeamBlock.hidden = true; }
+
+    if (person.prefs && person.prefs.length) {
+      pfPrefLabel.textContent = person.ranked ? "Stated preferences (ranked)" : "Stated preferences";
+      pfPrefs.className = "prefs" + (person.ranked ? "" : " is-unranked");
+      pfPrefs.textContent = "";
+      person.prefs.forEach(function(p) { pfPrefs.appendChild(el("li", null, p)); });
+      pfPrefBlock.hidden = false;
+    } else { pfPrefBlock.hidden = true; }
+
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    pfClose.focus();
+  }
+
+  function closeProfile() {
+    if (!modal.classList.contains("is-open")) return;
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    if (lastTrigger) lastTrigger.focus();
+  }
+
+  pfClose.addEventListener("click", closeProfile);
+  modal.addEventListener("click", function(e) { if (e.target === modal) closeProfile(); });
+  window.addEventListener("keydown", function(e) { if (e.key === "Escape") closeProfile(); });
+
+  // ── 02 Current leadership ───────────────────────────────────────────────
+  document.getElementById("currentTermLabel").textContent = CURRENT_TERM + ".";
+  var leadGrid = document.getElementById("leadGrid");
+  officersFor(CURRENT_TERM).forEach(function(person) {
+    var card = el("button", "lead-card");
+    card.type = "button";
+    card.setAttribute("aria-label", person.name + " — " + roleIn(person, CURRENT_TERM) + ", view profile");
+
+    var portrait = el("div", "lead-portrait");
+    if (person.photo) {
+      var img = document.createElement("img");
+      img.src = person.photo; img.alt = person.name;
+      portrait.appendChild(img);
+    } else {
+      portrait.appendChild(el("div", "lead-monogram", initials(person.name)));
+    }
+    card.appendChild(portrait);
+
+    var body = el("div", "lead-body");
+    body.appendChild(el("h3", "lead-name", person.name));
+    body.appendChild(el("span", "lead-role", roleIn(person, CURRENT_TERM)));
+    body.appendChild(el("div", "lead-aff", person.uni));
+    card.appendChild(body);
+
+    card.addEventListener("click", function() { openProfile(person, card); });
+    leadGrid.appendChild(card);
+  });
+
+  // ── 03 Archive by term ──────────────────────────────────────────────────
+  var yrTabs = document.getElementById("yrTabs");
+  var officersHost = document.getElementById("officers");
+  var teamHeading = document.getElementById("teamHeading");
+  var teamPanel = document.getElementById("teamPanel");
+  var teamGrid = document.getElementById("teamGrid");
+  var activeTerm = TERMS[0];
+
+  function renderTerm(term) {
+    activeTerm = term;
+
+    officersHost.textContent = "";
+    officersFor(term).forEach(function(person) {
+      var row = el("button", "officer");
+      row.type = "button";
+      row.setAttribute("aria-label", person.name + " — " + roleIn(person, term) + ", view profile");
+      row.appendChild(el("div", "officer-role", roleIn(person, term)));
+      var person_ = el("div", "officer-person");
+      var face = el("div", "officer-face");
+      faceInto(face, person, false);
+      person_.appendChild(face);
+      var who = el("div");
+      who.appendChild(el("div", "officer-name", person.name));
+      who.appendChild(el("div", "officer-aff", person.uni));
+      person_.appendChild(who);
+      row.appendChild(person_);
+      row.addEventListener("click", function() { openProfile(person, row); });
+      officersHost.appendChild(row);
+    });
+
+    var team = teamFor(term);
+    teamPanel.hidden = team.length === 0;
+    teamHeading.textContent = "Full " + term + " team (" + team.length + ")";
+    teamGrid.textContent = "";
+    team.forEach(function(person) {
+      var hasMore = !!(person.prefs && person.prefs.length);
+      var card = el(hasMore ? "button" : "div", "tcard" + (hasMore ? "" : " tcard--static"));
+      if (hasMore) {
+        card.type = "button";
+        card.setAttribute("aria-label", person.name + ", view profile");
+      }
+      var face = el("div", "tface");
+      faceInto(face, person, false);
+      card.appendChild(face);
+      var who = el("div");
+      who.appendChild(el("div", "tname", person.name));
+      who.appendChild(el("div", "tmeta", teamIn(person, term)));
+      card.appendChild(who);
+      if (hasMore) card.addEventListener("click", function() { openProfile(person, card); });
+      teamGrid.appendChild(card);
+    });
+  }
+
+  TERMS.forEach(function(term, i) {
+    var tab = el("button", "yr-tab", term);
+    tab.type = "button";
+    tab.setAttribute("role", "tab");
+    tab.setAttribute("aria-selected", String(i === 0));
+    tab.addEventListener("click", function() {
+      yrTabs.querySelectorAll(".yr-tab").forEach(function(t) { t.setAttribute("aria-selected", "false"); });
+      tab.setAttribute("aria-selected", "true");
+      renderTerm(term);
+    });
+    yrTabs.appendChild(tab);
+  });
+
+  renderTerm(activeTerm);
+})();
+</script>
+</body>
+</html>

@@ -3,236 +3,248 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alumni Login — GCA International Alumni Network</title>
-  <meta name="description" content="Sign in to the GCA alumni dashboard to share stories and follow activity across the international alumni network." />
+  <title>Members — Global Communication Association</title>
+  <meta name="description" content="The GCA member directory: every member of the Global Communication Association, listed by family name." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
   <style>
-    .members-page {
-      min-height: 100vh;
-      padding-top: 72px;
+    /* ─── Member directory — scoped under .dir ─────────────────────────────── */
+    .dir { display: block; padding-top: 68px; }
+
+    .dir .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.75rem 2rem 6rem;
+    }
+
+    .dir .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 11px;
+      color: var(--fg-subtle);
+    }
+    .dir .eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--fg-subtle); }
+
+    .dir-hero {
+      padding: 2.75rem 0 2.5rem;
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 36px;
+      align-items: end;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dir-hero h1 {
+      margin: 1.4rem 0 0;
+      font-family: var(--display);
+      font-weight: 400;
+      font-size: clamp(3rem, 6.4vw, 5.4rem);
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      color: var(--fg);
+    }
+    .dir-hero h1 em { font-style: italic; color: var(--accent-hi); }
+
+    .dir-lede { margin: 0; max-width: 34ch; font-size: 16px; line-height: 1.75; color: var(--fg-muted); }
+
+    .dir-stats {
       display: flex;
+      gap: 26px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+    }
+    .dir-stats b { font-weight: 500; color: var(--accent); }
+
+    /* ── Controls ─────────────────────────────────────────────────────────── */
+    .dir-controls {
+      display: flex;
+      gap: 14px;
       align-items: center;
-      justify-content: center;
-      background: var(--bg);
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 26px 0 18px;
     }
 
-    .login-wrap {
+    .dir-search {
+      position: relative;
+      flex: 1 1 260px;
+      max-width: 340px;
+    }
+
+    .dir-search input {
       width: 100%;
-      max-width: 420px;
-      padding: 2rem;
+      font-family: var(--ff);
+      font-size: 14px;
+      color: var(--fg);
+      background: rgba(255,255,255,.6);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 10px 16px 10px 38px;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    .dir-search input::placeholder { color: var(--ink-4); }
+    .dir-search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+
+    .dir-search::before {
+      content: "⌕";
+      position: absolute;
+      left: 15px; top: 50%;
+      transform: translateY(-52%);
+      font-size: 16px;
+      color: var(--fg-subtle);
+      pointer-events: none;
     }
 
-    .login-header {
-      text-align: center;
-      margin-bottom: 2rem;
+    .dir-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .dir-chip {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      background: rgba(255,255,255,.5);
+      color: var(--fg-subtle);
+      cursor: pointer;
+      transition: color .18s ease, border-color .18s ease, background .18s ease, transform .25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .dir-chip:hover { border-color: var(--border-hi); color: var(--fg-muted); transform: translateY(-1px); }
+    .dir-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .dir-chip[aria-pressed="true"] {
+      background: var(--accent); border-color: var(--accent); color: #fff;
+      box-shadow: 0 4px 14px rgba(123,63,160,.24);
     }
 
-    .login-logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      margin-bottom: 1.8rem;
+    /* ── Table ────────────────────────────────────────────────────────────── */
+    .dir-table-wrap { overflow-x: auto; }
+
+    table.dir-table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      font-family: var(--ff);
     }
 
-    .login-logo img { height: 36px; width: auto; }
-
-    .login-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+    .dir-table thead th {
+      text-align: left;
       font-family: var(--mono);
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--accent);
-      background: var(--accent-dim);
-      border: 1px solid var(--accent-mid);
-      padding: 4px 12px;
-      border-radius: 100px;
-      margin-bottom: 1.2rem;
-    }
-
-    .login-badge-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: dot-blink 2.4s ease-in-out infinite;
-    }
-
-    .login-header h1 {
-      font-family: var(--display);
-      font-size: 2.2rem;
-      font-weight: 400;
-      letter-spacing: -0.025em;
-      color: var(--fg);
-      margin-bottom: 0.4rem;
-      line-height: 1.05;
-    }
-
-    .login-header p {
-      font-size: 0.83rem;
-      color: var(--fg-muted);
-      line-height: 1.65;
-    }
-
-    .login-card {
-      background: rgba(255,255,255,.55);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 2rem;
-    }
-
-    .field { margin-bottom: 1rem; }
-
-    .field label {
-      display: block;
-      font-family: var(--mono);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
       color: var(--fg-subtle);
-      margin-bottom: 0.35rem;
-    }
-
-    .field input {
-      width: 100%;
-      padding: 10px 13px;
-      font-size: 0.85rem;
-      font-family: var(--ff);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      background: var(--bg);
-      color: var(--fg);
-      outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .field input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(123,63,160,0.1);
-    }
-
-    .field input::placeholder { color: var(--fg-subtle); }
-
-    .field-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.35rem;
-    }
-
-    .field-row label { margin-bottom: 0; }
-
-    .forgot-link {
-      font-size: 0.72rem;
-      color: var(--fg-subtle);
-      text-decoration: none;
-      transition: color 0.15s ease;
-    }
-    .forgot-link:hover { color: var(--accent); }
-
-
-
-    #login-submit {
-      width: 100%;
-      justify-content: center;
-      margin-bottom: 1.2rem;
-    }
-
-    .login-divider {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      margin-bottom: 1.2rem;
-    }
-
-    .login-divider hr {
-      flex: 1;
-      border: none;
-      border-top: 1px solid var(--border);
-    }
-
-    .login-divider span {
-      font-size: 0.68rem;
-      color: var(--fg-subtle);
-      font-weight: 500;
+      padding: 0 14px 12px;
+      border-bottom: 1px solid var(--border-hi);
       white-space: nowrap;
     }
 
-    .login-apply {
-      text-align: center;
-      font-size: 0.78rem;
-      color: var(--fg-muted);
+    .dir-table th.sortable button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      letter-spacing: inherit;
+      text-transform: inherit;
+      cursor: pointer;
+      transition: color .15s ease;
+    }
+    .dir-table th.sortable button:hover { color: var(--accent); }
+    .dir-table th.sortable button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .dir-table th .arrow { opacity: 0; font-size: 9px; transition: opacity .15s ease, transform .25s ease; }
+    .dir-table th[aria-sort] .arrow { opacity: 1; color: var(--accent); }
+    .dir-table th[aria-sort="descending"] .arrow { transform: rotate(180deg); }
+
+    .dir-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .18s ease;
+    }
+    .dir-table tbody tr:hover { background: rgba(255,255,255,.6); }
+
+    .dir-table td { padding: 12px 14px; font-size: 14px; color: var(--fg-muted); vertical-align: middle; }
+
+    .dir-pic { width: 76px; padding-left: 0; }
+
+    .dir-face {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--surface);
+      flex: none;
+    }
+    .dir-face img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(0.94); }
+    .dir-face span {
+      width: 100%; height: 100%; display: grid; place-items: center;
+      font-family: var(--display); font-size: 16px; color: #fff;
+      background: linear-gradient(135deg, var(--accent-hi), var(--accent));
     }
 
-    .login-apply a {
+    .dir-name { font-size: 15px; font-weight: 500; color: var(--fg); line-height: 1.25; }
+    .dir-standing {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
       color: var(--accent);
-      font-weight: 600;
-      text-decoration: none;
-      transition: color 0.15s ease;
+      margin-top: 3px;
     }
+    .dir-standing.is-team { color: var(--fg-subtle); }
 
-    .login-apply a:hover { color: var(--accent-hi); }
+    .dir-class { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--fg-muted); white-space: nowrap; }
 
-    .login-error {
-      display: none;
-      padding: 0.75rem 1rem;
-      border: 1px solid rgba(200,40,40,0.2);
-      border-radius: var(--r);
-      background: rgba(200,40,40,0.05);
-      margin-bottom: 1rem;
-    }
+    .dir-contact a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-line); transition: border-color .15s ease; }
+    .dir-contact a:hover { border-color: var(--accent); }
+    .dir-none { color: var(--ink-4); }
 
-    .login-error p {
-      font-size: 0.78rem;
-      color: #b91c1c;
-    }
-
-    .login-success {
-      display: none;
-      padding: 0.9rem 1rem;
-      border: 1px solid rgba(123,63,160,0.25);
-      border-radius: var(--r);
-      background: var(--accent-dim);
-      margin-bottom: 1rem;
-    }
-
-    .login-success p:first-child {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 2px;
-    }
-
-    .login-success p:last-child {
-      font-size: 0.75rem;
-      color: var(--fg-muted);
-    }
-
-    .login-footer {
-      text-align: center;
-      margin-top: 1.8rem;
-    }
-
-    .login-footer a {
-      font-size: 0.75rem;
+    .dir-count {
+      margin-top: 18px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
       color: var(--fg-subtle);
-      text-decoration: none;
-      transition: color 0.15s ease;
     }
 
-    .login-footer a:hover { color: var(--fg-muted); }
+    .dir-empty {
+      padding: 40px 0;
+      text-align: center;
+      font-size: 15px;
+      color: var(--fg-subtle);
+    }
 
-    @media (max-width: 480px) {
-      .login-wrap { padding: 1.5rem 1rem; }
-      .login-card  { padding: 1.5rem; }
+    @media (max-width: 960px) {
+      .dir-hero { grid-template-columns: 1fr; gap: 20px; align-items: start; }
+    }
+
+    @media (max-width: 640px) {
+      .dir .page { padding: 1.25rem 1.25rem 4rem; }
+      .dir-hero h1 { font-size: 2.9rem; }
+      .dir-controls { gap: 12px; }
+      .dir-search { max-width: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dir-chip, .dir-table th .arrow { transition: none; }
+      .dir-chip:hover { transform: none; }
     }
   </style>
 </head>
@@ -243,19 +255,25 @@
   <div class="nav-inner">
     <a href="/" class="nav-logo" aria-label="GCA Home">
       <img src="/brand_assets/GCA Logo.png" alt="GCA Logo" id="nav-logo-img" />
-      <span class="nav-logo-name">GCA International<br>Alumni Network</span>
+      <span class="nav-logo-name">Global Communication<br>Association</span>
     </a>
     <ul class="nav-links" role="list">
       <li><a href="/">About</a></li>
       <li><a href="/events.html">Events</a></li>
-      <li><a href="/member-wall.html">Members</a></li>
+      <li class="nav-item-sub">
+        <a href="/leadership.html" style="color:var(--fg)">People</a>
+        <ul class="nav-sub" role="list">
+          <li><a href="/leadership.html">Leadership<span class="nav-sub-note">Officers &amp; past terms</span></a></li>
+          <li><a href="/members.html" aria-current="page">Members<span class="nav-sub-note">Full directory</span></a></li>
+        </ul>
+      </li>
       <li><a href="/#cadence">Programs</a></li>
       <li><a href="/#voices">Voices</a></li>
       <li><a href="/#join">Join</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="/members.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn">Login</a>
-      <a href="/#join" class="btn btn-sm btn-primary">Join Network</a>
+      <a href="/login.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn">Login</a>
+      <a href="/#join" class="btn btn-sm btn-primary">Join GCA</a>
     </div>
     <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu">
       <span class="hamburger-line"></span>
@@ -267,200 +285,261 @@
     <ul class="mobile-menu-links">
       <li><a href="/">About</a></li>
       <li><a href="/events.html">Events</a></li>
-      <li><a href="/member-wall.html">Members</a></li>
+      <li class="mm-group">People</li>
+      <li class="mm-sub"><a href="/leadership.html">Leadership</a></li>
+      <li class="mm-sub"><a href="/members.html" class="active">Members</a></li>
       <li><a href="/#cadence">Programs</a></li>
       <li><a href="/#voices">Voices</a></li>
       <li><a href="/#join">Join</a></li>
     </ul>
     <div class="mobile-menu-cta">
-      <a href="/members.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)">Login</a>
-      <a href="/#join" class="btn btn-sm btn-primary">Join Network</a>
+      <a href="/login.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn-mobile">Login</a>
+      <a href="/#join" class="btn btn-sm btn-primary">Join GCA</a>
     </div>
   </div>
 </nav>
 
-<div class="members-page">
-  <div class="login-wrap">
+<main class="dir">
+  <div class="page">
 
-    <div class="login-header">
-      <a href="/" class="login-logo">
-        <img src="/brand_assets/GCA Logo.png" alt="GCA Logo" />
-      </a>
-      <div><span class="login-badge"><span class="login-badge-dot"></span> Alumni Access</span></div>
-      <h1>Welcome back, alumni.</h1>
-      <p>Sign in to publish stories and manage updates from across the international alumni network.</p>
+    <nav class="people-tabs" aria-label="People sections">
+      <a href="/leadership.html">Leadership</a>
+      <a href="/members.html" aria-current="page">Members</a>
+    </nav>
+
+    <section class="dir-hero">
+      <div>
+        <div class="eyebrow">§ 01 — Our Members</div>
+        <h1>A global <em>community.</em></h1>
+      </div>
+      <div>
+        <p class="dir-lede">Meet the people who make GCA what it is.</p>
+        <div class="dir-stats" id="dirStats"></div>
+      </div>
+    </section>
+
+    <div class="dir-controls">
+      <div class="dir-search">
+        <label class="sr-only" for="dirQ" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search members</label>
+        <input id="dirQ" type="search" placeholder="Search name, institution or year" autocomplete="off" />
+      </div>
+      <div class="dir-filters" id="dirFilters"></div>
     </div>
 
-    <div class="login-card" id="login-card">
-      <div class="login-error" id="login-error">
-        <p>Incorrect username or password. Please try again.</p>
-      </div>
-      <div class="login-success" id="login-success">
-        <p>Signed in successfully!</p>
-        <p>Redirecting to your alumni dashboard&hellip;</p>
-      </div>
-
-      <form id="login-form" novalidate>
-        <div class="field">
-          <label for="l-user">Username or email</label>
-          <input id="l-user" type="text" placeholder="your@email.com" autocomplete="username" />
-        </div>
-        <div class="field">
-          <div class="field-row">
-            <label for="l-pass">Password</label>
-            <a href="#" class="forgot-link">Forgot password?</a>
-          </div>
-          <input id="l-pass" type="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password" />
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-md" id="login-submit">Sign In</button>
-      </form>
-
-      <div class="login-divider">
-        <hr /><span>Not in the network yet?</span><hr />
-      </div>
-      <p class="login-apply">
-        Request free membership on <a href="/#join">the alumni network page</a> &mdash; review takes under 10 business days.
-      </p>
+    <div class="dir-table-wrap">
+      <table class="dir-table">
+        <thead>
+          <tr>
+            <th class="dir-pic" scope="col"><span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Picture</span></th>
+            <th class="sortable" scope="col" data-key="sort" aria-sort="ascending"><button type="button">Name <span class="arrow" aria-hidden="true">&#9650;</span></button></th>
+            <th class="sortable" scope="col" data-key="uni"><button type="button">Institution <span class="arrow" aria-hidden="true">&#9650;</span></button></th>
+            <th class="sortable" scope="col" data-key="inducted"><button type="button">Inducted <span class="arrow" aria-hidden="true">&#9650;</span></button></th>
+            <th scope="col">Contact</th>
+          </tr>
+        </thead>
+        <tbody id="dirBody"></tbody>
+      </table>
     </div>
 
-    <div class="login-footer">
-      <a href="/">&#8592; Back to the alumni network</a>
-    </div>
+    <div class="dir-empty" id="dirEmpty" hidden>No members match that search.</div>
+    <div class="dir-count" id="dirCount"></div>
 
   </div>
-</div>
+</main>
 
+<footer class="site">
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo"><img src="/brand_assets/GCA Logo.png" alt="GCA" /><span class="foot-logo-name">Global Communication<br>Association</span></div>
+        <p class="foot-tag">Uniting great minds for global good since 2024. A nonprofit dedicated to advancing communication worldwide.</p>
+      </div>
+      <div class="foot-col"><h4>Organization</h4><ul><li><a href="/">About GCA</a></li><li><a href="/#pillars">Our Pillars</a></li><li><a href="/leadership.html">Leadership</a></li><li><a href="/events.html">Events</a></li></ul></div>
+      <div class="foot-col"><h4>People</h4><ul><li><a href="/leadership.html">Leadership</a></li><li><a href="/members.html">Members</a></li><li><a href="/#community">Our Community</a></li></ul></div>
+      <div class="foot-col"><h4>Membership</h4><ul><li><a href="/#join">Apply to Join</a></li><li><a href="/login.html">Member Login</a></li></ul></div>
+    </div>
+    <div class="foot-bottom">
+      <p>&copy; 2026 Global Communication Association. All rights reserved.</p>
+      <div class="foot-legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="/people.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
 <script src="/api/firebase-config"></script>
 <script type="module">
-  import { initializeApp }                        from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js';
-  import { getAnalytics }                         from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-analytics.js';
-  import { getAuth, onAuthStateChanged,
-           signInWithEmailAndPassword,
-           sendPasswordResetEmail,
-           browserSessionPersistence,
-           setPersistence }                       from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js';
-
-  const app       = initializeApp(window.firebaseConfig);
-  const analytics = getAnalytics(app);
-  const auth      = getAuth(app);
-
-  // If already logged in, go straight to dashboard
-  onAuthStateChanged(auth, function(user) {
-    if (user) window.location.replace('/dashboard.html');
-  });
-
-  gsap.from('#nav',        { opacity:0, y:-8,  duration:0.5,  ease:'power2.out' });
-  gsap.from('.login-wrap', { opacity:0, y:20,  duration:0.55, delay:0.15, ease:'power2.out' });
-
-  var logo = document.getElementById('nav-logo-img');
-  if (logo) {
-    logo.addEventListener('mouseenter', function() {
-      gsap.fromTo(logo, { rotate:0 },
-        { keyframes:{ rotate:[0,-9,9,-4,4,0] }, duration:0.52, ease:'power2.inOut' });
+  import { initializeApp }               from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js';
+  try {
+    const auth = getAuth(initializeApp(window.firebaseConfig));
+    onAuthStateChanged(auth, function(user) {
+      var b1 = document.getElementById('nav-login-btn'), b2 = document.getElementById('nav-login-btn-mobile');
+      if (user && b1) { b1.href = '/dashboard.html'; b1.textContent = 'Dashboard'; }
+      if (user && b2) { b2.href = '/dashboard.html'; b2.textContent = 'Dashboard'; }
     });
-  }
-
-  var form   = document.getElementById('login-form');
-  var card   = document.getElementById('login-card');
-  var errBox = document.getElementById('login-error');
-  var sucBox = document.getElementById('login-success');
-  var btn    = document.getElementById('login-submit');
-  var errMsg = errBox.querySelector('p');
-
-  // Focus styles
-  document.querySelectorAll('#login-form input[type="text"], #login-form input[type="password"]').forEach(function(el) {
-    el.addEventListener('focus', function() {
-      el.style.borderColor = 'var(--accent)';
-      el.style.boxShadow   = '0 0 0 3px rgba(123,63,160,0.1)';
-    });
-    el.addEventListener('blur', function() {
-      el.style.borderColor = '';
-      el.style.boxShadow   = '';
-    });
-  });
-
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    var email = document.getElementById('l-user').value.trim();
-    var pass  = document.getElementById('l-pass').value;
-
-    errBox.style.display = 'none';
-
-    if (!email || !pass) {
-      gsap.fromTo(card, { x:0 }, { keyframes:{ x:[-7,7,-5,5,0] }, duration:0.38, ease:'power2.inOut' });
-      return;
-    }
-
-    btn.disabled    = true;
-    btn.textContent = 'Signing in\u2026';
-
-    setPersistence(auth, browserSessionPersistence)
-      .then(function() { return signInWithEmailAndPassword(auth, email, pass); })
-      .then(function() {
-        sucBox.style.display = 'block';
-        gsap.from(sucBox, { opacity:0, y:6, duration:0.35, ease:'power2.out' });
-        form.style.display = 'none';
-        setTimeout(function() { window.location.href = '/dashboard.html'; }, 1200);
-      })
-      .catch(function(err) {
-        btn.disabled    = false;
-        btn.textContent = 'Sign In';
-        var msg = 'Incorrect email or password. Please try again.';
-        if (err.code === 'auth/too-many-requests') msg = 'Too many failed attempts. Please try again later.';
-        if (err.code === 'auth/user-not-found')    msg = 'No account found with that email.';
-        if (err.code === 'auth/invalid-email')     msg = 'Please enter a valid email address.';
-        errMsg.textContent   = msg;
-        errBox.style.display = 'block';
-        gsap.fromTo(card, { x:0 }, { keyframes:{ x:[-7,7,-5,5,0] }, duration:0.38, ease:'power2.inOut' });
-      });
-  });
-
-  // Forgot password
-  document.querySelector('.forgot-link').addEventListener('click', function(e) {
-    e.preventDefault();
-    var email = document.getElementById('l-user').value.trim();
-    if (!email) {
-      errMsg.textContent   = 'Enter your email address above, then click "Forgot password".';
-      errBox.style.display = 'block';
-      document.getElementById('l-user').focus();
-      return;
-    }
-    sendPasswordResetEmail(auth, email)
-      .then(function() {
-        errBox.style.display = 'none';
-        sucBox.querySelector('p:first-child').textContent = 'Reset email sent!';
-        sucBox.querySelector('p:last-child').textContent  = 'Check your inbox for a password reset link.';
-        sucBox.style.display = 'block';
-        gsap.from(sucBox, { opacity:0, y:6, duration:0.35, ease:'power2.out' });
-      })
-      .catch(function() {
-        errMsg.textContent   = 'Could not send reset email. Check the address and try again.';
-        errBox.style.display = 'block';
-      });
-  });
+  } catch (e) { /* config unavailable in static preview */ }
 </script>
 <script>
-(function() {
-  var hamburger = document.getElementById('nav-hamburger');
-  var mobileMenu = document.getElementById('mobile-menu');
-  if (!hamburger || !mobileMenu) return;
-  function closeMenu() {
-    mobileMenu.classList.remove('open');
-    hamburger.setAttribute('aria-expanded', 'false');
-    mobileMenu.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+(function () {
+  if (window.gsap) {
+    gsap.from('#nav',       { opacity:0, y:-8, duration:0.5,  ease:'power2.out' });
+    gsap.from('.dir-hero',  { opacity:0, y:16, duration:0.55, delay:0.15, ease:'power2.out' });
+    var logo = document.getElementById('nav-logo-img');
+    if (logo) logo.addEventListener('mouseenter', function() {
+      gsap.fromTo(logo, { rotate:0 }, { keyframes:{ rotate:[0,-9,9,-4,4,0] }, duration:0.52, ease:'power2.inOut' });
+    });
   }
-  hamburger.addEventListener('click', function() {
-    var isOpen = mobileMenu.classList.toggle('open');
-    hamburger.setAttribute('aria-expanded', String(isOpen));
-    mobileMenu.setAttribute('aria-hidden', String(!isOpen));
-    document.body.style.overflow = isOpen ? 'hidden' : '';
+
+  var hamburger = document.getElementById('nav-hamburger'), mobileMenu = document.getElementById('mobile-menu');
+  if (hamburger && mobileMenu) {
+    var closeMenu = function() {
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    };
+    hamburger.addEventListener('click', function() {
+      var open = mobileMenu.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', String(open));
+      mobileMenu.setAttribute('aria-hidden', String(!open));
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    mobileMenu.querySelectorAll('a').forEach(function(a) { a.addEventListener('click', closeMenu); });
+  }
+
+  var PEOPLE = GCA.PEOPLE;
+  var el = function(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  };
+
+  // ── Header stats ────────────────────────────────────────────────────────
+  var unis = {};
+  PEOPLE.forEach(function(p) { if (p.uni) unis[p.uni] = true; });
+  var uniList = Object.keys(unis).sort();
+  var stats = document.getElementById('dirStats');
+  [[PEOPLE.length, 'Members'], [uniList.length, 'Institutions'], [GCA.TERMS.length, 'Terms on record']]
+    .forEach(function(pair) {
+      var s = el('span');
+      s.appendChild(el('b', null, String(pair[0])));
+      s.appendChild(document.createTextNode(' ' + pair[1]));
+      stats.appendChild(s);
+    });
+
+  // ── Filters ─────────────────────────────────────────────────────────────
+  var activeUni = 'All';
+  var filters = document.getElementById('dirFilters');
+  ['All'].concat(uniList).forEach(function(name) {
+    var chip = el('button', 'dir-chip', name === 'All' ? 'All' : shortUni(name));
+    chip.type = 'button';
+    chip.setAttribute('aria-pressed', String(name === 'All'));
+    chip.title = name;
+    chip.addEventListener('click', function() {
+      activeUni = name;
+      filters.querySelectorAll('.dir-chip').forEach(function(c) { c.setAttribute('aria-pressed', 'false'); });
+      chip.setAttribute('aria-pressed', 'true');
+      render();
+    });
+    filters.appendChild(chip);
   });
-  mobileMenu.querySelectorAll('a').forEach(function(a) {
-    a.addEventListener('click', closeMenu);
+
+  function shortUni(name) {
+    return name.replace('Harbin Institute of Technology', 'HIT')
+               .replace(' University', '');
+  }
+
+  // ── Sorting ─────────────────────────────────────────────────────────────
+  var sortKey = 'sort', sortDir = 1;
+  var headers = document.querySelectorAll('.dir-table th.sortable');
+  headers.forEach(function(th) {
+    th.querySelector('button').addEventListener('click', function() {
+      var key = th.dataset.key;
+      if (key === sortKey) { sortDir = -sortDir; } else { sortKey = key; sortDir = 1; }
+      headers.forEach(function(h) { h.removeAttribute('aria-sort'); });
+      th.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+      render();
+    });
   });
+
+  // Induction year sorts numerically; entries without one fall to the end.
+  function inductedValue(p) {
+    var m = (p.inducted || '').match(/\d{4}/);
+    return m ? parseInt(m[0], 10) : (sortDir === 1 ? Infinity : -Infinity);
+  }
+
+  function compare(a, b) {
+    var va, vb;
+    if (sortKey === 'inducted') { va = inductedValue(a); vb = inductedValue(b); }
+    else { va = (a[sortKey] || '').toLowerCase(); vb = (b[sortKey] || '').toLowerCase(); }
+    if (va < vb) return -1 * sortDir;
+    if (va > vb) return 1 * sortDir;
+    return (a.sort || '').localeCompare(b.sort || '');
+  }
+
+  // ── Render ──────────────────────────────────────────────────────────────
+  var body = document.getElementById('dirBody');
+  var empty = document.getElementById('dirEmpty');
+  var count = document.getElementById('dirCount');
+  var q = document.getElementById('dirQ');
+
+  function render() {
+    var term = q.value.trim().toLowerCase();
+    var rows = PEOPLE.filter(function(p) {
+      if (activeUni !== 'All' && p.uni !== activeUni) return false;
+      if (!term) return true;
+      return (p.name + ' ' + (p.uni || '') + ' ' + (p.inducted || '') + ' ' + GCA.standing(p)).toLowerCase().indexOf(term) !== -1;
+    }).sort(compare);
+
+    body.textContent = '';
+    rows.forEach(function(p) {
+      var tr = document.createElement('tr');
+
+      var tdPic = el('td', 'dir-pic');
+      var face = el('div', 'dir-face');
+      if (p.photo) {
+        var img = document.createElement('img');
+        img.src = p.photo; img.alt = ''; img.loading = 'lazy';
+        face.appendChild(img);
+      } else {
+        face.appendChild(el('span', null, GCA.initials(p.name)));
+      }
+      tdPic.appendChild(face);
+      tr.appendChild(tdPic);
+
+      var tdName = el('td');
+      tdName.appendChild(el('div', 'dir-name', p.name));
+      var isOfficer = !!(p.roles && p.roles.length);
+      tdName.appendChild(el('div', 'dir-standing' + (isOfficer ? '' : ' is-team'), GCA.standing(p)));
+      tr.appendChild(tdName);
+
+      tr.appendChild(el('td', null, p.uni || '—'));
+      tr.appendChild(el('td', 'dir-class', p.inducted || '—'));
+
+      var tdContact = el('td', 'dir-contact');
+      if (p.email) {
+        var a = document.createElement('a');
+        a.href = 'mailto:' + p.email;
+        a.textContent = p.email;
+        tdContact.appendChild(a);
+      } else {
+        tdContact.appendChild(el('span', 'dir-none', '—'));
+      }
+      tr.appendChild(tdContact);
+
+      body.appendChild(tr);
+    });
+
+    empty.hidden = rows.length > 0;
+    count.textContent = rows.length === PEOPLE.length
+      ? 'Showing all ' + rows.length + ' members'
+      : 'Showing ' + rows.length + ' of ' + PEOPLE.length + ' members';
+  }
+
+  q.addEventListener('input', render);
+  render();
 })();
 </script>
 </body>
