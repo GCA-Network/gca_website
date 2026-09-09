@@ -375,6 +375,20 @@ const server = http.createServer(function (req, res) {
     return;
   }
 
+  // ── API: GET /api/people-public — public roster for the Leadership page ──
+  // Both people routes delegate to the same handlers Vercel runs in
+  // production, so local dev and the deployed site enforce the same rules.
+  if (urlPath === '/api/people-public') {
+    require('./api/people-public')(req, res);
+    return;
+  }
+
+  // ── API: GET /api/people — full member directory, signed-in members only ──
+  if (urlPath === '/api/people') {
+    require('./api/people')(req, res);
+    return;
+  }
+
   // ── Static files ──────────────────────────────────────────────────────────
   if (urlPath === '/') urlPath = '/index.html';
 

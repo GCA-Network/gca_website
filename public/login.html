@@ -350,9 +350,18 @@
   const analytics = getAnalytics(app);
   const auth      = getAuth(app);
 
-  // If already logged in, go straight to dashboard
+  // Where to land after signing in. Pages that bounce a signed-out visitor here
+  // pass ?next=; anything else goes to the dashboard. Only same-origin absolute
+  // paths are honoured, so ?next= cannot be used to redirect off the site.
+  function nextTarget() {
+    var raw = new URLSearchParams(window.location.search).get('next');
+    if (raw && /^\/[^\/\\]/.test(raw)) return raw;
+    return '/dashboard.html';
+  }
+
+  // If already logged in, don't sit on the login form
   onAuthStateChanged(auth, function(user) {
-    if (user) window.location.replace('/dashboard.html');
+    if (user) window.location.replace(nextTarget());
   });
 
   gsap.from('#nav',        { opacity:0, y:-8,  duration:0.5,  ease:'power2.out' });
@@ -406,7 +415,7 @@
         sucBox.style.display = 'block';
         gsap.from(sucBox, { opacity:0, y:6, duration:0.35, ease:'power2.out' });
         form.style.display = 'none';
-        setTimeout(function() { window.location.href = '/dashboard.html'; }, 1200);
+        setTimeout(function() { window.location.href = nextTarget(); }, 1200);
       })
       .catch(function(err) {
         btn.disabled    = false;

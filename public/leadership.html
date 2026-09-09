@@ -723,8 +723,11 @@
     mobileMenu.querySelectorAll('a').forEach(function(a) { a.addEventListener('click', closeMenu); });
   }
 
-  // Roster and helpers come from /people.js so this page and the member
-  // directory never drift apart.
+  // Helpers come from /people.js; the roster itself is fetched from
+  // /api/people-public — the public subset, without the contact details the
+  // gated member directory carries. Everything that draws people waits on it.
+  GCA.loadPublic().then(function () {
+
   var PAST_TERMS = GCA.PAST_TERMS, CURRENT_TERM = GCA.CURRENT_TERM;
   var roleIn = GCA.roleIn, teamIn = GCA.teamIn;
   var officersFor = GCA.officersFor, teamFor = GCA.teamFor, initials = GCA.initials;
@@ -921,6 +924,12 @@
   });
 
   renderTerm(activeTerm);
+
+  }).catch(function (err) {
+    console.error('Could not load the roster:', err);
+    var grid = document.getElementById('leadGrid');
+    if (grid) grid.textContent = 'The roster could not be loaded. Please refresh the page.';
+  });
 })();
 </script>
 </body>
