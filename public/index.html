@@ -57,6 +57,31 @@
     @keyframes ledger-scroll { from { transform:translateX(0); } to { transform:translateX(-50%); } }
     @media (prefers-reduced-motion:reduce) { .led-track { animation:none; } }
 
+    /* ─── INSTITUTIONS MARQUEE ──────────────────────────────────── */
+    .insts { padding:56px 0 62px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-2); overflow:hidden; position:relative; }
+    .insts-head { text-align:center; padding:0 2rem; margin-bottom:30px; }
+    .insts-head .eyebrow { justify-content:center; }
+    .insts-head p { font-size:14.5px; line-height:1.7; color:var(--fg-muted); max-width:52ch; margin:12px auto 0; }
+    .inst-row { display:flex; overflow:hidden; -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent); mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent); }
+    .inst-row + .inst-row { margin-top:14px; }
+    .inst-track { display:flex; width:max-content; gap:14px; padding-right:14px; animation:inst-left 72s linear infinite; will-change:transform; }
+    .inst-track--rev { animation-name:inst-right; }
+    .insts:hover .inst-track { animation-play-state:paused; }
+    @keyframes inst-left  { from{transform:translateX(0);}    to{transform:translateX(-50%);} }
+    @keyframes inst-right { from{transform:translateX(-50%);} to{transform:translateX(0);} }
+    /* Fixed plate size, so every institution reads at the same weight
+       whether it shows a logo or a wordmark. */
+    .inst { flex:0 0 auto; display:flex; align-items:center; justify-content:center; width:206px; height:66px; padding:0 16px; background:rgba(255,255,255,.62); border:1px solid var(--border); border-radius:var(--r); }
+    .inst img { max-height:38px; max-width:158px; width:auto; height:auto; object-fit:contain; filter:grayscale(1); opacity:.85; }
+    .inst img[src$=".svg"], .inst img[src$=".png"] { display:block; }
+    .inst span { font-family:var(--display); font-size:15px; line-height:1.2; letter-spacing:-.01em; color:var(--fg-muted); text-align:center; }
+    @media (prefers-reduced-motion:reduce) { .inst-track { animation:none; } }
+    @media (max-width:640px) {
+      .insts { padding:42px 0 48px; }
+      .inst { width:168px; height:58px; }
+      .inst span { font-size:13px; }
+    }
+
     /* ─── §01 EVENTS ────────────────────────────────────────────── */
     /* Underlaid on the same dark ground as the Mission Statement (.pquote). */
     .evsec { padding:96px 0 104px; background:var(--fg); color:#f6f2e8; position:relative; overflow:hidden; }
@@ -111,7 +136,7 @@
     .st-body .drop { float:left; font-family:var(--display); font-size:78px; line-height:.82; padding:8px 12px 0 0; color:var(--accent); }
     .zh { font-size:15.5px; line-height:1.9; color:var(--fg-subtle); font-style:italic; margin-top:18px; padding-top:18px; border-top:1px dashed var(--border); }
 
-    /* ─── §02 SHENZHEN GRID ─────────────────────────────────────── */
+    /* ─── §03 CHAPTERS GRID ─────────────────────────────────────── */
     .shen { padding:0 0 110px; }
     .shen-top { padding-top:90px; border-top:1px solid var(--border); }
     .shen-head { display:grid; grid-template-columns:1fr 1.6fr; gap:64px; align-items:end; margin-bottom:56px; }
@@ -140,21 +165,7 @@
     .pq-cite { font-family:var(--mono); font-size:11.5px; letter-spacing:.18em; text-transform:uppercase; color:rgba(246,242,232,.55); display:flex; align-items:center; gap:14px; }
     .pq-cite::before { content:""; width:34px; height:1px; background:rgba(246,242,232,.3); }
 
-    /* ─── §03 CADENCE ───────────────────────────────────────────── */
-    .cadence { padding:120px 0; }
-    .cad-head { display:flex; justify-content:space-between; align-items:flex-end; gap:40px; margin-bottom:56px; }
-    .cad-head h2 { font-family:var(--display); font-weight:400; font-size:clamp(42px,5vw,72px); line-height:.98; letter-spacing:-.025em; color:var(--fg); max-width:18ch; }
-    .cad-head h2 em { font-style:italic; color:var(--accent); }
-    .cad-side { font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--fg-subtle); max-width:26ch; text-align:right; }
-    .track { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--border); }
-    .tr { padding:28px 24px 36px; border-right:1px solid var(--border); position:relative; }
-    .tr:last-child { border-right:none; }
-    .tr .tnum { font-family:var(--display); font-size:80px; line-height:.9; color:var(--accent); font-style:italic; margin-bottom:18px; letter-spacing:-.03em; }
-    .tr h4 { font-family:var(--display); font-size:26px; font-weight:400; letter-spacing:-.01em; color:var(--fg); margin-bottom:10px; line-height:1.1; }
-    .tr p { font-size:14px; line-height:1.7; color:var(--fg-muted); }
-    .tr .ttime { position:absolute; top:28px; right:24px; font-family:var(--mono); font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-4); }
-
-    /* ─── §05 VOICES ────────────────────────────────────────────── */
+    /* ─── §04 VOICES ────────────────────────────────────────────── */
     .voices { padding:0 0 120px; }
     .voices-top { display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:26px; }
     .voices-cta span { display:inline-block; transition:transform .28s cubic-bezier(.34,1.56,.64,1); }
@@ -265,11 +276,6 @@
       .ev-side { align-items:flex-start; }
       .ev-note { text-align:left; }
       .ev-grid { grid-template-columns:1fr; }
-      .cad-head { flex-direction:column; align-items:flex-start; }
-      .cad-side { text-align:left; }
-      .track { grid-template-columns:repeat(2,1fr); }
-      .tr { border-right:none; border-bottom:1px solid var(--border); }
-      .tr:nth-child(odd) { border-right:1px solid var(--border); }
       .voices-head { grid-template-columns:1fr; gap:24px; }
       .vgrid { grid-template-columns:repeat(2,1fr); }
       .apply-grid { grid-template-columns:1fr; gap:36px; }
@@ -284,7 +290,6 @@
       .ab-hero { padding:128px 0 68px; }
       .af-row-2 { grid-template-columns:1fr; }
       .apply-form { padding:26px 22px 22px; }
-      .tr { border-right:none !important; }
       .vgrid { grid-template-columns:1fr; }
       .vq { padding:28px 22px 32px; }
     }
@@ -315,8 +320,6 @@
           <li><a href="/members.html">Members<span class="nav-sub-note">Full directory</span></a></li>
         </ul>
       </li>
-      <li><a href="#cadence">Programs</a></li>
-      <li><a href="#voices">Voices</a></li>
       <li><a href="#join">Join</a></li>
     </ul>
     <div class="nav-cta">
@@ -336,8 +339,6 @@
       <li class="mm-group">People</li>
       <li class="mm-sub"><a href="/leadership.html">Leadership</a></li>
       <li class="mm-sub"><a href="/members.html">Members</a></li>
-      <li><a href="#cadence">Programs</a></li>
-      <li><a href="#voices">Voices</a></li>
       <li><a href="#join">Join</a></li>
     </ul>
     <div class="mobile-menu-cta">
@@ -428,7 +429,7 @@
   <div class="led-track">
     <div>Status<b>Non-profit · Non-political</b></div>
     <div>Reach<b>10+ Countries represented</b></div>
-    <div>Home<b>Shenzhen · Mainland China</b></div>
+    <div>Headquarters<b>Shenzhen · Shanghai</b></div>
     <div>Purpose<b>To connect, convene, advance</b></div>
     <div aria-hidden="true">Status<b>Non-profit · Non-political</b></div>
     <div aria-hidden="true">Reach<b>10+ Countries represented</b></div>
@@ -458,6 +459,17 @@
   </div>
 </section>
 
+<!-- ═══════════════════ INSTITUTIONS ═════════════════════════ -->
+<section class="insts" aria-labelledby="insts-label">
+  <div class="insts-head rv">
+    <div class="eyebrow ey-accent" id="insts-label">Our network</div>
+    <p>The people we have connected with come from these institutions.</p>
+  </div>
+  <div class="inst-row"><div class="inst-track" id="instRowA" aria-hidden="true"></div></div>
+  <div class="inst-row"><div class="inst-track inst-track--rev" id="instRowB" aria-hidden="true"></div></div>
+  <ul id="instList" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></ul>
+</section>
+
 <!-- ═══════════════════════ §02 WHO WE ARE ════════════════════ -->
 <section class="statement">
   <div class="wrap">
@@ -480,20 +492,20 @@
 </section>
 
 <!-- ═══════════════════════ §03 ON THE GROUND ════════════════ -->
-<section class="shen">
+<section class="shen" id="programs">
   <div class="shen-top wrap">
     <div class="shen-head">
       <div class="rv">
         <div class="eyebrow ey-accent" style="margin-bottom:18px">§ 03 — On the ground</div>
-        <h2>A chapter<br/>made <em>in Shenzhen.</em></h2>
+        <h2>A global network<br/>of <em>chapters.</em></h2>
       </div>
-      <p class="rv">Our chapter lives inside Shenzhen — one of the world's most dynamic cities for technology, design, and cross-cultural exchange. We run programs that step off campus on purpose, bringing students and professionals together in labs, galleries, studios, and the neighborhoods in between.</p>
+      <p class="rv">We started in Shenzhen and build outward. Every chapter runs programs that step off campus on purpose &mdash; bringing students and professionals together in labs, galleries, studios, and the neighborhoods in between, wherever that chapter sits.</p>
     </div>
     <div class="shen-grid rv">
       <div class="cell wide">
         <div class="cell-n"><span>A · 01</span><span class="acc">Integration</span></div>
         <h3>Anchored to the campus. Open to the city.</h3>
-        <p>Our chapter sits inside a district of founders, researchers, and operators. We run programs that step off campus on purpose — into labs, galleries, studios, and the ordinary neighborhoods in between.</p>
+        <p>Each chapter sits inside a district of founders, researchers, and operators. We run programs that step off campus on purpose — into labs, galleries, studios, and the ordinary neighborhoods in between.</p>
         <div class="ctag">Bridge programming</div>
       </div>
       <div class="cell narrow">
@@ -537,55 +549,16 @@
   </div>
 </section>
 
-<!-- ═══════════════════════ §04 CADENCE ══════════════════════ -->
-<section class="cadence" id="cadence">
-  <div class="wrap">
-    <div class="cad-head">
-      <div class="rv">
-        <div class="eyebrow" style="margin-bottom:18px">§ 04 — What a term looks like</div>
-        <h2>A slow, steady <em>cadence</em> of gatherings.</h2>
-      </div>
-      <p class="cad-side rv">An academic year of GCA is small on hype, long on hours spent together.</p>
-    </div>
-    <div class="track rv">
-      <div class="tr">
-        <span class="ttime">Week 01 — 03</span>
-        <div class="tnum">I</div>
-        <h4>Arrive &amp; be known.</h4>
-        <p>New members are matched with returning ones. First week is for introductions — not performance.</p>
-      </div>
-      <div class="tr">
-        <span class="ttime">Monthly</span>
-        <div class="tnum">II</div>
-        <h4>Exchange nights.</h4>
-        <p>One evening a month. A country, a cuisine, a story from home — hosted by members in rotation.</p>
-      </div>
-      <div class="tr">
-        <span class="ttime">Quarterly</span>
-        <div class="tnum">III</div>
-        <h4>Speakers &amp; panels.</h4>
-        <p>Small-room talks with academics, journalists, and Shenzhen-based practitioners. Questions outnumber slides.</p>
-      </div>
-      <div class="tr">
-        <span class="ttime">Term-end</span>
-        <div class="tnum">IV</div>
-        <h4>Into the city.</h4>
-        <p>A closing program that takes the chapter off campus — a studio visit, a neighborhood walk, a shared meal.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════ §05 IN THEIR WORDS ═══════════════ -->
+<!-- ═══════════════════════ §04 IN THEIR WORDS ═══════════════ -->
 <section class="voices" id="voices">
   <div class="wrap">
     <div class="voices-top rv">
-      <div class="eyebrow ey-accent">§ 05 — In their words</div>
+      <div class="eyebrow ey-accent">§ 04 — In their words</div>
       <a href="/leadership.html" class="btn btn-sm btn-outline voices-cta">Meet the leadership <span aria-hidden="true">&#8599;</span></a>
     </div>
     <div class="voices-head">
       <div class="rv">
-        <h2>Why they want<br/>to <em>join GCA.</em></h2>
+        <h2>Why we<br/><em>joined GCA.</em></h2>
       </div>
       <p class="rv">Everyone who applies answers the same question &mdash; <i>what excites you most about our mission?</i> A few responses from the 2025&ndash;26 intake, excerpted in their own words.</p>
     </div>
@@ -632,12 +605,12 @@
 </section>
 
 
-<!-- ═══════════════════════ §06 APPLICATION ══════════════════ -->
+<!-- ═══════════════════════ §05 APPLICATION ══════════════════ -->
 <section class="apply" id="join">
   <div class="wrap">
     <div class="apply-grid">
       <aside class="apply-side rv">
-        <div class="eyebrow ey-accent" style="margin-bottom:22px">§ 06 — Membership</div>
+        <div class="eyebrow ey-accent" style="margin-bottom:22px">§ 05 — Membership</div>
         <h2>Come in. <em>Stay a while.</em><br/>Leave different.</h2>
         <p class="apply-lede">GCA membership is open to scholars, practitioners, educators, and anyone committed to building genuine cross-cultural connections. There are no fees — applying is completely free.</p>
         <ul class="apply-steps">
@@ -759,6 +732,95 @@
 </script>
 <script>
 (function() {
+  // ── Institutions ────────────────────────────────────────────────────────
+  // Each entry may carry `logo: "/assets/institutions/<file>"`; without one it
+  // renders as a wordmark. Plates are a fixed size either way.
+  // Row 1: institutions in China and Hong Kong. Row 2: everywhere else.
+  // Drop a logo into /assets/institutions/<slug>.svg (or .png) and it replaces
+  // the wordmark automatically; anything missing keeps the wordmark.
+  var INSTITUTIONS = [
+    [ { slug:"tsinghua",  name:"Tsinghua University" },
+      { slug:"peking",    name:"Peking University" },
+      { slug:"hit",       name:"Harbin Institute of Technology" },
+      { slug:"fudan",     name:"Fudan University" },
+      { slug:"sjtu",      name:"Shanghai Jiao Tong University" },
+      { slug:"tongji",    name:"Tongji University" },
+      { slug:"hku",       name:"The University of Hong Kong" },
+      { slug:"hkust",     name:"HKUST" } ],
+    [ { slug:"harvard",   name:"Harvard University" },
+      { slug:"yale",      name:"Yale University" },
+      { slug:"mit",       name:"MIT" },
+      { slug:"princeton", name:"Princeton University" },
+      { slug:"stanford",  name:"Stanford University" },
+      { slug:"cornell",   name:"Cornell University" },
+      { slug:"duke",      name:"Duke University" },
+      { slug:"columbia",  name:"Columbia University" },
+      { slug:"berkeley",  name:"UC Berkeley" },
+      { slug:"ucla",      name:"UCLA" },
+      { slug:"ucsd",      name:"UC San Diego" },
+      { slug:"toronto",   name:"University of Toronto" },
+      { slug:"ubc",       name:"University of British Columbia" },
+      { slug:"mcgill",    name:"McGill University" },
+      { slug:"oxford",    name:"University of Oxford" },
+      { slug:"cambridge", name:"University of Cambridge" },
+      { slug:"ucl",       name:"UCL" },
+      { slug:"kcl",       name:"King's College London" },
+      { slug:"eth",       name:"ETH Z\u00fcrich" },
+      { slug:"tudelft",   name:"TU Delft" },
+      { slug:"tum",       name:"Technical University of Munich" },
+      { slug:"berlin",    name:"University of Berlin" } ]
+  ];
+
+  (function buildInstitutions() {
+    var rows = [document.getElementById('instRowA'), document.getElementById('instRowB')];
+    if (!rows[0] || !rows[1]) return;
+
+    var PLATE = 206, GAP = 14, SPEED = 46;   // px and px/second
+
+    function plateFor(inst) {
+      var plate = document.createElement('div');
+      plate.className = 'inst';
+      var span = document.createElement('span');
+      span.textContent = inst.name;
+      plate.appendChild(span);
+      if (!inst.slug) return plate;
+
+      // try SVG, then PNG, then keep the wordmark
+      var img = document.createElement('img');
+      img.alt = ''; img.loading = 'lazy';
+      var tried = 0;
+      img.addEventListener('error', function() {
+        if (tried === 0) { tried = 1; img.src = '/assets/institutions/' + inst.slug + '.png'; }
+        else { img.remove(); span.style.display = ''; }
+      });
+      img.addEventListener('load', function() { span.style.display = 'none'; });
+      img.src = '/assets/institutions/' + inst.slug + '.svg';
+      plate.appendChild(img);
+      return plate;
+    }
+
+    INSTITUTIONS.forEach(function(list, i) {
+      var frag = document.createDocumentFragment();
+      // two passes, so the track meets itself seamlessly at -50% and wraps
+      for (var pass = 0; pass < 2; pass++) {
+        list.forEach(function(inst) { frag.appendChild(plateFor(inst)); });
+      }
+      rows[i].appendChild(frag);
+      // equal speed in both rows regardless of how many logos each holds
+      rows[i].style.animationDuration = (list.length * (PLATE + GAP) / SPEED).toFixed(1) + 's';
+    });
+
+    // one readable copy for assistive tech, since the tracks are decorative
+    var out = document.getElementById('instList');
+    INSTITUTIONS.forEach(function(row) {
+      row.forEach(function(inst) {
+        var li = document.createElement('li');
+        li.textContent = inst.name;
+        out.appendChild(li);
+      });
+    });
+  })();
+
   // Scroll-reveal
   var obs = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
