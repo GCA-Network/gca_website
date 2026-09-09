@@ -392,7 +392,7 @@
     .ld-modal.is-open { display: flex; }
 
     .ld-modal .panel {
-      width: min(680px, 100%);
+      width: min(440px, 100%);
       max-height: calc(100vh - 48px);
       overflow-y: auto;
       background: var(--bg);
@@ -418,48 +418,62 @@
     .ld-modal .close:hover { background: #fff; transform: rotate(90deg); }
     .ld-modal .close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
+    /* A name card: portrait on top, name under it, details below. Roles are
+       not in the header — they change from term to term, and plenty of
+       members never hold one. */
     .ld-modal .head {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      padding-right: 48px;
-      margin-bottom: 24px;
+      display: block;
+      text-align: center;
+      margin-bottom: 26px;
     }
 
     .ld-modal .head-face {
-      width: 92px; height: 92px;
+      width: 152px; height: 152px;
       border-radius: 50%;
       overflow: hidden;
-      flex: none;
+      margin: 4px auto 20px;
       background: var(--surface);
+      box-shadow: 0 0 0 1px var(--line), 0 14px 34px rgba(20,18,15,.14);
     }
     .ld-modal .head-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .ld-modal .head-face span {
       width: 100%; height: 100%; display: grid; place-items: center;
-      font-family: var(--display); font-size: 32px; color: #fff;
+      font-family: var(--display); font-size: 52px; color: #fff;
       background: linear-gradient(135deg, var(--accent-hi), var(--accent));
     }
 
     .ld-modal h3 {
-      margin: 0 0 8px;
+      margin: 0;
       font-family: var(--display);
       font-weight: 400;
-      font-size: 34px;
-      line-height: 1;
+      font-size: 32px;
+      line-height: 1.08;
       letter-spacing: -0.03em;
       color: var(--fg);
     }
 
-    .ld-modal .head-role {
+    .ld-modal .spec { display: grid; }
+
+    .ld-modal .spec-row {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 14px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--fg);
+    }
+    .ld-modal .spec-row:last-child { border-bottom: none; }
+
+    .ld-modal .spec-row .k {
       font-family: var(--mono);
-      font-size: 10.5px;
+      font-size: 10px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 6px;
+      color: var(--fg-subtle);
+      align-self: center;
     }
-
-    .ld-modal .head-aff { font-size: 14px; color: var(--fg-muted); }
 
     .ld-modal .block { padding-top: 18px; border-top: 1px solid var(--line); margin-top: 18px; }
     .ld-modal .block:first-of-type { margin-top: 0; }
@@ -519,11 +533,11 @@
       .officer-face { width: 40px; height: 40px; }
       .officer-role { font-size: 9.5px; }
       .team-grid, #currentTeamGrid { grid-template-columns: 1fr; }
-      .ld-modal .panel { padding: 22px; }
-      .ld-modal .head { gap: 14px; }
-      .ld-modal .head-face { width: 68px; height: 68px; }
+      .ld-modal .panel { padding: 24px 20px 22px; }
+      .ld-modal .head-face { width: 124px; height: 124px; margin-bottom: 16px; }
+      .ld-modal .head-face span { font-size: 42px; }
       .ld-modal h3 { font-size: 27px; }
-      .tenure-row { grid-template-columns: 92px 1fr; gap: 12px; font-size: 14px; }
+      .tenure-row, .ld-modal .spec-row { grid-template-columns: 88px 1fr; gap: 12px; font-size: 14px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -637,19 +651,10 @@
     <button class="close" id="pfClose" aria-label="Close">×</button>
     <div class="head">
       <div class="head-face" id="pfFace"></div>
-      <div>
-        <div class="head-role" id="pfRole"></div>
-        <h3 id="pfName">Name</h3>
-        <div class="head-aff" id="pfAff"></div>
-      </div>
+      <h3 id="pfName">Name</h3>
     </div>
-    <div class="block" id="pfFieldBlock">
-      <strong>Field</strong>
-      <p id="pfField"></p>
-    </div>
-    <div class="block" id="pfContactBlock">
-      <strong>Contact</strong>
-      <p id="pfContact"></p>
+    <div class="block" id="pfSpecBlock">
+      <div class="spec" id="pfSpec"></div>
     </div>
     <div class="block" id="pfTenureBlock">
       <strong>GCA leadership</strong>
@@ -658,6 +663,10 @@
     <div class="block" id="pfTeamBlock">
       <strong>Team</strong>
       <div class="tenure" id="pfTeam"></div>
+    </div>
+    <div class="block" id="pfContactBlock">
+      <strong>Contact</strong>
+      <p id="pfContact"></p>
     </div>
   </div>
 </div>
@@ -754,10 +763,9 @@
   var modal = document.getElementById("profileModal");
   var pfClose = document.getElementById("pfClose");
   var pfFace = document.getElementById("pfFace"), pfName = document.getElementById("pfName");
-  var pfRole = document.getElementById("pfRole"), pfAff = document.getElementById("pfAff");
+  var pfSpec = document.getElementById("pfSpec"), pfSpecBlock = document.getElementById("pfSpecBlock");
   var pfTenureBlock = document.getElementById("pfTenureBlock"), pfTenure = document.getElementById("pfTenure");
   var pfTeamBlock = document.getElementById("pfTeamBlock"), pfTeam = document.getElementById("pfTeam");
-  var pfFieldBlock = document.getElementById("pfFieldBlock"), pfField = document.getElementById("pfField");
   var pfContactBlock = document.getElementById("pfContactBlock"), pfContact = document.getElementById("pfContact");
   var lastTrigger = null;
 
@@ -776,11 +784,16 @@
     faceInto(pfFace, person);
     pfName.textContent = person.name;
 
-    var current = roleIn(person, CURRENT_TERM) || (person.roles && person.roles[0] && person.roles[0].role)
-                || teamIn(person, CURRENT_TERM) || (person.teams && person.teams[0] && person.teams[0].dept) || "";
-    pfRole.textContent = current;
-    pfAff.textContent = [person.inducted ? "Inducted " + person.inducted : null, person.uni]
-                          .filter(Boolean).join(" · ");
+    pfSpec.textContent = "";
+    [["Inducted", person.inducted], ["University", person.uni], ["Field", person.field]]
+      .filter(function(pair) { return pair[1]; })
+      .forEach(function(pair) {
+        var row = el("div", "spec-row");
+        row.appendChild(el("span", "k", pair[0]));
+        row.appendChild(el("span", null, pair[1]));
+        pfSpec.appendChild(row);
+      });
+    pfSpecBlock.hidden = pfSpec.children.length === 0;
 
     if (person.roles && person.roles.length) {
       rows(pfTenure, person.roles, function(r) { return r.term; }, function(r) { return r.role; });
@@ -791,11 +804,6 @@
       rows(pfTeam, person.teams, function(t) { return t.term; }, function(t) { return t.dept; });
       pfTeamBlock.hidden = false;
     } else { pfTeam.textContent = ""; pfTeamBlock.hidden = true; }
-
-    if (person.field) {
-      pfField.textContent = person.field;
-      pfFieldBlock.hidden = false;
-    } else { pfField.textContent = ""; pfFieldBlock.hidden = true; }
 
     pfContact.textContent = "";
     if (person.email) {

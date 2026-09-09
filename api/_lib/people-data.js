@@ -31,7 +31,7 @@
       uni:"Tsinghua University",
       roles:[{ term:"2026–27", role:"President" }, { term:"2025–26", role:"President" },
              { term:"2024–25", role:"Founder & President" }] },
-    { id:"alex-feldman", name:"Alex Feldman", photo:"/assets/members/alex-feldman.jpg", sort:"Feldman", inducted:"2023", field:"Data Science",
+    { id:"alex-feldman", name:"Alex Feldman", photo:"/assets/members/alex-feldman.jpg", sort:"Feldman", inducted:"2024", field:"Data Science",
       uni:"Tsinghua University",
       roles:[{ term:"2026–27", role:"VP of Outreach" }, { term:"2025–26", role:"VP of Outreach" },
              { term:"2024–25", role:"VP of Outreach" }] },
