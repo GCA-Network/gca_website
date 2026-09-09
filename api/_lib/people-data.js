@@ -31,16 +31,16 @@
       uni:"Tsinghua University",
       roles:[{ term:"2026–27", role:"President" }, { term:"2025–26", role:"President" },
              { term:"2024–25", role:"Founder & President" }] },
-    { id:"alex-feldman", name:"Alex Feldman", sort:"Feldman", inducted:"2023", field:"Data Science",
+    { id:"alex-feldman", name:"Alex Feldman", photo:"/assets/members/alex-feldman.jpg", sort:"Feldman", inducted:"2023", field:"Data Science",
       uni:"Tsinghua University",
       roles:[{ term:"2026–27", role:"VP of Outreach" }, { term:"2025–26", role:"VP of Outreach" },
              { term:"2024–25", role:"VP of Outreach" }] },
     { id:"immer-feng", name:"Immer Feng", sort:"Feng", inducted:"2025", field:"Financial Media", photo:"/assets/members/immer-feng.jpg",
       uni:"Peking University",
       roles:[{ term:"2026–27", role:"Secretary General" }, { term:"2025–26", role:"Secretary General" }] },
-    { id:"sophia-dooly", name:"Sophia Dooly", sort:"Dooly", inducted:"2025", field:"China Studies: History & Archaeology", uni:"Peking University",
+    { id:"sophia-dooly", name:"Sophia Dooly", photo:"/assets/members/sophia-dooly.jpg", sort:"Dooly", inducted:"2025", field:"China Studies: History & Archaeology", uni:"Peking University",
       roles:[{ term:"2025–26", role:"Consultant" }] },
-    { id:"jiani-mao", name:"Jiani Mao", sort:"Mao", inducted:"2024", field:"Data Science", uni:"Tsinghua University",
+    { id:"jiani-mao", name:"Jiani Mao", photo:"/assets/members/jiani.jpg", sort:"Mao", inducted:"2024", field:"Data Science", uni:"Tsinghua University",
       roles:[{ term:"2024–25", role:"Finance Director" }] },
 
     // ── 2025–26 team ──────────────────────────────────────────────────────
@@ -70,9 +70,9 @@
       teams:[{ term:"2026–27", dept:"Outreach & Curation" }, { term:"2025–26", dept:"Outreach & Curation" }] },
 
     // ── 2024–25 team ──────────────────────────────────────────────────────
-    { id:"solomon-kim", name:"Solomon Kim", sort:"Kim", field:"Data Science",
+    { id:"solomon-kim", name:"Solomon Kim", photo:"/assets/members/solomon.jpg", sort:"Kim", inducted:"2024", field:"Data Science",
       uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Marketing & Branding" }] },
-    { id:"kai-liu", name:"Kai Liu", sort:"Liu", field:"Architecture",
+    { id:"kai-liu", name:"Kai Liu", photo:"/assets/members/kai-liu.jpg", sort:"Liu", inducted:"2024", field:"Architecture",
       uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Outreach & Curation" }] },
 
     { id:"brendon-tao", name:"Brendon Tao", sort:"Tao", inducted:"2024",
@@ -80,18 +80,18 @@
     { id:"roger-liu", name:"Roger Liu", sort:"Liu", inducted:"2024", field:"Smart Logistics", photo:"/assets/members/roger.jpg", uni:"Tsinghua University",
       roles:[{ term:"2025–26", role:"VP of Operations" }],
       teams:[{ term:"2024–25", dept:"Operations" }] },
-    { id:"peter-marsh", name:"Peter Marsh", sort:"Marsh", inducted:"2024", field:"Data Science",
+    { id:"peter-marsh", name:"Peter Marsh", photo:"/assets/members/peter-marsh.jpg", sort:"Marsh", inducted:"2024", field:"Data Science",
       uni:"Tsinghua University",
       roles:[{ term:"2024–25", role:"VP of Operations" }] },
-    { id:"leo", name:"Leo", sort:"Leo", inducted:"2024", field:"Ocean Engineering",
+    { id:"leo", name:"Leo", photo:"/assets/members/leo.jpg", sort:"Leo", inducted:"2024", field:"Ocean Engineering",
       uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Outreach & Curation" }] },
-    { id:"eric-chen", name:"Eric Chen", sort:"Chen", inducted:"2024", field:"Robotics",
+    { id:"eric-chen", name:"Eric Chen", photo:"/assets/members/eric-chen.jpg", sort:"Chen", inducted:"2024", field:"Robotics",
       uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Marketing & Branding" }] },
-    { id:"rice", name:"Rice", sort:"Rice", inducted:"2024", field:"Architecture",
+    { id:"rowena", name:"Rowena", photo:"/assets/members/rowena.jpg", sort:"Rowena", inducted:"2024", field:"Architecture",
       uni:"Tsinghua University",
       roles:[{ term:"2024–25", role:"VP of Marketing" }],
       teams:[{ term:"2025–26", dept:"Marketing & Branding" }] },
-    { id:"dario", name:"Dario", sort:"Dario", inducted:"2024",
+    { id:"dario", name:"Dario", photo:"/assets/members/dario.jpg", sort:"Dario", inducted:"2024",
       uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Outreach & Curation" }] }
   ];
 
