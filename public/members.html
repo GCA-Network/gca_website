@@ -12,6 +12,9 @@
   <style>
     /* ─── Member directory — scoped under .dir ─────────────────────────────── */
     .dir { display: block; padding-top: 68px; }
+    /* `display:block` above outranks the browser's own [hidden] rule, so the
+       gated directory needs this or it flashes before the redirect fires. */
+    .dir[hidden] { display: none; }
 
     .dir .page {
       max-width: 1200px;
@@ -231,6 +234,13 @@
       color: var(--fg-subtle);
     }
 
+    .dir-gate {
+      padding: 96px 0;
+      text-align: center;
+      font-size: 15px;
+      color: var(--fg-subtle);
+    }
+
     @media (max-width: 960px) {
       .dir-hero { grid-template-columns: 1fr; gap: 20px; align-items: start; }
     }
@@ -295,7 +305,9 @@
   </div>
 </nav>
 
-<main class="dir">
+<div class="dir-gate" id="dirGate">Checking access&hellip;</div>
+
+<main class="dir" id="dirMain" hidden>
   <div class="page">
 
     <nav class="people-tabs" aria-label="People sections">
@@ -365,16 +377,55 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
 <script src="/api/firebase-config"></script>
 <script type="module">
+  // ── Member-only gate ────────────────────────────────────────────────────
+  // Two separate things happen here and both matter. The redirect keeps
+  // signed-out visitors off the page. The ID token is what actually gets the
+  // roster: /api/people verifies it server-side and answers 401 without one,
+  // so deleting this redirect in devtools yields an empty table, not the
+  // directory. The public Leadership page is unaffected — it reads the
+  // no-auth /api/people-public subset.
   import { initializeApp }               from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js';
+
+  const gate = document.getElementById('dirGate');
+  const main = document.getElementById('dirMain');
+
+  function toLogin() {
+    window.location.replace('/login.html?next=' + encodeURIComponent('/members.html'));
+  }
+  function fail(message) {
+    if (gate) { gate.hidden = false; gate.textContent = message; }
+  }
+
+  let auth = null;
   try {
-    const auth = getAuth(initializeApp(window.firebaseConfig));
-    onAuthStateChanged(auth, function(user) {
+    auth = getAuth(initializeApp(window.firebaseConfig));
+  } catch (e) {
+    fail('Sign-in is unavailable right now. Please try again shortly.');
+  }
+
+  if (auth) {
+    onAuthStateChanged(auth, function (user) {
+      if (!user) { toLogin(); return; }
+
       var b1 = document.getElementById('nav-login-btn'), b2 = document.getElementById('nav-login-btn-mobile');
-      if (user && b1) { b1.href = '/dashboard.html'; b1.textContent = 'Dashboard'; }
-      if (user && b2) { b2.href = '/dashboard.html'; b2.textContent = 'Dashboard'; }
+      if (b1) { b1.href = '/dashboard.html'; b1.textContent = 'Dashboard'; }
+      if (b2) { b2.href = '/dashboard.html'; b2.textContent = 'Dashboard'; }
+
+      user.getIdToken()
+        .then(function (token) { return window.GCA.loadDirectory(token); })
+        .then(function () {
+          window.__renderDirectory();
+          if (gate) gate.hidden = true;
+          if (main) main.hidden = false;
+        })
+        .catch(function (err) {
+          if (err && err.status === 401) { toLogin(); return; }
+          console.error('Could not load the member directory:', err);
+          fail('The member directory could not be loaded. Please refresh the page.');
+        });
     });
-  } catch (e) { /* config unavailable in static preview */ }
+  }
 </script>
 <script>
 (function () {
@@ -403,6 +454,10 @@
     });
     mobileMenu.querySelectorAll('a').forEach(function(a) { a.addEventListener('click', closeMenu); });
   }
+
+  // Nothing below runs until the gate above has a verified session and the
+  // roster has come back from /api/people.
+  window.__renderDirectory = function () {
 
   var PEOPLE = GCA.PEOPLE;
   var el = function(tag, cls, text) {
@@ -536,6 +591,8 @@
 
   q.addEventListener('input', render);
   render();
+
+  };
 })();
 </script>
 </body>
