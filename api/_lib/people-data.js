@@ -71,9 +71,9 @@
 
     // ── 2024–25 team ──────────────────────────────────────────────────────
     { id:"solomon-kim", name:"Solomon Kim", sort:"Kim", field:"Data Science",
-      uni:"Tsinghua University", teams:[{ term:"2026–27", dept:"Marketing & Branding" }] },
+      uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Marketing & Branding" }] },
     { id:"kai-liu", name:"Kai Liu", sort:"Liu", field:"Architecture",
-      uni:"Tsinghua University", teams:[{ term:"2026–27", dept:"Outreach & Curation" }] },
+      uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Outreach & Curation" }] },
 
     { id:"brendon-tao", name:"Brendon Tao", sort:"Tao", inducted:"2024",
       uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Operations" }] },
