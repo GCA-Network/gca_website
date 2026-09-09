@@ -73,11 +73,7 @@
     .inst { flex:0 0 auto; display:flex; align-items:center; justify-content:center; width:206px; height:74px; padding:0 16px; background:rgba(255,255,255,.62); border:1px solid var(--border); border-radius:var(--r); }
     .inst img { max-height:48px; max-width:168px; width:auto; height:auto; object-fit:contain; display:block; }
     .inst span { font-family:var(--display); font-size:15px; line-height:1.2; letter-spacing:-.01em; color:var(--fg-muted); text-align:center; }
-    .insts.is-paused .inst-track { animation-play-state:paused; }
-    .insts.is-paused .inst-row { overflow-x:auto; }
-    .insts-toggle { display:block; margin:22px auto 0; padding:7px 15px; font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--fg-subtle); background:rgba(255,255,255,.5); border:1px solid var(--border); border-radius:100px; cursor:pointer; transition:color .15s ease, border-color .15s ease; }
-    .insts-toggle:hover { color:var(--accent); border-color:var(--accent-line); }
-    .insts-toggle:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+    .insts:hover .inst-track { animation-play-state:paused; }
     @media (max-width:640px) {
       .insts { padding:42px 0 48px; }
       .inst { width:168px; height:64px; }
@@ -470,7 +466,6 @@
   </div>
   <div class="inst-row"><div class="inst-track" id="instRowA" aria-hidden="true"></div></div>
   <div class="inst-row"><div class="inst-track inst-track--rev" id="instRowB" aria-hidden="true"></div></div>
-  <button class="insts-toggle" id="instsToggle" type="button" aria-pressed="false">Pause</button>
   <ul id="instList" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></ul>
 </section>
 
@@ -815,16 +810,6 @@
       // equal speed in both rows regardless of how many logos each holds
       rows[i].style.animationDuration = (list.length * (PLATE + GAP) / SPEED).toFixed(1) + 's';
     });
-
-    var section = document.querySelector('.insts');
-    var toggle = document.getElementById('instsToggle');
-    if (toggle) {
-      toggle.addEventListener('click', function() {
-        var paused = section.classList.toggle('is-paused');
-        toggle.setAttribute('aria-pressed', String(paused));
-        toggle.textContent = paused ? 'Play' : 'Pause';
-      });
-    }
 
     // one readable copy for assistive tech, since the tracks are decorative
     var out = document.getElementById('instList');
