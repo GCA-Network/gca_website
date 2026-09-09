@@ -8,6 +8,8 @@ Naming: `<slug>.png` is tried first, then `<slug>.svg`.
 SVG is preferred; PNG should be transparent and at least 300px on its long side.
 Plates are a fixed 206x66, and logos are capped at 158x38 inside them. Prefer a
 readable wordmark or abbreviation over an emblem-only mark.
+Use only an institution's supplied wordmark/lockup artwork. Do not typeset a
+name or abbreviation beside an emblem to manufacture a new logo.
 
 Row 1 — China and Hong Kong
   tsinghua  peking  hit  fudan  sjtu  tongji  hku  hkust
