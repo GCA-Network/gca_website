@@ -18,7 +18,7 @@ window.GCA = (function () {
 
   var PEOPLE = [
     // ── Officers ──────────────────────────────────────────────────────────
-    { id:"felix-gan", name:"Felix Gan", sort:"Gan", inducted:"2024", photo:"/assets/members/felix.jpg",
+    { id:"felix-gan", name:"Felix Gan", sort:"Gan", inducted:"2024", field:"Computer Science", email:"reachfelixgan@gmail.com", photo:"/assets/members/felix.jpg",
       uni:"Tsinghua University",
       roles:[{ term:"2026–27", role:"President" }, { term:"2025–26", role:"President" },
              { term:"2024–25", role:"Founder & President" }] },
@@ -28,7 +28,7 @@ window.GCA = (function () {
     { id:"immer-feng", name:"Immer Feng", sort:"Feng", inducted:"2025", field:"Financial Media", photo:"/assets/members/immer-feng.jpg",
       uni:"Peking University",
       roles:[{ term:"2026–27", role:"Secretary General" }, { term:"2025–26", role:"Secretary General" }] },
-    { id:"sophia-dooly", name:"Sophia Dooly", sort:"Dooly", inducted:"2025", field:"China Studies", uni:"Tsinghua University",
+    { id:"sophia-dooly", name:"Sophia Dooly", sort:"Dooly", inducted:"2025", field:"China Studies: History & Archaeology", uni:"Peking University",
       roles:[{ term:"2025–26", role:"Consultant" }] },
     { id:"jiani-mao", name:"Jiani Mao", sort:"Mao", inducted:"2024", field:"Data Science", uni:"Tsinghua University",
       roles:[{ term:"2024–25", role:"Finance Director" }] },
@@ -75,7 +75,8 @@ window.GCA = (function () {
       uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Marketing & Branding" }] },
     { id:"rice", name:"Rice", sort:"Rice", inducted:"2024", field:"Architecture",
       uni:"Tsinghua University",
-      roles:[{ term:"2024–25", role:"VP of Marketing" }] },
+      roles:[{ term:"2024–25", role:"VP of Marketing" }],
+      teams:[{ term:"2025–26", dept:"Marketing & Branding" }] },
     { id:"dario", name:"Dario", sort:"Dario", inducted:"2024",
       uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Outreach & Curation" }] }
   ];
