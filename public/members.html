@@ -136,7 +136,7 @@
 
     table.dir-table {
       width: 100%;
-      min-width: 720px;
+      min-width: 840px;
       border-collapse: collapse;
       font-family: var(--ff);
     }
@@ -208,6 +208,8 @@
       margin-top: 3px;
     }
     .dir-standing.is-team { color: var(--fg-subtle); }
+
+    .dir-field { font-size: 13.5px; line-height: 1.45; min-width: 150px; }
 
     .dir-class { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--fg-muted); white-space: nowrap; }
 
@@ -317,7 +319,7 @@
     <div class="dir-controls">
       <div class="dir-search">
         <label class="sr-only" for="dirQ" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search members</label>
-        <input id="dirQ" type="search" placeholder="Search name, institution or year" autocomplete="off" />
+        <input id="dirQ" type="search" placeholder="Search name, institution, field or year" autocomplete="off" />
       </div>
       <div class="dir-filters" id="dirFilters"></div>
     </div>
@@ -329,6 +331,7 @@
             <th class="dir-pic" scope="col"><span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Picture</span></th>
             <th class="sortable" scope="col" data-key="sort" aria-sort="ascending"><button type="button">Name <span class="arrow" aria-hidden="true">&#9650;</span></button></th>
             <th class="sortable" scope="col" data-key="uni"><button type="button">Institution <span class="arrow" aria-hidden="true">&#9650;</span></button></th>
+            <th class="sortable" scope="col" data-key="field"><button type="button">Field <span class="arrow" aria-hidden="true">&#9650;</span></button></th>
             <th class="sortable" scope="col" data-key="inducted"><button type="button">Inducted <span class="arrow" aria-hidden="true">&#9650;</span></button></th>
             <th scope="col">Contact</th>
           </tr>
@@ -469,6 +472,9 @@
   function compare(a, b) {
     var va, vb;
     if (sortKey === 'inducted') { va = inductedValue(a); vb = inductedValue(b); }
+    else if (sortKey === 'field') {
+      va = (a.field || '\uffff').toLowerCase(); vb = (b.field || '\uffff').toLowerCase();
+    }
     else { va = (a[sortKey] || '').toLowerCase(); vb = (b[sortKey] || '').toLowerCase(); }
     if (va < vb) return -1 * sortDir;
     if (va > vb) return 1 * sortDir;
@@ -486,7 +492,8 @@
     var rows = PEOPLE.filter(function(p) {
       if (activeUni !== 'All' && p.uni !== activeUni) return false;
       if (!term) return true;
-      return (p.name + ' ' + (p.uni || '') + ' ' + (p.inducted || '') + ' ' + GCA.standing(p)).toLowerCase().indexOf(term) !== -1;
+      return (p.name + ' ' + (p.uni || '') + ' ' + (p.field || '') + ' ' + (p.inducted || '') + ' ' + GCA.standing(p))
+               .toLowerCase().indexOf(term) !== -1;
     }).sort(compare);
 
     body.textContent = '';
@@ -512,6 +519,10 @@
       tr.appendChild(tdName);
 
       tr.appendChild(el('td', null, p.uni || '—'));
+      var tdField = el('td', 'dir-field');
+      if (p.field) tdField.textContent = p.field;
+      else tdField.appendChild(el('span', 'dir-none', '—'));
+      tr.appendChild(tdField);
       tr.appendChild(el('td', 'dir-class', p.inducted || '—'));
 
       var tdContact = el('td', 'dir-contact');

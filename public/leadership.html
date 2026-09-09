@@ -350,8 +350,6 @@
 
     .tcard:hover, .tcard:focus-visible { transform: translateY(-2px); border-color: var(--accent-mid); background: rgba(255,255,255,.8); }
     .tcard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-    .tcard--static { cursor: default; }
-    .tcard--static:hover { transform: none; border-color: var(--line); background: rgba(255,255,255,.45); }
 
     .tface {
       width: 36px;
@@ -500,16 +498,8 @@
       align-self: center;
     }
 
-    .prefs { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; counter-reset: pref; }
-    .prefs li {
-      display: flex; align-items: baseline; gap: 10px;
-      font-size: 15px; line-height: 1.6; color: var(--fg-muted);
-    }
-    .prefs li::before {
-      counter-increment: pref; content: counter(pref);
-      font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: var(--accent); flex: none;
-    }
-    .prefs.is-unranked li::before { content: "·"; font-size: 14px; }
+    .ld-modal .block a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-line); transition: border-color .15s ease; }
+    .ld-modal .block a:hover { border-color: var(--accent); }
 
     /* ── Responsive ───────────────────────────────────────────────────────── */
     @media (max-width: 960px) {
@@ -653,6 +643,14 @@
         <div class="head-aff" id="pfAff"></div>
       </div>
     </div>
+    <div class="block" id="pfFieldBlock">
+      <strong>Field</strong>
+      <p id="pfField"></p>
+    </div>
+    <div class="block" id="pfContactBlock">
+      <strong>Contact</strong>
+      <p id="pfContact"></p>
+    </div>
     <div class="block" id="pfTenureBlock">
       <strong>GCA leadership</strong>
       <div class="tenure" id="pfTenure"></div>
@@ -660,10 +658,6 @@
     <div class="block" id="pfTeamBlock">
       <strong>Team</strong>
       <div class="tenure" id="pfTeam"></div>
-    </div>
-    <div class="block" id="pfPrefBlock">
-      <strong id="pfPrefLabel">Stated preferences</strong>
-      <ol class="prefs" id="pfPrefs"></ol>
     </div>
   </div>
 </div>
@@ -760,7 +754,8 @@
   var pfRole = document.getElementById("pfRole"), pfAff = document.getElementById("pfAff");
   var pfTenureBlock = document.getElementById("pfTenureBlock"), pfTenure = document.getElementById("pfTenure");
   var pfTeamBlock = document.getElementById("pfTeamBlock"), pfTeam = document.getElementById("pfTeam");
-  var pfPrefBlock = document.getElementById("pfPrefBlock"), pfPrefLabel = document.getElementById("pfPrefLabel"), pfPrefs = document.getElementById("pfPrefs");
+  var pfFieldBlock = document.getElementById("pfFieldBlock"), pfField = document.getElementById("pfField");
+  var pfContactBlock = document.getElementById("pfContactBlock"), pfContact = document.getElementById("pfContact");
   var lastTrigger = null;
 
   function rows(host, list, left, right) {
@@ -794,13 +789,19 @@
       pfTeamBlock.hidden = false;
     } else { pfTeamBlock.hidden = true; }
 
-    if (person.prefs && person.prefs.length) {
-      pfPrefLabel.textContent = person.ranked ? "Stated preferences (ranked)" : "Stated preferences";
-      pfPrefs.className = "prefs" + (person.ranked ? "" : " is-unranked");
-      pfPrefs.textContent = "";
-      person.prefs.forEach(function(p) { pfPrefs.appendChild(el("li", null, p)); });
-      pfPrefBlock.hidden = false;
-    } else { pfPrefBlock.hidden = true; }
+    if (person.field) {
+      pfField.textContent = person.field;
+      pfFieldBlock.hidden = false;
+    } else { pfFieldBlock.hidden = true; }
+
+    pfContact.textContent = "";
+    if (person.email) {
+      var mail = document.createElement("a");
+      mail.href = "mailto:" + person.email;
+      mail.textContent = person.email;
+      pfContact.appendChild(mail);
+      pfContactBlock.hidden = false;
+    } else { pfContactBlock.hidden = true; }
 
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
@@ -856,12 +857,9 @@
     headingEl.textContent = term + " team (" + team.length + ")";
     gridEl.textContent = "";
     team.forEach(function(person) {
-      var hasMore = !!(person.prefs && person.prefs.length);
-      var card = el(hasMore ? "button" : "div", "tcard" + (hasMore ? "" : " tcard--static"));
-      if (hasMore) {
-        card.type = "button";
-        card.setAttribute("aria-label", person.name + ", view profile");
-      }
+      var card = el("button", "tcard");
+      card.type = "button";
+      card.setAttribute("aria-label", person.name + ", view profile");
       var face = el("div", "tface");
       faceInto(face, person, false);
       card.appendChild(face);
@@ -869,7 +867,7 @@
       who.appendChild(el("div", "tname", person.name));
       who.appendChild(el("div", "tmeta", teamIn(person, term)));
       card.appendChild(who);
-      if (hasMore) card.addEventListener("click", function() { openProfile(person, card); });
+      card.addEventListener("click", function() { openProfile(person, card); });
       gridEl.appendChild(card);
     });
   }
