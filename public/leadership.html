@@ -103,7 +103,7 @@
     /* ── 02 Current leadership — the prominent tier ───────────────────────── */
     .lead-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(162px, 1fr));
       gap: 34px 20px;
       align-items: start;
     }
@@ -124,10 +124,10 @@
 
     .lead-portrait {
       position: relative;
-      width: 112px;
-      height: 112px;
-      margin: 0 auto 14px;
-      border-radius: 50%;
+      width: 134px;
+      height: 134px;
+      margin: 0 auto 15px;
+      border-radius: var(--r);
       background: var(--surface);
       overflow: hidden;
       box-shadow: 0 0 0 1px var(--line), 0 10px 26px rgba(20,18,15,.10);
@@ -154,10 +154,11 @@
     .lead-monogram {
       width: 100%;
       height: 100%;
+      border-radius: inherit;
       display: grid;
       place-items: center;
       font-family: var(--display);
-      font-size: 32px;
+      font-size: 38px;
       letter-spacing: -0.03em;
       color: #fff;
       background: linear-gradient(150deg, var(--accent-hi), var(--accent));
@@ -514,7 +515,7 @@
     /* ── Responsive ───────────────────────────────────────────────────────── */
     @media (max-width: 960px) {
       .ld-hero { grid-template-columns: 1fr; gap: 22px; align-items: start; }
-      .lead-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 30px 18px; }
+      .lead-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 30px 18px; }
     }
 
     @media (max-width: 640px) {
@@ -524,7 +525,7 @@
       .lead-name { font-size: 20px; }
       .lead-role { font-size: 11px; letter-spacing: 0.05em; }
       .lead-aff { font-size: 11px; }
-      .lead-portrait { width: 104px; height: 104px; margin-bottom: 12px; }
+      .lead-portrait { width: 125px; height: 125px; margin-bottom: 13px; }
       .officer { grid-template-columns: 1fr; gap: 10px; }
       .officer-face { width: 40px; height: 40px; }
       .officer-role { font-size: 9.5px; }
