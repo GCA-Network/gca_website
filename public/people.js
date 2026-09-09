@@ -24,7 +24,8 @@ window.GCA = (function () {
              { term:"2024–25", role:"Founder & President" }] },
     { id:"alex-feldman", name:"Alex Feldman", sort:"Feldman", inducted:"2023", field:"Data Science",
       uni:"Tsinghua University",
-      roles:[{ term:"2026–27", role:"VP of Outreach" }, { term:"2025–26", role:"VP of Outreach" }] },
+      roles:[{ term:"2026–27", role:"VP of Outreach" }, { term:"2025–26", role:"VP of Outreach" },
+             { term:"2024–25", role:"VP of Outreach" }] },
     { id:"immer-feng", name:"Immer Feng", sort:"Feng", inducted:"2025", field:"Financial Media", photo:"/assets/members/immer-feng.jpg",
       uni:"Peking University",
       roles:[{ term:"2026–27", role:"Secretary General" }, { term:"2025–26", role:"Secretary General" }] },
@@ -60,6 +61,11 @@ window.GCA = (function () {
       teams:[{ term:"2026–27", dept:"Outreach & Curation" }, { term:"2025–26", dept:"Outreach & Curation" }] },
 
     // ── 2024–25 team ──────────────────────────────────────────────────────
+    { id:"solomon-kim", name:"Solomon Kim", sort:"Kim", field:"Data Science",
+      uni:"Tsinghua University", teams:[{ term:"2026–27", dept:"Marketing & Branding" }] },
+    { id:"kai-liu", name:"Kai Liu", sort:"Liu", field:"Architecture",
+      uni:"Tsinghua University", teams:[{ term:"2026–27", dept:"Outreach & Curation" }] },
+
     { id:"brendon-tao", name:"Brendon Tao", sort:"Tao", inducted:"2024",
       uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Operations" }] },
     { id:"roger-liu", name:"Roger Liu", sort:"Liu", inducted:"2024", field:"Smart Logistics", photo:"/assets/members/roger.jpg", uni:"Tsinghua University",
@@ -69,9 +75,8 @@ window.GCA = (function () {
       uni:"Tsinghua University",
       roles:[{ term:"2024–25", role:"VP of Operations" }] },
     { id:"leo", name:"Leo", sort:"Leo", inducted:"2024", field:"Ocean Engineering",
-      uni:"Tsinghua University",
-      roles:[{ term:"2024–25", role:"VP of Outreach" }] },
-    { id:"eric-ling", name:"Eric Ling", sort:"Ling", inducted:"2024",
+      uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Outreach & Curation" }] },
+    { id:"eric-chen", name:"Eric Chen", sort:"Chen", inducted:"2024", field:"Robotics",
       uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Marketing & Branding" }] },
     { id:"rice", name:"Rice", sort:"Rice", inducted:"2024", field:"Architecture",
       uni:"Tsinghua University",

@@ -782,17 +782,17 @@
     if (person.roles && person.roles.length) {
       rows(pfTenure, person.roles, function(r) { return r.term; }, function(r) { return r.role; });
       pfTenureBlock.hidden = false;
-    } else { pfTenureBlock.hidden = true; }
+    } else { pfTenure.textContent = ""; pfTenureBlock.hidden = true; }
 
     if (person.teams && person.teams.length) {
       rows(pfTeam, person.teams, function(t) { return t.term; }, function(t) { return t.dept; });
       pfTeamBlock.hidden = false;
-    } else { pfTeamBlock.hidden = true; }
+    } else { pfTeam.textContent = ""; pfTeamBlock.hidden = true; }
 
     if (person.field) {
       pfField.textContent = person.field;
       pfFieldBlock.hidden = false;
-    } else { pfFieldBlock.hidden = true; }
+    } else { pfField.textContent = ""; pfFieldBlock.hidden = true; }
 
     pfContact.textContent = "";
     if (person.email) {
