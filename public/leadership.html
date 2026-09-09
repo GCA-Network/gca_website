@@ -295,15 +295,6 @@
       color: var(--fg);
     }
 
-    .officer-aff {
-      font-family: var(--mono);
-      font-size: 9.5px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--fg-subtle);
-      margin-top: 3px;
-    }
-
     .officer-role {
       font-family: var(--mono);
       font-size: 10.5px;
@@ -909,10 +900,7 @@
       var face = el("div", "officer-face");
       faceInto(face, person, false);
       person_.appendChild(face);
-      var who = el("div");
-      who.appendChild(el("div", "officer-name", person.name));
-      who.appendChild(el("div", "officer-aff", person.uni));
-      person_.appendChild(who);
+      person_.appendChild(el("div", "officer-name", person.name));
       row.appendChild(person_);
       row.addEventListener("click", function() { openProfile(person, row); });
       officersHost.appendChild(row);

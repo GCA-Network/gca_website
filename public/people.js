@@ -11,7 +11,8 @@
 window.GCA = (function () {
   var TERMS = ["2026–27", "2025–26", "2024–25"];
   var CURRENT_TERM = "2026–27";
-  var ROLE_ORDER = ["President", "VP of Operations", "VP of Marketing", "VP of Outreach",
+  var ROLE_ORDER = ["Founder & President", "President",
+                    "VP of Operations", "VP of Marketing", "VP of Outreach",
                     "Secretary General", "Finance Director", "Consultant"];
 
   var PEOPLE = [
@@ -19,7 +20,7 @@ window.GCA = (function () {
     { id:"felix-gan", name:"Felix Gan", sort:"Gan", inducted:"2024", photo:"/assets/members/felix.jpg",
       uni:"Tsinghua University",
       roles:[{ term:"2026–27", role:"President" }, { term:"2025–26", role:"President" },
-             { term:"2024–25", role:"President" }] },
+             { term:"2024–25", role:"Founder & President" }] },
     { id:"alex-feldman", name:"Alex Feldman", sort:"Feldman", inducted:"2023",
       uni:"Tsinghua University",
       roles:[{ term:"2026–27", role:"VP of Outreach" }, { term:"2025–26", role:"VP of Outreach" }] },
