@@ -179,7 +179,7 @@
     </ul>
     <div class="nav-cta">
       <a href="/login.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn">Login</a>
-      <a href="/#join" class="btn btn-sm btn-primary">Join GCA</a>
+      <a href="/#join" class="btn btn-sm btn-primary" id="nav-join-btn">Join GCA</a>
     </div>
     <button class="nav-hamburger" id="nav-hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu">
       <span class="hamburger-line"></span>
@@ -198,7 +198,7 @@
     </ul>
     <div class="mobile-menu-cta">
       <a href="/login.html" class="btn btn-sm btn-outline" style="border-color:var(--accent);color:var(--accent)" id="nav-login-btn-mobile">Login</a>
-      <a href="/#join" class="btn btn-sm btn-primary">Join GCA</a>
+      <a href="/#join" class="btn btn-sm btn-primary" id="nav-join-btn-mobile">Join GCA</a>
     </div>
   </div>
 </nav>
@@ -288,6 +288,7 @@
 <script type="module">
   import { initializeApp }            from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js';
+  import { bindNavAuth }                 from '/nav-auth.js';
 
   const app  = initializeApp(window.firebaseConfig);
   const auth = getAuth(app);
@@ -295,11 +296,8 @@
   var currentUser = null;
   onAuthStateChanged(auth, function(user) {
     currentUser = user;
-    var loginBtn = document.getElementById('nav-login-btn');
-    var loginBtnMobile = document.getElementById('nav-login-btn-mobile');
-    if (user && loginBtn) { loginBtn.href = '/dashboard.html'; loginBtn.textContent = 'Dashboard'; }
-    if (user && loginBtnMobile) { loginBtnMobile.href = '/dashboard.html'; loginBtnMobile.textContent = 'Dashboard'; }
   });
+  bindNavAuth(auth);
 
 (function () {
 
