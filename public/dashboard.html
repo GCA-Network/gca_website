@@ -14,7 +14,7 @@
       padding-top: 72px;
       background: var(--bg);
       display: grid;
-      grid-template-columns: 240px 1fr;
+      grid-template-columns: 240px minmax(0, 1fr);
     }
 
     /* Sidebar */
@@ -319,7 +319,10 @@
       background: rgba(255,255,255,.5);
     }
 
-    .recent-item-title { font-family: var(--display); font-size: 1rem; font-weight: 400; letter-spacing: -0.01em; color: var(--fg); margin-bottom: 2px; }
+    /* Without this the text column cannot shrink, so a long title or a wide
+       tag-and-buttons group pushes the whole row past the viewport. */
+    .recent-item > div:first-child { min-width: 0; }
+    .recent-item-title { font-family: var(--display); font-size: 1rem; font-weight: 400; letter-spacing: -0.01em; color: var(--fg); margin-bottom: 2px; overflow-wrap: anywhere; }
     .recent-item-meta  { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--fg-subtle); }
     .recent-item-tag   {
       font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
@@ -440,7 +443,7 @@
     /* Interview scheduling modal */
 
     @media (max-width: 900px) {
-      .dash-layout { grid-template-columns: 1fr; }
+      .dash-layout { grid-template-columns: minmax(0, 1fr); }
 
       /* There is no room for a column here, so the sidebar folds into a single
          strip that scrolls sideways and stays put under the nav while the panel
@@ -490,6 +493,13 @@
 
       .dash-main { padding: 1.5rem; }
       .field-row-2 { grid-template-columns: 1fr; }
+    }
+
+    /* The tag and the two buttons need about 200px, which leaves the title a
+       couple of characters on a phone. Below this the row stacks instead. */
+    @media (max-width: 560px) {
+      .recent-item { flex-direction: column; align-items: stretch; gap: 0.7rem; }
+      .recent-item-tag { margin-right: auto; }
     }
   </style>
 </head>
