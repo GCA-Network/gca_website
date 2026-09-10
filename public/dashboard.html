@@ -441,7 +441,53 @@
 
     @media (max-width: 900px) {
       .dash-layout { grid-template-columns: 1fr; }
-      .dash-sidebar { display: none; }
+
+      /* There is no room for a column here, so the sidebar folds into a single
+         strip that scrolls sideways and stays put under the nav while the panel
+         behind it scrolls — otherwise the only way to reach another section
+         would be to scroll back to the top. */
+      .dash-sidebar {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.35rem;
+        height: auto;
+        padding: 0.55rem 1.5rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg);
+        z-index: 5;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+        -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 34px), transparent);
+        mask-image: linear-gradient(to right, #000 calc(100% - 34px), transparent);
+      }
+      .dash-sidebar::-webkit-scrollbar { display: none; }
+
+      /* Roomier than the desktop row so each link clears a 44px tap target. */
+      .sidebar-link { flex-shrink: 0; white-space: nowrap; padding: 0.62rem 0.8rem; }
+
+      /* Keeps the last link clear of the fade at the strip's right edge. */
+      .sidebar-link:last-of-type { margin-right: 1.75rem; }
+
+      /* Each group heading collapses into the hairline that separates the two
+         groups. The words stay in the DOM, so the grouping still reads aloud. */
+      .sidebar-label {
+        flex: 0 0 1px;
+        width: 1px;
+        height: 22px;
+        margin: 0 0.5rem;
+        padding: 0;
+        background: var(--border);
+        font-size: 0;
+        overflow: hidden;
+      }
+      .sidebar-label:first-child { display: none; }
+
+      /* The identity card carries no live data, and a bordered card would sit
+         awkwardly in a row of links. */
+      .sidebar-spacer, .sidebar-user { display: none; }
+
       .dash-main { padding: 1.5rem; }
       .field-row-2 { grid-template-columns: 1fr; }
     }
