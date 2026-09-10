@@ -47,6 +47,9 @@
     .gc-tr { top:10px; right:12px; color:var(--accent); }
     .gc-bl { bottom:10px; left:12px; }
     .gc-br { bottom:10px; right:12px; }
+    /* The reveal grows each connection out of the hub; without this the stroke
+       would thin out along with it. */
+    .gx-links line { vector-effect:non-scaling-stroke; }
 
     /* ─── LEDGER STRIP (marquee) ────────────────────────────────── */
     .ledger { border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-2); padding:18px 0; overflow:hidden; }
@@ -384,7 +387,7 @@
             <rect width="400" height="500" fill="url(#grid)" opacity=".55"/>
             <!-- Reach: every institution connects through the Shenzhen chapter,
                  so every line ends at the hub and nowhere else. -->
-            <g stroke="#7B3FA0" stroke-width=".75" stroke-linecap="round">
+            <g class="gx-links" stroke="#7B3FA0" stroke-width=".75" stroke-linecap="round">
               <line x1="200" y1="286" x2="264.1" y2="323" opacity="0.284"/>
               <line x1="200" y1="286" x2="276.1" y2="359.2" opacity="0.268"/>
               <line x1="200" y1="286" x2="230.1" y2="359.9" opacity="0.281"/>
@@ -418,7 +421,7 @@
               <line x1="200" y1="286" x2="278.7" y2="183.6" opacity="0.257"/>
             </g>
             <!-- 31 member institutions: 8 in East Asia, 15 in North America, 8 in Europe -->
-            <g fill="#efe6f5" stroke="#7B3FA0" stroke-width="1.1" stroke-opacity=".5">
+            <g class="gx-nodes" fill="#efe6f5" stroke="#7B3FA0" stroke-width="1.1" stroke-opacity=".5">
               <!-- East Asia (8) -->
               <circle cx="264.1" cy="323" r="4.3"/>
               <circle cx="276.1" cy="359.2" r="4.3"/>
@@ -455,15 +458,17 @@
               <circle cx="278.7" cy="183.6" r="4.3"/>
             </g>
             <!-- Shenzhen: the founding chapter every line runs back to -->
-            <circle cx="200" cy="286" r="27" fill="url(#hubGlow)"/>
-            <circle cx="200" cy="286" r="12" fill="#7B3FA0" opacity=".15"/>
-            <circle cx="200" cy="286" r="7.5" fill="#4a2363"/>
-            <circle cx="200" cy="286" r="2.8" fill="#fbf9f3"/>
+            <g class="gx-hub">
+              <circle cx="200" cy="286" r="27" fill="url(#hubGlow)"/>
+              <circle cx="200" cy="286" r="12" fill="#7B3FA0" opacity=".15"/>
+              <circle cx="200" cy="286" r="7.5" fill="#4a2363"/>
+              <circle cx="200" cy="286" r="2.8" fill="#fbf9f3"/>
+            </g>
             <!-- Region labels, each carrying its real count -->
-            <text x="216" y="290" font-family="'JetBrains Mono',monospace" font-size="9.5" letter-spacing="1.4" fill="#4a2363" paint-order="stroke" stroke="#fbf9f3" stroke-width="3.5" stroke-linejoin="round">SHENZHEN</text>
-            <text x="22" y="56" text-anchor="start" font-family="'JetBrains Mono',monospace" font-size="8.5" letter-spacing="1.3" fill="#6c6558" paint-order="stroke" stroke="#fbf9f3" stroke-width="3.5" stroke-linejoin="round">EUROPE<tspan dx="9" font-size="10.5" font-weight="700" fill="#7B3FA0" letter-spacing="0">8</tspan></text>
-            <text x="382" y="56" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" letter-spacing="1.3" fill="#6c6558" paint-order="stroke" stroke="#fbf9f3" stroke-width="3.5" stroke-linejoin="round">NORTH AMERICA<tspan dx="9" font-size="10.5" font-weight="700" fill="#7B3FA0" letter-spacing="0">15</tspan></text>
-            <text x="199" y="430" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" letter-spacing="1.3" fill="#6c6558" paint-order="stroke" stroke="#fbf9f3" stroke-width="3.5" stroke-linejoin="round">EAST ASIA<tspan dx="9" font-size="10.5" font-weight="700" fill="#7B3FA0" letter-spacing="0">8</tspan></text>
+            <text class="gx-label" x="216" y="290" font-family="'JetBrains Mono',monospace" font-size="9.5" letter-spacing="1.4" fill="#4a2363" paint-order="stroke" stroke="#fbf9f3" stroke-width="3.5" stroke-linejoin="round">SHENZHEN</text>
+            <text class="gx-label" x="22" y="56" text-anchor="start" font-family="'JetBrains Mono',monospace" font-size="8.5" letter-spacing="1.3" fill="#6c6558" paint-order="stroke" stroke="#fbf9f3" stroke-width="3.5" stroke-linejoin="round">EUROPE<tspan dx="9" font-size="10.5" font-weight="700" fill="#7B3FA0" letter-spacing="0">8</tspan></text>
+            <text class="gx-label" x="382" y="56" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="8.5" letter-spacing="1.3" fill="#6c6558" paint-order="stroke" stroke="#fbf9f3" stroke-width="3.5" stroke-linejoin="round">NORTH AMERICA<tspan dx="9" font-size="10.5" font-weight="700" fill="#7B3FA0" letter-spacing="0">15</tspan></text>
+            <text class="gx-label" x="199" y="430" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8.5" letter-spacing="1.3" fill="#6c6558" paint-order="stroke" stroke="#fbf9f3" stroke-width="3.5" stroke-linejoin="round">EAST ASIA<tspan dx="9" font-size="10.5" font-weight="700" fill="#7B3FA0" letter-spacing="0">8</tspan></text>
           </svg>
         </div>
         <!-- Location marker -->
@@ -883,6 +888,57 @@
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.rv').forEach(function(el) { obs.observe(el); });
+
+  // ── Hero diagram reveal ───────────────────────────────────────────────────
+  // One orchestrated moment that performs what the diagram claims: the founding
+  // chapter arrives, connections grow outward from it, and each institution
+  // lands as its line reaches it. The wave spreads by real distance from the
+  // hub, so nearby institutions light up before distant ones.
+  //
+  // Everything animates transform and opacity only, and every tween runs FROM a
+  // hidden state, so the authored SVG is the finished picture — with no script,
+  // no GSAP, or reduced motion, the diagram simply renders as it stands.
+  (function revealDiagram() {
+    var svg = document.querySelector('.graph svg');
+    if (!svg || !window.gsap) return;
+    if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+
+    var HUB    = { x: 200, y: 286 };
+    var links  = svg.querySelectorAll('.gx-links line');
+    var nodes  = svg.querySelectorAll('.gx-nodes circle');
+    var labels = svg.querySelectorAll('.gx-label');
+    if (!links.length || !nodes.length) return;
+
+    function reach(el) {
+      var x = +(el.getAttribute('x2') || el.getAttribute('cx'));
+      var y = +(el.getAttribute('y2') || el.getAttribute('cy'));
+      return Math.sqrt(Math.pow(x - HUB.x, 2) + Math.pow(y - HUB.y, 2));
+    }
+    var far = 1;
+    Array.prototype.forEach.call(links, function(l) { far = Math.max(far, reach(l)); });
+    var origin = HUB.x + ' ' + HUB.y;
+    var lead = function(i, el) { return 0.46 * reach(el) / far; };
+
+    var tl = gsap.timeline({ paused: true });
+    tl.from('.gx-hub', { scale: 0, svgOrigin: origin, duration: 0.5, ease: 'back.out(1.7)' })
+      .from(links,  { scale: 0, svgOrigin: origin, duration: 0.45,
+                      ease: 'power2.out', stagger: lead }, 0.16)
+      .from(nodes,  { scale: 0, opacity: 0, transformOrigin: '50% 50%', duration: 0.4,
+                      ease: 'back.out(2.2)',
+                      stagger: function(i, el) { return lead(i, el) + 0.2; } }, 0.16)
+      .from(labels, { opacity: 0, y: 5, duration: 0.45, ease: 'power2.out', stagger: 0.07 }, 0.6);
+
+    // Play once the frame is on screen, and give its own fade-in a head start so
+    // the diagram does not draw itself behind a half-transparent panel.
+    var watch = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (!e.isIntersecting) return;
+        watch.unobserve(e.target);
+        gsap.delayedCall(0.12, function() { tl.play(); });
+      });
+    }, { threshold: 0.25 });
+    watch.observe(svg);
+  })();
 
   // Character counter
   var why = document.getElementById('f-why');
