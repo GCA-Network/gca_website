@@ -48,9 +48,10 @@ function buildEmailHtml(firstName, bodyHtml) {
   return `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px;color:#1a1a1a;"><div style="border-bottom:2px solid #e5e7eb;padding-bottom:16px;margin-bottom:24px;"><h2 style="margin:0;font-size:20px;color:#111;">GCA International Alumni Network</h2></div><p style="font-size:16px;">Hi ${firstName},</p>${bodyHtml}<div style="margin-top:32px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:13px;color:#6b7280;">GCA International Alumni Network</div></div>`;
 }
 
+// Resolves true only when Resend accepted the message.
 async function sendResendEmail(app, adminEmail) {
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) { console.warn('RESEND_API_KEY not set — skipping email'); return; }
+  if (!apiKey) { console.warn('RESEND_API_KEY not set — cannot send email'); return false; }
 
   let subject, html;
   if (app.status === 'Accepted') {
@@ -63,7 +64,7 @@ async function sendResendEmail(app, adminEmail) {
     subject = 'Membership Conversation — GCA International Alumni Network';
     html = buildEmailHtml(app.firstName, `<p style="font-size:16px;line-height:1.6;">We have reviewed your membership request for the <strong>GCA International Alumni Network</strong> and would love to schedule a conversation with you as the next step in our process.</p><p style="font-size:16px;line-height:1.6;"><strong>Please reply to this email with 2–3 dates and times that work for you</strong> and we will confirm a time as soon as possible.</p><p style="font-size:16px;line-height:1.6;">We look forward to speaking with you!</p>`);
   } else {
-    return;
+    return false;
   }
 
   try {
@@ -78,10 +79,12 @@ async function sendResendEmail(app, adminEmail) {
         html,
       }),
     });
-    if (!res.ok) console.error('Resend error:', res.status, await res.text());
-    else console.log('Email sent to', app.email, '— status:', app.status);
+    if (!res.ok) { console.error('Resend error:', res.status, await res.text()); return false; }
+    console.log('Email sent to', app.email, '— status:', app.status);
+    return true;
   } catch (e) {
     console.error('Failed to send email:', e.message);
+    return false;
   }
 }
 
@@ -326,6 +329,7 @@ const server = http.createServer(function (req, res) {
           why:         String(app.why || '').trim(),
           submittedAt: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }),
           status:      'Pending',
+          emailSent:   false,
         };
         apps.unshift(newApp);
         fs.writeFile(APPS_FILE, JSON.stringify(apps, null, 2), function() {
@@ -347,12 +351,27 @@ const server = http.createServer(function (req, res) {
         var apps = err ? [] : JSON.parse(data);
         var idx = apps.findIndex(function(a) { return a.id === appId; });
         if (idx === -1) { json(res, 404, { error: 'Not found' }); return; }
-        if (update.status) apps[idx].status = String(update.status).trim();
-        fs.writeFile(APPS_FILE, JSON.stringify(apps, null, 2), function() {
-          var saved = apps[idx];
-          json(res, 200, saved);
-          // Fire-and-forget email
-          sendResendEmail(saved, update.adminEmail || null);
+        // A decision only records what was decided. Nothing reaches the
+        // applicant until someone presses Send email, and changing the decision
+        // puts the request back to needing one.
+        if (update.status) {
+          apps[idx].status      = String(update.status).trim();
+          apps[idx].emailSent   = false;
+          apps[idx].emailSentAt = null;
+        }
+
+        function save(cb) {
+          fs.writeFile(APPS_FILE, JSON.stringify(apps, null, 2), cb);
+        }
+
+        save(function() {
+          if (!update.sendEmail) { json(res, 200, apps[idx]); return; }
+          sendResendEmail(apps[idx], update.adminEmail || null).then(function(sent) {
+            if (!sent) { json(res, 502, { error: 'Email could not be sent.' }); return; }
+            apps[idx].emailSent   = true;
+            apps[idx].emailSentAt = new Date().toISOString();
+            save(function() { json(res, 200, apps[idx]); });
+          });
         });
       });
     });

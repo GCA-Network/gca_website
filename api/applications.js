@@ -49,6 +49,7 @@ module.exports = async function handler(req, res) {
       why:         String(app.why  || '').trim(),
       submittedAt: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
       status:      'Pending',
+      emailSent:   false,
     };
 
     await db.collection('applications').doc(String(id)).set(newApp);

@@ -12,11 +12,13 @@ function readBody(req) {
   });
 }
 
+// Resolves true only when Resend accepted the message, so a request is never
+// marked as contacted unless it really was.
 async function sendEmail({ to, subject, html, replyTo }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn('RESEND_API_KEY not set — skipping email');
-    return;
+    console.warn('RESEND_API_KEY not set — cannot send email');
+    return false;
   }
   try {
     const res = await fetch('https://api.resend.com/emails', {
@@ -36,9 +38,12 @@ async function sendEmail({ to, subject, html, replyTo }) {
     if (!res.ok) {
       const err = await res.text();
       console.error('Resend error:', res.status, err);
+      return false;
     }
+    return true;
   } catch (e) {
     console.error('Failed to send email:', e.message);
+    return false;
   }
 }
 
@@ -72,6 +77,10 @@ module.exports = async function handler(req, res) {
   }
 
   // PATCH /api/applications/:id
+  //
+  // A decision only records what was decided; nothing reaches the applicant
+  // until the request comes back with sendEmail set. Changing a decision clears
+  // the sent flag, so the card goes back to needing an email.
   if (req.method === 'PATCH') {
     const update = await readBody(req);
     const docRef = db.collection('applications').doc(String(id));
@@ -83,22 +92,22 @@ module.exports = async function handler(req, res) {
 
     const existing = doc.data();
     const changes = {};
-    if (update.status)        changes.status        = String(update.status).trim();
+    if (update.status) {
+      changes.status      = String(update.status).trim();
+      changes.emailSent   = false;
+      changes.emailSentAt = null;
+    }
     if (update.interviewDate) changes.interviewDate = String(update.interviewDate).trim();
-    await docRef.update(changes);
+    if (Object.keys(changes).length) await docRef.update(changes);
 
-    const updated = { ...existing, ...changes };
+    let updated = { ...existing, ...changes };
+    if (!update.sendEmail) return res.end(JSON.stringify(updated));
 
-    // Send email based on new status
     const adminEmail = update.adminEmail || null;
-    const newStatus  = changes.status;
-
-    if (newStatus === 'Accepted') {
-      await sendEmail({
-        to:      existing.email,
-        replyTo: adminEmail,
+    const templates = {
+      'Accepted': {
         subject: 'Your GCA Alumni Network Membership — Welcome!',
-        html: buildEmailHtml(existing.firstName, `
+        body: `
           <p style="font-size:16px;line-height:1.6;">
             We are pleased to inform you that your membership request for the
             <strong>GCA International Alumni Network</strong> has been
@@ -108,16 +117,11 @@ module.exports = async function handler(req, res) {
             Welcome to the network! We will be in touch shortly with next steps.
           </p>
           ${adminEmail ? `<p style="font-size:14px;color:#6b7280;">You can reply to this email if you have any questions.</p>` : ''}
-        `),
-      });
-    }
-
-    if (newStatus === 'Rejected') {
-      await sendEmail({
-        to:      existing.email,
-        replyTo: adminEmail,
+        `,
+      },
+      'Rejected': {
         subject: 'Your GCA Alumni Network Membership — Update',
-        html: buildEmailHtml(existing.firstName, `
+        body: `
           <p style="font-size:16px;line-height:1.6;">
             Thank you for your interest in the
             <strong>GCA International Alumni Network</strong> and for taking the time to request membership.
@@ -127,16 +131,11 @@ module.exports = async function handler(req, res) {
             at this time. We appreciate your effort and encourage you to apply again in the future.
           </p>
           ${adminEmail ? `<p style="font-size:14px;color:#6b7280;">You can reply to this email if you have any questions.</p>` : ''}
-        `),
-      });
-    }
-
-    if (newStatus === 'Interview Scheduled') {
-      await sendEmail({
-        to:      existing.email,
-        replyTo: adminEmail,
+        `,
+      },
+      'Interview Scheduled': {
         subject: 'Membership Conversation — GCA International Alumni Network',
-        html: buildEmailHtml(existing.firstName, `
+        body: `
           <p style="font-size:16px;line-height:1.6;">
             We have reviewed your membership request for the
             <strong>GCA International Alumni Network</strong> and would love to
@@ -149,10 +148,30 @@ module.exports = async function handler(req, res) {
           <p style="font-size:16px;line-height:1.6;">
             We look forward to speaking with you!
           </p>
-        `),
-      });
+        `,
+      },
+    };
+
+    const template = templates[updated.status];
+    if (!template) {
+      res.statusCode = 400;
+      return res.end(JSON.stringify({ error: 'Decide on this request before sending an email.' }));
     }
 
+    const sent = await sendEmail({
+      to:      updated.email,
+      replyTo: adminEmail,
+      subject: template.subject,
+      html:    buildEmailHtml(updated.firstName, template.body),
+    });
+    if (!sent) {
+      res.statusCode = 502;
+      return res.end(JSON.stringify({ error: 'Email could not be sent.' }));
+    }
+
+    const sentFields = { emailSent: true, emailSentAt: new Date().toISOString() };
+    await docRef.update(sentFields);
+    updated = { ...updated, ...sentFields };
     return res.end(JSON.stringify(updated));
   }
 

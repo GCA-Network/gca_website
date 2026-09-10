@@ -371,6 +371,9 @@
     .app-status.accepted  { color: #16a34a; background: #f0fdf4; border-color: #bbf7d0; }
     .app-status.rejected  { color: #dc2626; background: #fef2f2; border-color: #fecaca; }
     .app-status.interview { color: #0369a1; background: #f0f9ff; border-color: #bae6fd; }
+    /* Decided, but the applicant has not been told. Dashed already means
+       'nothing here yet' on this page, so it reads as unfinished business. */
+    .app-status.unsent { color: var(--fg-subtle); background: transparent; border: 1px dashed var(--border-hi); }
     .app-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem 2rem; }
     .app-field-label { font-family: var(--mono); font-size: 9px; font-weight: 500; color: var(--fg-subtle); text-transform: uppercase; letter-spacing: 0.16em; margin-bottom: 2px; }
     .app-field-value { font-family: var(--ff); font-size: 14px; line-height: 1.65; color: var(--fg-muted); }
@@ -379,13 +382,18 @@
     .app-why .app-field-value { line-height: 1.6; }
     .app-actions { display: flex; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
     .app-btn { padding: 5px 14px; font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; border-radius: var(--r); border: 1px solid var(--border); background: rgba(255,255,255,.5); color: var(--fg-muted); cursor: pointer; font-family: var(--mono); transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease; }
-    .app-btn:hover { background: var(--surface); border-color: var(--border-hi); color: var(--fg); }
+    .app-btn:hover:not(:disabled) { background: var(--surface); border-color: var(--border-hi); color: var(--fg); }
+    .app-btn:disabled { opacity: 0.4; cursor: default; }
     .app-btn.accept  { background: #f0fdf4; border-color: #bbf7d0; color: #16a34a; }
-    .app-btn.accept:hover  { background: #dcfce7; }
+    .app-btn.accept:hover:not(:disabled)  { background: #dcfce7; }
     .app-btn.reject  { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
-    .app-btn.reject:hover  { background: #fee2e2; }
+    .app-btn.reject:hover:not(:disabled)  { background: #fee2e2; }
     .app-btn.interview { background: #f0f9ff; border-color: #bae6fd; color: #0369a1; }
-    .app-btn.interview:hover { background: #e0f2fe; }
+    .app-btn.interview:hover:not(:disabled) { background: #e0f2fe; }
+    /* The only button on the card that reaches a real person, so it is the only
+       one carrying the brand colour. */
+    .app-btn.email { background: var(--accent-dim); border-color: var(--accent-mid); color: var(--accent); font-weight: 600; }
+    .app-btn.email:hover:not(:disabled) { background: var(--accent-mid); color: var(--accent-hi); }
     .app-interview-date { font-size: 0.75rem; color: #0369a1; margin-top: 0.25rem; }
 
     /* Request queue — the header's own hairline doubles as the tab rail, so
@@ -793,9 +801,31 @@
     return '';
   }
 
-  function statusLabel(status) {
-    return status === 'Interview Scheduled' ? 'Conversation Requested' : status;
+  // Requests decided before Send email existed carry no emailSent field at all.
+  // Back then the decision itself emailed the applicant, so those count as
+  // contacted — otherwise the dashboard would invite someone to email a person
+  // who already heard from us. Every record written since says so explicitly.
+  function hasBeenEmailed(a) {
+    if (a.emailSent === undefined || a.emailSent === null) return !!statusClass(a.status);
+    return !!a.emailSent;
   }
+
+  // The badge answers the reviewer's real question: has this person been told?
+  // Until Send email goes through, every decided request reads the same way.
+  function statusLabel(a) {
+    if (!statusClass(a.status))  return a.status || 'Pending';
+    if (!hasBeenEmailed(a))      return 'Needs contacting';
+    if (a.status === 'Rejected') return 'Rejection email sent';
+    return 'Conversation Requested';
+  }
+
+  function badgeClass(a) {
+    var k = statusClass(a.status);
+    if (!k) return '';
+    return hasBeenEmailed(a) ? k : 'unsent';
+  }
+
+  function canEmail(a) { return !!statusClass(a.status) && !hasBeenEmailed(a); }
 
   // Requests are grouped by what has been decided about them. Anything not yet
   // answered lands in 'pending', so a record whose status is missing or
@@ -840,19 +870,26 @@
   function updateCardUI(card, a) {
     var statusEl = card.querySelector('.app-status');
     if (statusEl) {
-      statusEl.textContent = statusLabel(a.status);
-      statusEl.className   = 'app-status ' + statusClass(a.status);
+      statusEl.textContent = statusLabel(a);
+      statusEl.className   = 'app-status ' + badgeClass(a);
     }
-    // Accepting or rejecting emails the applicant, so both are final once made.
-    var done = a.status === 'Accepted' || a.status === 'Rejected';
-    card.querySelectorAll('.app-btn.accept, .app-btn.reject').forEach(function(b) {
-      b.disabled      = done;
-      b.style.opacity = done ? '0.4' : '';
-      b.style.cursor  = done ? 'default' : '';
+    // A decision can be changed freely until the applicant has been told; once
+    // the email is out it is final, because they have already read it.
+    var sent = hasBeenEmailed(a);
+    card.querySelectorAll('.app-btn.accept, .app-btn.reject, .app-btn.interview').forEach(function(b) {
+      b.disabled = sent;
     });
+    var mail = card.querySelector('.app-btn.email');
+    if (mail) {
+      mail.disabled    = !canEmail(a);
+      mail.innerHTML   = sent ? '&#9993; Email sent' : '&#9993; Send email';
+      mail.title       = sent ? 'Already contacted at ' + a.email
+                       : statusClass(a.status) ? 'Send the ' + a.status.toLowerCase() + ' email to ' + a.email
+                       : 'Decide on this request first';
+    }
   }
 
-  // Every decision sends an email, so a card in flight takes no further clicks.
+  // Sending reaches a real person, so a card in flight takes no further clicks.
   function setBusy(card, busy) {
     card.dataset.busy = busy ? '1' : '';
     card.classList.toggle('busy', busy);
@@ -880,16 +917,25 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
-    .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(r) {
+      if (r.ok) return r.json();
+      return r.json().catch(function() { return {}; }).then(function(body) {
+        throw new Error(body.error || 'Request failed');
+      });
+    })
     .then(function(updated) {
-      a.status = updated.status;
+      a.status      = updated.status;
+      a.emailSent   = !!updated.emailSent;
+      a.emailSentAt = updated.emailSentAt || null;
       setBusy(card, false);
       if (tabKey(a.status) === activeTab) { updateCardUI(card, a); renderTabs(); }
       else { removeCard(card); }
     })
-    .catch(function() {
+    .catch(function(err) {
       setBusy(card, false);
-      alert('Could not update this request. Please try again.');
+      alert(data.sendEmail
+        ? (err.message || 'The email could not be sent.') + ' Nothing was sent, so the request still needs contacting.'
+        : 'Could not update this request. Please try again.');
     });
   }
 
@@ -929,6 +975,7 @@
         '<button class="app-btn accept">&#10003; Accept</button>' +
         '<button class="app-btn reject">&#10007; Reject</button>' +
         '<button class="app-btn interview">&#128197; Request Conversation</button>' +
+        '<button class="app-btn email">&#9993; Send email</button>' +
         '<button class="app-btn delete">Delete</button>' +
       '</div>';
 
@@ -941,7 +988,12 @@
       patchApplication(a, card, { status: 'Rejected' });
     });
     card.querySelector('.app-btn.interview').addEventListener('click', function() {
+      if (this.disabled) return;
       patchApplication(a, card, { status: 'Interview Scheduled' });
+    });
+    card.querySelector('.app-btn.email').addEventListener('click', function() {
+      if (this.disabled) return;
+      patchApplication(a, card, { sendEmail: true });
     });
 
     // Deleting a request cannot be undone, so the button asks a second time and
