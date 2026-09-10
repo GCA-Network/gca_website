@@ -385,6 +385,58 @@
     .app-btn.interview:hover { background: #e0f2fe; }
     .app-interview-date { font-size: 0.75rem; color: #0369a1; margin-top: 0.25rem; }
 
+    /* Request queue — the header's own hairline doubles as the tab rail, so
+       the row reads as part of the header rather than a second band. */
+    .dash-header.with-tabs { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+
+    .app-tabs {
+      display: flex; flex-wrap: wrap; gap: 0.55rem 1.75rem;
+      margin: 1.4rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .app-tab {
+      position: relative;
+      padding: 0 0 0.7rem;
+      background: none; border: none; cursor: pointer;
+      font-family: var(--mono); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--fg-subtle);
+      transition: color 0.15s ease;
+    }
+    .app-tab::after {
+      content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+      background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.24s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .app-tab:hover { color: var(--fg-muted); }
+    .app-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .app-tab.active { color: var(--fg); }
+    .app-tab.active::after { transform: scaleX(1); }
+    /* The count is what the row is really for, so it carries more weight than
+       the label it follows. Kept in the mono face: the display serif draws '1'
+       as a bare stroke that reads as a pipe rather than a digit. */
+    .app-tab-count {
+      margin-left: 0.85em;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+      font-variant-numeric: tabular-nums;
+      color: var(--fg-muted);
+      transition: color 0.15s ease;
+    }
+    .app-tab.active .app-tab-count { color: var(--accent); }
+
+    .app-card.busy { opacity: 0.55; pointer-events: none; }
+
+    /* Delete manages the record rather than deciding on the person, so it sits
+       away from the three verdict buttons and carries no icon. */
+    .app-btn.delete { margin-left: auto; color: var(--fg-subtle); }
+    .app-btn.delete:hover,
+    .app-btn.delete.confirming { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .app-tab::after { transition: none; }
+    }
+
     /* Interview scheduling modal */
 
     @media (max-width: 900px) {
@@ -573,11 +625,18 @@
 
   <!-- Applications panel (hidden by default) -->
   <main class="dash-main" id="panel-apps" style="display:none">
-    <div class="dash-header">
+    <div class="dash-header with-tabs">
       <div>
         <h1>Membership Requests</h1>
         <p>Alumni network membership requests submitted through the website.</p>
       </div>
+    </div>
+
+    <div class="app-tabs" id="apps-tabs" role="group" aria-label="Filter membership requests">
+      <button type="button" class="app-tab active" data-tab="pending" aria-pressed="true">Awaiting review<span class="app-tab-count">0</span></button>
+      <button type="button" class="app-tab" data-tab="accepted" aria-pressed="false">Accepted<span class="app-tab-count">0</span></button>
+      <button type="button" class="app-tab" data-tab="rejected" aria-pressed="false">Rejected<span class="app-tab-count">0</span></button>
+      <button type="button" class="app-tab" data-tab="interview" aria-pressed="false">Conversation requested<span class="app-tab-count">0</span></button>
     </div>
 
     <div id="apps-list">
@@ -666,33 +725,14 @@
   tabPosts.addEventListener('click', function(e) { e.preventDefault(); showPosts(); });
   tabApps.addEventListener('click',  function(e) { e.preventDefault(); showApps(); });
 
-  // ── Load applications ─────────────────────────────────────────────────────
+  // ── Membership requests ───────────────────────────────────────────────────
   function escHtml(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  // ── Interview scheduling modal ─────────────────────────────────────────────
-  var schedBackdrop   = document.getElementById('sched-backdrop');
-
-  function patchApplication(id, data, card, onSuccess) {
-    var payload = Object.assign({}, data);
-    if (currentAdminEmail) payload.adminEmail = currentAdminEmail;
-    fetch('/api/applications/' + id, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(updated) {
-      updateCardUI(card, updated);
-      if (onSuccess) onSuccess();
-    })
-    .catch(function() { alert('Failed to update application. Please try again.'); });
-  }
-
   function statusClass(status) {
-    if (status === 'Accepted')           return 'accepted';
-    if (status === 'Rejected')           return 'rejected';
+    if (status === 'Accepted')            return 'accepted';
+    if (status === 'Rejected')            return 'rejected';
     if (status === 'Interview Scheduled') return 'interview';
     return '';
   }
@@ -701,75 +741,203 @@
     return status === 'Interview Scheduled' ? 'Conversation Requested' : status;
   }
 
+  // Requests are grouped by what has been decided about them. Anything not yet
+  // answered lands in 'pending', so a record whose status is missing or
+  // unrecognised still surfaces for review instead of disappearing.
+  function tabKey(status) { return statusClass(status) || 'pending'; }
+
+  var EMPTY = {
+    pending:   'Nothing waiting for review.',
+    accepted:  'No accepted requests yet.',
+    rejected:  'No rejected requests yet.',
+    interview: 'No conversation requests yet.',
+  };
+
+  var APPS         = [];
+  var activeTab    = 'pending';
+  var tabsRow      = document.getElementById('apps-tabs');
+  var appsList     = document.getElementById('apps-list');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function animates() { return window.gsap && !reduceMotion.matches; }
+
+  // ── Tab row ───────────────────────────────────────────────────────────────
+  function renderTabs() {
+    tabsRow.querySelectorAll('.app-tab').forEach(function(btn) {
+      var key = btn.dataset.tab;
+      var n   = APPS.filter(function(a) { return tabKey(a.status) === key; }).length;
+      btn.querySelector('.app-tab-count').textContent = n;
+      btn.classList.toggle('active', key === activeTab);
+      btn.setAttribute('aria-pressed', key === activeTab ? 'true' : 'false');
+    });
+  }
+
+  tabsRow.addEventListener('click', function(e) {
+    var btn = e.target.closest('.app-tab');
+    if (!btn || btn.dataset.tab === activeTab) return;
+    activeTab = btn.dataset.tab;
+    renderTabs();
+    renderApps();
+  });
+
+  // ── Cards ─────────────────────────────────────────────────────────────────
   function updateCardUI(card, a) {
     var statusEl = card.querySelector('.app-status');
     if (statusEl) {
-      statusEl.textContent  = statusLabel(a.status);
-      statusEl.className    = 'app-status ' + statusClass(a.status);
+      statusEl.textContent = statusLabel(a.status);
+      statusEl.className   = 'app-status ' + statusClass(a.status);
     }
-    // Disable accept/reject if finalised
+    // Accepting or rejecting emails the applicant, so both are final once made.
     var done = a.status === 'Accepted' || a.status === 'Rejected';
     card.querySelectorAll('.app-btn.accept, .app-btn.reject').forEach(function(b) {
-      b.disabled = done;
+      b.disabled      = done;
       b.style.opacity = done ? '0.4' : '';
       b.style.cursor  = done ? 'default' : '';
     });
   }
 
+  // Every decision sends an email, so a card in flight takes no further clicks.
+  function setBusy(card, busy) {
+    card.dataset.busy = busy ? '1' : '';
+    card.classList.toggle('busy', busy);
+  }
+
+  // A card leaves the list when a decision moves it to another tab, or when the
+  // request is deleted. Only that card goes; the others stay where they are.
+  function removeCard(card) {
+    function done() {
+      card.remove();
+      renderTabs();
+      if (!appsList.querySelector('.app-card')) renderApps();
+    }
+    if (!animates()) { done(); return; }
+    gsap.to(card, { opacity:0, y:-6, duration:0.28, ease:'power2.in', onComplete: done });
+  }
+
+  function patchApplication(a, card, data) {
+    if (card.dataset.busy) return;
+    var payload = Object.assign({}, data);
+    if (currentAdminEmail) payload.adminEmail = currentAdminEmail;
+    setBusy(card, true);
+    fetch('/api/applications/' + a.id, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(updated) {
+      a.status = updated.status;
+      setBusy(card, false);
+      if (tabKey(a.status) === activeTab) { updateCardUI(card, a); renderTabs(); }
+      else { removeCard(card); }
+    })
+    .catch(function() {
+      setBusy(card, false);
+      alert('Could not update this request. Please try again.');
+    });
+  }
+
+  function deleteApplication(a, card) {
+    if (card.dataset.busy) return;
+    setBusy(card, true);
+    fetch('/api/applications/' + a.id, { method: 'DELETE' })
+      .then(function(r) { if (!r.ok) throw new Error(r.status); })
+      .then(function() {
+        APPS = APPS.filter(function(x) { return x.id !== a.id; });
+        removeCard(card);
+      })
+      .catch(function() {
+        setBusy(card, false);
+        alert('Could not delete this request. Please try again.');
+      });
+  }
+
+  function buildCard(a) {
+    var card = document.createElement('div');
+    card.className = 'app-card';
+    card.innerHTML =
+      '<div class="app-card-header">' +
+        '<div>' +
+          '<p class="app-name">' + escHtml(a.firstName) + ' ' + escHtml(a.lastName) + '</p>' +
+          '<p class="app-date">Submitted ' + escHtml(a.submittedAt) + '</p>' +
+        '</div>' +
+        '<span class="app-status"></span>' +
+      '</div>' +
+      '<div class="app-fields">' +
+        '<div><p class="app-field-label">Email</p><p class="app-field-value">' + escHtml(a.email) + '</p></div>' +
+        '<div><p class="app-field-label">Network Connection</p><p class="app-field-value">' + escHtml(a.role || '—') + '</p></div>' +
+        '<div><p class="app-field-label">University / Institution</p><p class="app-field-value">' + escHtml(a.org || '—') + '</p></div>' +
+      '</div>' +
+      (a.why ? '<div class="app-why"><p class="app-field-label">How they would like to take part</p><p class="app-field-value">' + escHtml(a.why) + '</p></div>' : '') +
+      '<div class="app-actions">' +
+        '<button class="app-btn accept">&#10003; Accept</button>' +
+        '<button class="app-btn reject">&#10007; Reject</button>' +
+        '<button class="app-btn interview">&#128197; Request Conversation</button>' +
+        '<button class="app-btn delete">Delete</button>' +
+      '</div>';
+
+    card.querySelector('.app-btn.accept').addEventListener('click', function() {
+      if (this.disabled) return;
+      patchApplication(a, card, { status: 'Accepted' });
+    });
+    card.querySelector('.app-btn.reject').addEventListener('click', function() {
+      if (this.disabled) return;
+      patchApplication(a, card, { status: 'Rejected' });
+    });
+    card.querySelector('.app-btn.interview').addEventListener('click', function() {
+      patchApplication(a, card, { status: 'Interview Scheduled' });
+    });
+
+    // Deleting a request cannot be undone, so the button asks a second time and
+    // steps back on its own if it is left alone.
+    var del = card.querySelector('.app-btn.delete');
+    var revert;
+    del.addEventListener('click', function() {
+      if (card.dataset.busy) return;
+      if (del.classList.contains('confirming')) {
+        clearTimeout(revert);
+        deleteApplication(a, card);
+        return;
+      }
+      del.classList.add('confirming');
+      del.textContent = 'Confirm delete';
+      revert = setTimeout(function() {
+        del.classList.remove('confirming');
+        del.textContent = 'Delete';
+      }, 4000);
+    });
+
+    updateCardUI(card, a);
+    return card;
+  }
+
+  function renderApps() {
+    var shown = APPS.filter(function(a) { return tabKey(a.status) === activeTab; });
+    if (!shown.length) {
+      appsList.innerHTML = '<div class="recent-empty">' + escHtml(EMPTY[activeTab]) + '</div>';
+      return;
+    }
+    appsList.innerHTML = '';
+    shown.forEach(function(a, i) {
+      var card = buildCard(a);
+      appsList.appendChild(card);
+      if (animates()) {
+        gsap.from(card, { opacity:0, y:10, duration:0.3, ease:'power2.out', delay: i * 0.05 });
+      }
+    });
+  }
+
   function loadApplications() {
-    var list = document.getElementById('apps-list');
-    list.innerHTML = '<div class="recent-empty">Loading&hellip;</div>';
+    appsList.innerHTML = '<div class="recent-empty">Loading&hellip;</div>';
     fetch('/api/applications')
       .then(function(r) { return r.json(); })
       .then(function(apps) {
-        if (!apps.length) {
-          list.innerHTML = '<div class="recent-empty">No applications yet.</div>';
-          return;
-        }
-        list.innerHTML = '';
-        apps.forEach(function(a, i) {
-          var card = document.createElement('div');
-          card.className = 'app-card';
-          var done = a.status === 'Accepted' || a.status === 'Rejected';
-          card.innerHTML =
-            '<div class="app-card-header">' +
-              '<div>' +
-                '<p class="app-name">' + escHtml(a.firstName) + ' ' + escHtml(a.lastName) + '</p>' +
-                '<p class="app-date">Submitted ' + escHtml(a.submittedAt) + '</p>' +
-              '</div>' +
-              '<span class="app-status ' + statusClass(a.status) + '">' + escHtml(statusLabel(a.status)) + '</span>' +
-            '</div>' +
-            '<div class="app-fields">' +
-              '<div><p class="app-field-label">Email</p><p class="app-field-value">' + escHtml(a.email) + '</p></div>' +
-              '<div><p class="app-field-label">Network Connection</p><p class="app-field-value">' + escHtml(a.role || '—') + '</p></div>' +
-              '<div><p class="app-field-label">University / Institution</p><p class="app-field-value">' + escHtml(a.org || '—') + '</p></div>' +
-            '</div>' +
-            (a.why ? '<div class="app-why"><p class="app-field-label">How they would like to take part</p><p class="app-field-value">' + escHtml(a.why) + '</p></div>' : '') +
-            '<div class="app-actions">' +
-              '<button class="app-btn accept"' + (done ? ' disabled style="opacity:0.4;cursor:default"' : '') + '>&#10003; Accept</button>' +
-              '<button class="app-btn reject"' + (done ? ' disabled style="opacity:0.4;cursor:default"' : '') + '>&#10007; Reject</button>' +
-              '<button class="app-btn interview">&#128197; Request Conversation</button>' +
-            '</div>';
-
-          var fullName = a.firstName + ' ' + a.lastName;
-          card.querySelector('.app-btn.accept').addEventListener('click', function() {
-            if (this.disabled) return;
-            patchApplication(a.id, { status: 'Accepted' }, card, null);
-          });
-          card.querySelector('.app-btn.reject').addEventListener('click', function() {
-            if (this.disabled) return;
-            patchApplication(a.id, { status: 'Rejected' }, card, null);
-          });
-          card.querySelector('.app-btn.interview').addEventListener('click', function() {
-            patchApplication(a.id, { status: 'Interview Scheduled' }, card, null);
-          });
-
-          list.appendChild(card);
-          gsap.from(card, { opacity:0, y:10, duration:0.3, ease:'power2.out', delay: i * 0.05 });
-        });
+        APPS = Array.isArray(apps) ? apps : [];
+        renderTabs();
+        renderApps();
       })
       .catch(function() {
-        list.innerHTML = '<div class="recent-empty">Failed to load applications.</div>';
+        appsList.innerHTML = '<div class="recent-empty">Could not load requests. Refresh to try again.</div>';
       });
   }
 

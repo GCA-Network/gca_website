@@ -156,6 +156,18 @@ module.exports = async function handler(req, res) {
     return res.end(JSON.stringify(updated));
   }
 
+  // DELETE /api/applications/:id
+  if (req.method === 'DELETE') {
+    const docRef = db.collection('applications').doc(String(id));
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      res.statusCode = 404;
+      return res.end(JSON.stringify({ error: 'Not found' }));
+    }
+    await docRef.delete();
+    return res.end(JSON.stringify({ ok: true }));
+  }
+
   res.statusCode = 405;
   return res.end(JSON.stringify({ error: 'Method not allowed' }));
 };

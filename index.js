@@ -359,6 +359,21 @@ const server = http.createServer(function (req, res) {
     return;
   }
 
+  // ── API: DELETE /api/applications/:id ────────────────────────────────────
+  if (method === 'DELETE' && appMatch) {
+    var delId = parseInt(appMatch[1]);
+    fs.readFile(APPS_FILE, 'utf8', function(err, data) {
+      var apps = err ? [] : JSON.parse(data);
+      var idx = apps.findIndex(function(a) { return a.id === delId; });
+      if (idx === -1) { json(res, 404, { error: 'Not found' }); return; }
+      apps.splice(idx, 1);
+      fs.writeFile(APPS_FILE, JSON.stringify(apps, null, 2), function() {
+        json(res, 200, { ok: true });
+      });
+    });
+    return;
+  }
+
   // ── API: GET /api/firebase-config ────────────────────────────────────────
   if (method === 'GET' && urlPath === '/api/firebase-config') {
     var config = {
