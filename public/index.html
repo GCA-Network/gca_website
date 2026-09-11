@@ -47,6 +47,9 @@
     .gc-tr { top:10px; right:12px; color:var(--accent); }
     .gc-bl { bottom:10px; left:12px; }
     .gc-br { bottom:10px; right:12px; }
+    /* The reveal grows each connection out of the hub; without this the stroke
+       would thin out along with it. */
+    .gx-links line { vector-effect:non-scaling-stroke; }
 
     /* ─── LEDGER STRIP (marquee) ────────────────────────────────── */
     .ledger { border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-2); padding:18px 0; overflow:hidden; }
@@ -366,50 +369,128 @@
       </div>
       <div class="ab-hero-right rv">
         <!-- Node graph -->
-        <div class="graph" aria-hidden="true">
+        <div class="graph" role="img" aria-label="Diagram of the GCA network: the founding Shenzhen chapter as the largest figure, linked to the 31 member institutions and to one another.">
           <div class="gc gc-tl">Fig. 01</div>
-          <div class="gc gc-tr">● Live</div>
+          <div class="gc gc-tr">Member Institutions</div>
           <div class="gc gc-bl">22.54°N · 114.06°E</div>
-          <div class="gc gc-br">Nodes · 20+</div>
+          <div class="gc gc-br">31 Institutions</div>
           <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
             <defs>
-              <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
-                <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#d9d3c5" stroke-width=".5"/>
-              </pattern>
+              <radialGradient id="hubGlow">
+                <stop offset="55%"  stop-color="#7B3FA0" stop-opacity=".16"/>
+                <stop offset="100%" stop-color="#7B3FA0" stop-opacity="0"/>
+              </radialGradient>
+              <!-- One member: a filled disc with the figure clipped to its edge, so
+                   the shoulders run out to the rim at every size. The disc takes
+                   its colour from the referencing element. -->
+              <symbol id="gx-person" viewBox="0 0 24 24">
+                <clipPath id="gx-disc"><circle cx="12" cy="12" r="12"/></clipPath>
+                <circle cx="12" cy="12" r="12" fill="currentColor"/>
+                <g clip-path="url(#gx-disc)" fill="#fbf9f3">
+                  <circle cx="12" cy="9.2" r="3.75"/>
+                  <path d="M12 14.2c-4.35 0-7.9 3.15-7.9 7.05V27h15.8v-5.75c0-3.9-3.55-7.05-7.9-7.05z"/>
+                </g>
+              </symbol>
             </defs>
-            <rect width="400" height="500" fill="url(#grid)" opacity=".6"/>
-            <!-- Connection lines -->
-            <g stroke="#c8bfac" stroke-width=".8" opacity=".6">
-              <line x1="200" y1="250" x2="80"  y2="110"/>
-              <line x1="200" y1="250" x2="330" y2="140"/>
-              <line x1="200" y1="250" x2="60"  y2="340"/>
-              <line x1="200" y1="250" x2="340" y2="360"/>
-              <line x1="200" y1="250" x2="180" y2="60"/>
-              <line x1="200" y1="250" x2="220" y2="430"/>
-              <line x1="200" y1="250" x2="300" y2="250"/>
-              <line x1="200" y1="250" x2="100" y2="250"/>
-              <line x1="80"  y1="110" x2="180" y2="60"/>
-              <line x1="330" y1="140" x2="300" y2="250"/>
-              <line x1="60"  y1="340" x2="100" y2="250"/>
-              <line x1="340" y1="360" x2="220" y2="430"/>
+            <!-- Connections: members know one another, and the chapter sits
+                 in the middle of the web rather than at the end of spokes. -->
+            <g class="gx-links" fill="none" stroke-linecap="round">
+              <line x1="198.0" y1="252.0" x2="265.4" y2="203.5" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
+              <line x1="198.0" y1="252.0" x2="207.5" y2="188.6" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
+              <line x1="198.0" y1="252.0" x2="120.9" y2="202.7" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
+              <line x1="198.0" y1="252.0" x2="278.9" y2="290.0" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
+              <line x1="198.0" y1="252.0" x2="131.1" y2="325.9" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
+              <line x1="198.0" y1="252.0" x2="197.8" y2="324.3" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
+              <line x1="198.0" y1="252.0" x2="139.8" y2="260.4" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
+              <line x1="123.6" y1="129.9" x2="48.3" y2="82.5" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="123.6" y1="129.9" x2="120.9" y2="202.7" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="265.4" y1="203.5" x2="207.5" y2="188.6" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="265.4" y1="203.5" x2="278.9" y2="290.0" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="48.3" y1="82.5" x2="30.0" y2="115.7" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="340.4" y1="63.4" x2="298.2" y2="116.9" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="340.4" y1="63.4" x2="339.7" y2="141.0" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="374.4" y1="307.8" x2="345.6" y2="362.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="374.4" y1="307.8" x2="369.2" y2="265.1" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="30.0" y1="115.7" x2="64.5" y2="196.4" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="120.9" y1="202.7" x2="64.5" y2="196.4" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="120.9" y1="202.7" x2="51.4" y2="237.7" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="212.9" y1="379.7" x2="274.1" y2="375.6" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="212.9" y1="379.7" x2="197.8" y2="324.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="64.5" y1="196.4" x2="51.4" y2="237.7" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="205.1" y1="436.8" x2="212.9" y2="379.7" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="205.1" y1="436.8" x2="274.1" y2="375.6" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="205.1" y1="436.8" x2="300.4" y2="450.1" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="205.1" y1="436.8" x2="128.6" y2="440.2" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="278.9" y1="290.0" x2="274.1" y2="375.6" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="345.6" y1="362.3" x2="274.1" y2="375.6" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="298.2" y1="116.9" x2="339.7" y2="141.0" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="369.2" y1="265.1" x2="376.5" y2="203.7" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="274.1" y1="375.6" x2="300.4" y2="450.1" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="339.7" y1="141.0" x2="376.5" y2="203.7" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="131.1" y1="325.9" x2="197.8" y2="324.3" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="270.8" y1="50.4" x2="340.4" y2="63.4" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="270.8" y1="50.4" x2="298.2" y2="116.9" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="270.8" y1="50.4" x2="339.7" y2="141.0" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="270.8" y1="50.4" x2="218.9" y2="136.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="101.7" y1="385.9" x2="21.2" y2="373.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="101.7" y1="385.9" x2="131.1" y2="325.9" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="101.7" y1="385.9" x2="26.9" y2="426.5" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="101.7" y1="385.9" x2="60.8" y2="324.5" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="101.7" y1="385.9" x2="128.6" y2="440.2" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="139.8" y1="260.4" x2="120.9" y2="202.7" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="139.8" y1="260.4" x2="131.1" y2="325.9" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="139.8" y1="260.4" x2="197.8" y2="324.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="218.9" y1="136.3" x2="265.4" y2="203.5" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="218.9" y1="136.3" x2="207.5" y2="188.6" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="218.9" y1="136.3" x2="298.2" y2="116.9" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="218.9" y1="136.3" x2="131.9" y2="61.7" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="26.9" y1="426.5" x2="21.2" y2="373.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="26.9" y1="426.5" x2="128.6" y2="440.2" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="60.8" y1="324.5" x2="21.2" y2="373.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="60.8" y1="324.5" x2="131.1" y2="325.9" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
+              <line x1="131.9" y1="61.7" x2="123.6" y2="129.9" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
+              <line x1="131.9" y1="61.7" x2="48.3" y2="82.5" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
             </g>
-            <!-- Satellite nodes -->
-            <g fill="#e9e3d3" stroke="#c8bfac" stroke-width="1">
-              <circle cx="80"  cy="110" r="5"/>
-              <circle cx="330" cy="140" r="5"/>
-              <circle cx="60"  cy="340" r="5"/>
-              <circle cx="340" cy="360" r="5"/>
-              <circle cx="180" cy="60"  r="5"/>
-              <circle cx="220" cy="430" r="5"/>
-              <circle cx="300" cy="250" r="5"/>
-              <circle cx="100" cy="250" r="5"/>
+            <!-- 31 member institutions -->
+            <g class="gx-nodes">
+              <use href="#gx-person" x="187.6" y="419.3" width="35.0" height="35.0" color="#241539"/>
+              <use href="#gx-person" x="253.3" y="32.9" width="35.0" height="35.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="84.2" y="368.4" width="35.0" height="35.0" color="#241539"/>
+              <use href="#gx-person" x="122.3" y="242.9" width="35.0" height="35.0" color="#241539"/>
+              <use href="#gx-person" x="205.9" y="123.3" width="26.0" height="26.0" color="#bfa0d8"/>
+              <use href="#gx-person" x="13.9" y="413.5" width="26.0" height="26.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="47.8" y="311.5" width="26.0" height="26.0" color="#241539"/>
+              <use href="#gx-person" x="115.6" y="427.2" width="26.0" height="26.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="118.9" y="48.7" width="26.0" height="26.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="110.6" y="116.9" width="26.0" height="26.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="252.4" y="190.5" width="26.0" height="26.0" color="#8b52ad"/>
+              <use href="#gx-person" x="35.3" y="69.5" width="26.0" height="26.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="327.4" y="50.4" width="26.0" height="26.0" color="#241539"/>
+              <use href="#gx-person" x="364.9" y="298.3" width="19.0" height="19.0" color="#bfa0d8"/>
+              <use href="#gx-person" x="198.0" y="179.1" width="19.0" height="19.0" color="#bfa0d8"/>
+              <use href="#gx-person" x="20.5" y="106.2" width="19.0" height="19.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="111.4" y="193.2" width="19.0" height="19.0" color="#bfa0d8"/>
+              <use href="#gx-person" x="203.4" y="370.2" width="19.0" height="19.0" color="#bfa0d8"/>
+              <use href="#gx-person" x="55.0" y="186.9" width="19.0" height="19.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="269.4" y="280.5" width="19.0" height="19.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="336.1" y="352.8" width="19.0" height="19.0" color="#8b52ad"/>
+              <use href="#gx-person" x="288.7" y="107.4" width="19.0" height="19.0" color="#8b52ad"/>
+              <use href="#gx-person" x="41.9" y="228.2" width="19.0" height="19.0" color="#bfa0d8"/>
+              <use href="#gx-person" x="359.7" y="255.6" width="19.0" height="19.0" color="#bfa0d8"/>
+              <use href="#gx-person" x="264.6" y="366.1" width="19.0" height="19.0" color="#bfa0d8"/>
+              <use href="#gx-person" x="11.7" y="363.8" width="19.0" height="19.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="330.2" y="131.5" width="19.0" height="19.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="367.0" y="194.2" width="19.0" height="19.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="121.6" y="316.4" width="19.0" height="19.0" color="#5b2d7a"/>
+              <use href="#gx-person" x="290.9" y="440.6" width="19.0" height="19.0" color="#8b52ad"/>
+              <use href="#gx-person" x="188.3" y="314.8" width="19.0" height="19.0" color="#5b2d7a"/>
             </g>
-            <!-- Centre node -->
-            <circle cx="200" cy="250" r="14" fill="#7B3FA0" opacity=".18"/>
-            <circle cx="200" cy="250" r="8"  fill="#7B3FA0"/>
-            <circle cx="200" cy="250" r="4"  fill="#fff"/>
-            <!-- Label -->
-            <text x="215" y="246" font-family="'JetBrains Mono',monospace" font-size="9" fill="#6c6558" letter-spacing=".14em" text-transform="uppercase">SHENZHEN</text>
+            <!-- Shenzhen: the founding chapter, the largest figure on the board -->
+            <g class="gx-hub">
+              <circle cx="198" cy="252" r="39.0" fill="url(#hubGlow)"/>
+              <use href="#gx-person" x="170.0" y="224.0" width="56.0" height="56.0" color="#241539"/>
+            </g>
+            <text class="gx-label" x="232" y="255" font-family="'JetBrains Mono',monospace" font-size="10" letter-spacing="1.5" fill="#4a2363" paint-order="stroke" stroke="#fbf9f3" stroke-width="4" stroke-linejoin="round">SHENZHEN</text>
           </svg>
         </div>
         <!-- Location marker -->
@@ -829,6 +910,67 @@
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.rv').forEach(function(el) { obs.observe(el); });
+
+  // ── Hero diagram reveal ───────────────────────────────────────────────────
+  // One orchestrated moment that performs what the diagram claims: the founding
+  // chapter arrives, connections grow outward from it, and each institution
+  // lands as its line reaches it. The wave spreads by real distance from the
+  // hub, so nearby institutions light up before distant ones.
+  //
+  // Everything animates transform and opacity only, and every tween runs FROM a
+  // hidden state, so the authored SVG is the finished picture — with no script,
+  // no GSAP, or reduced motion, the diagram simply renders as it stands.
+  (function revealDiagram() {
+    var svg = document.querySelector('.graph svg');
+    if (!svg || !window.gsap) return;
+    if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+
+    var HUB    = { x: 196, y: 250 };
+    var links  = svg.querySelectorAll('.gx-links line');
+    var nodes  = svg.querySelectorAll('.gx-nodes use');
+    var labels = svg.querySelectorAll('.gx-label');
+    if (!links.length || !nodes.length) return;
+
+    function span(x, y) { return Math.sqrt(Math.pow(x - HUB.x, 2) + Math.pow(y - HUB.y, 2)); }
+
+    // A connection runs between two members, so it knits outward from whichever
+    // end is closer to the chapter. A figure simply grows from its own middle.
+    function anchor(el) {
+      if (!el.hasAttribute('x2')) {
+        var w = +el.getAttribute('width'), h = +el.getAttribute('height');
+        return { x: +el.getAttribute('x') + w / 2, y: +el.getAttribute('y') + h / 2 };
+      }
+      var a = { x: +el.getAttribute('x1'), y: +el.getAttribute('y1') };
+      var b = { x: +el.getAttribute('x2'), y: +el.getAttribute('y2') };
+      return span(a.x, a.y) <= span(b.x, b.y) ? a : b;
+    }
+    function reach(el) { var p = anchor(el); return span(p.x, p.y); }
+    function originOf(i, el) { var p = anchor(el); return p.x + ' ' + p.y; }
+    var far = 1;
+    Array.prototype.forEach.call(links, function(l) { far = Math.max(far, reach(l)); });
+    var lead = function(i, el) { return 0.46 * reach(el) / far; };
+
+    var tl = gsap.timeline({ paused: true });
+    tl.from('.gx-hub', { scale: 0, svgOrigin: HUB.x + ' ' + HUB.y, duration: 0.5, ease: 'back.out(1.7)' })
+      .from(links,  { scale: 0, svgOrigin: originOf, duration: 0.45,
+                      ease: 'power2.out', stagger: lead }, 0.16)
+      .from(nodes,  { scale: 0, opacity: 0, duration: 0.4,
+                      svgOrigin: originOf,
+                      ease: 'back.out(2.2)',
+                      stagger: function(i, el) { return lead(i, el) + 0.2; } }, 0.16)
+      .from(labels, { opacity: 0, y: 5, duration: 0.45, ease: 'power2.out', stagger: 0.07 }, 0.6);
+
+    // Play once the frame is on screen, and give its own fade-in a head start so
+    // the diagram does not draw itself behind a half-transparent panel.
+    var watch = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (!e.isIntersecting) return;
+        watch.unobserve(e.target);
+        gsap.delayedCall(0.12, function() { tl.play(); });
+      });
+    }, { threshold: 0.25 });
+    watch.observe(svg);
+  })();
 
   // Character counter
   var why = document.getElementById('f-why');
