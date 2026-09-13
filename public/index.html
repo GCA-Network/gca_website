@@ -24,7 +24,7 @@
     .rv.in { opacity:1; transform:none; }
 
     /* ─── HERO ──────────────────────────────────────────────────── */
-    .ab-hero { padding:148px 0 92px; position:relative; }
+    .ab-hero { padding:148px 0 92px; position:relative; isolation:isolate; overflow:hidden; }
     .ab-hero-grid { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:64px; align-items:end; }
     .ab-hero-meta { display:flex; gap:28px; flex-wrap:wrap; margin-bottom:44px; font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--fg-subtle); }
     .ab-hero-meta span b { color:var(--fg); font-weight:500; }
@@ -33,23 +33,32 @@
     .ab-hero h1 .soft { color:var(--fg-subtle); font-style:italic; }
     .ab-hero h1 .amp { font-style:italic; color:var(--accent); padding:0 .06em; }
     .ab-hero-sub { margin-top:30px; max-width:520px; font-size:16px; line-height:1.7; color:var(--fg-muted); }
-    .ab-hero-right { display:flex; flex-direction:column; gap:22px; padding-bottom:8px; }
-    .marker { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; border:1px solid var(--border); background:rgba(255,255,255,.5); border-radius:3px; }
-    .marker .ml { font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-4); }
-    .marker .mv { font-family:var(--display); font-size:22px; letter-spacing:-.01em; color:var(--fg); }
-    .marker .coord { font-family:var(--mono); font-size:11.5px; color:var(--fg-muted); letter-spacing:.05em; }
-
-    /* Node graph */
-    .graph { position:relative; border:1px solid var(--border); background:#fbf9f3; aspect-ratio:4/5; border-radius:3px; overflow:hidden; }
-    .graph svg { width:100%; height:100%; display:block; }
-    .gc { position:absolute; font-family:var(--mono); font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-4); }
-    .gc-tl { top:10px; left:12px; }
-    .gc-tr { top:10px; right:12px; color:var(--accent); }
-    .gc-bl { bottom:10px; left:12px; }
-    .gc-br { bottom:10px; right:12px; }
-    /* The reveal grows each connection out of the hub; without this the stroke
-       would thin out along with it. */
-    .gx-links line { vector-effect:non-scaling-stroke; }
+    /* Event photo collage behind the hero. The headline stays the point; the
+       photos are evidence behind it. Six columns drift in alternating
+       directions, which keeps this distinct from the two horizontal marquees
+       further down the page. The brand tint is baked in by Cloudinary, so
+       nothing is blended on the page while the columns move. */
+    .ab-collage { position:absolute; inset:0; z-index:-2; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:14px; padding:0 14px; pointer-events:none; }
+    .ab-col { min-width:0; }
+    .ab-track { display:flow-root; will-change:transform; animation:ab-rise 80s linear infinite; }
+    .ab-col:nth-child(even) .ab-track { animation-name:ab-fall; }
+    /* Every tile carries the same bottom margin and each column repeats its
+       photos once, so moving by exactly half lands back on the first frame. */
+    .ab-tile { margin:0 0 14px; border-radius:3px; overflow:hidden; background:var(--bg-2); }
+    .ab-tile img { display:block; width:100%; height:auto; }
+    @keyframes ab-rise { from { transform:translateY(0); } to { transform:translateY(-50%); } }
+    @keyframes ab-fall { from { transform:translateY(-50%); } to { transform:translateY(0); } }
+    /* The heading is ink on paper, so the scrim is paper rather than the usual
+       dark overlay: near-solid behind the words, clearing toward the right, and
+       fading to paper top and bottom so the hero meets the nav and the ledger
+       without a hard photo edge. */
+    .ab-scrim { position:absolute; inset:0; z-index:-1; pointer-events:none;
+      background:
+        linear-gradient(to bottom, var(--bg) 0, rgba(246,244,239,0) 17%, rgba(246,244,239,0) 80%, var(--bg) 100%),
+        linear-gradient(to right, var(--bg) 0, rgba(246,244,239,.96) 36%, rgba(246,244,239,.76) 52%, rgba(246,244,239,.18) 72%, rgba(246,244,239,0) 90%); }
+    /* The direction rule above is more specific than .ab-track alone, so the
+       override has to name it too or the falling columns keep moving. */
+    @media (prefers-reduced-motion:reduce) { .ab-track, .ab-col:nth-child(even) .ab-track { animation:none; } }
 
     /* ─── LEDGER STRIP (marquee) ────────────────────────────────── */
     .ledger { border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-2); padding:18px 0; overflow:hidden; }
@@ -271,6 +280,11 @@
     /* ─── Responsive ─────────────────────────────────────────────── */
     @media (max-width:1100px) {
       .ab-hero-grid { grid-template-columns:1fr; gap:40px; }
+      .ab-collage { grid-template-columns:repeat(4,minmax(0,1fr)); }
+      .ab-col:nth-child(n+5) { display:none; }
+      /* Heaviest near the top, where the small meta row sits, and easing through
+         the headline, whose size carries its own contrast. */
+      .ab-scrim { background:linear-gradient(to bottom, var(--bg) 0, rgba(246,244,239,.96) 14%, rgba(246,244,239,.95) 38%, rgba(246,244,239,.86) 60%, rgba(246,244,239,.88) 80%, var(--bg) 100%); }
       .st-grid { grid-template-columns:1fr; gap:28px; }
       .st-label { position:static; flex-direction:row; align-items:center; }
       .shen-head { grid-template-columns:1fr; gap:24px; }
@@ -292,6 +306,9 @@
     @media (max-width:640px) {
       .wrap { padding:0 20px; }
       .ab-hero { padding:128px 0 68px; }
+      .ab-collage { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:0 8px; }
+      .ab-col:nth-child(n+4) { display:none; }
+      .ab-tile { margin-bottom:8px; }
       .af-row-2 { grid-template-columns:1fr; }
       .apply-form { padding:26px 22px 22px; }
       .vgrid { grid-template-columns:1fr; }
@@ -356,6 +373,83 @@
 
 <!-- ═══════════════════════ HERO ═══════════════════════════════ -->
 <section class="ab-hero">
+  <!-- Event photo collage. Decorative behind the headline: the photos are
+       real GCA events, curated from the published stories. -->
+  <div class="ab-collage" aria-hidden="true">
+    <div class="ab-col"><div class="ab-track" style="animation-duration:82s;animation-delay:-0.0s">
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769749/mxj1pqkvoiam7ugagyxc.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769749/mxj1pqkvoiam7ugagyxc.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769749/mxj1pqkvoiam7ugagyxc.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772289/seppzmzdxh4l3ur9tlyo.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772289/seppzmzdxh4l3ur9tlyo.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772289/seppzmzdxh4l3ur9tlyo.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768689/ipfruixzmugbakdke1rb.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768689/ipfruixzmugbakdke1rb.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768689/ipfruixzmugbakdke1rb.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954162/axeeszygynlrgkhxekrs.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954162/axeeszygynlrgkhxekrs.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954162/axeeszygynlrgkhxekrs.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769764/mfnp17vnvfucdsfmhx9d.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769764/mfnp17vnvfucdsfmhx9d.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769764/mfnp17vnvfucdsfmhx9d.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769749/mxj1pqkvoiam7ugagyxc.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769749/mxj1pqkvoiam7ugagyxc.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769749/mxj1pqkvoiam7ugagyxc.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772289/seppzmzdxh4l3ur9tlyo.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772289/seppzmzdxh4l3ur9tlyo.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772289/seppzmzdxh4l3ur9tlyo.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768689/ipfruixzmugbakdke1rb.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768689/ipfruixzmugbakdke1rb.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768689/ipfruixzmugbakdke1rb.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954162/axeeszygynlrgkhxekrs.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954162/axeeszygynlrgkhxekrs.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954162/axeeszygynlrgkhxekrs.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769764/mfnp17vnvfucdsfmhx9d.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769764/mfnp17vnvfucdsfmhx9d.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769764/mfnp17vnvfucdsfmhx9d.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+    </div></div>
+    <div class="ab-col"><div class="ab-track" style="animation-duration:66s;animation-delay:-24.4s">
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954164/yfbrtz9aox4ra9rvhcnv.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954164/yfbrtz9aox4ra9rvhcnv.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954164/yfbrtz9aox4ra9rvhcnv.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769758/tbtvlzpv0rgexynahcuy.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769758/tbtvlzpv0rgexynahcuy.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769758/tbtvlzpv0rgexynahcuy.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772294/lkxeswmpcndrg2ihosdu.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772294/lkxeswmpcndrg2ihosdu.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772294/lkxeswmpcndrg2ihosdu.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769131/bfvvnmobnmptpmizsnoc.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769131/bfvvnmobnmptpmizsnoc.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769131/bfvvnmobnmptpmizsnoc.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/u7uqwwlzesbaippbrrej.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/u7uqwwlzesbaippbrrej.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/u7uqwwlzesbaippbrrej.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954164/yfbrtz9aox4ra9rvhcnv.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954164/yfbrtz9aox4ra9rvhcnv.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954164/yfbrtz9aox4ra9rvhcnv.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769758/tbtvlzpv0rgexynahcuy.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769758/tbtvlzpv0rgexynahcuy.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769758/tbtvlzpv0rgexynahcuy.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772294/lkxeswmpcndrg2ihosdu.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772294/lkxeswmpcndrg2ihosdu.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772294/lkxeswmpcndrg2ihosdu.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769131/bfvvnmobnmptpmizsnoc.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769131/bfvvnmobnmptpmizsnoc.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769131/bfvvnmobnmptpmizsnoc.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/u7uqwwlzesbaippbrrej.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/u7uqwwlzesbaippbrrej.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/u7uqwwlzesbaippbrrej.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+    </div></div>
+    <div class="ab-col"><div class="ab-track" style="animation-duration:94s;animation-delay:-66.7s">
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769759/kmiq7c9uqabbxtcimhgs.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769759/kmiq7c9uqabbxtcimhgs.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769759/kmiq7c9uqabbxtcimhgs.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772287/n1nlczxnjtzskjgk1n1b.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772287/n1nlczxnjtzskjgk1n1b.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772287/n1nlczxnjtzskjgk1n1b.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770865/cdwg46ed4rr3kwwib1qb.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770865/cdwg46ed4rr3kwwib1qb.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770865/cdwg46ed4rr3kwwib1qb.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769132/tdphtcvglftmsjlfi1er.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769132/tdphtcvglftmsjlfi1er.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769132/tdphtcvglftmsjlfi1er.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769765/evtysbfn7jcxnqb5vi8x.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769765/evtysbfn7jcxnqb5vi8x.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769765/evtysbfn7jcxnqb5vi8x.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769759/kmiq7c9uqabbxtcimhgs.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769759/kmiq7c9uqabbxtcimhgs.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769759/kmiq7c9uqabbxtcimhgs.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772287/n1nlczxnjtzskjgk1n1b.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772287/n1nlczxnjtzskjgk1n1b.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772287/n1nlczxnjtzskjgk1n1b.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770865/cdwg46ed4rr3kwwib1qb.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770865/cdwg46ed4rr3kwwib1qb.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770865/cdwg46ed4rr3kwwib1qb.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769132/tdphtcvglftmsjlfi1er.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769132/tdphtcvglftmsjlfi1er.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769132/tdphtcvglftmsjlfi1er.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769765/evtysbfn7jcxnqb5vi8x.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769765/evtysbfn7jcxnqb5vi8x.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769765/evtysbfn7jcxnqb5vi8x.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+    </div></div>
+    <div class="ab-col"><div class="ab-track" style="animation-duration:72s;animation-delay:-13.0s">
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772288/uj6upbre1vz90f1mqycm.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772288/uj6upbre1vz90f1mqycm.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772288/uj6upbre1vz90f1mqycm.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/qu0rtslwydf41ekxx94f.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/qu0rtslwydf41ekxx94f.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/qu0rtslwydf41ekxx94f.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768691/hpknftdfplif7yh7vdvd.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768691/hpknftdfplif7yh7vdvd.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768691/hpknftdfplif7yh7vdvd.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769753/t52eztzzatvjgcl9j6qi.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769753/t52eztzzatvjgcl9j6qi.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769753/t52eztzzatvjgcl9j6qi.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772295/d1o0rknjxst0uiecpx2c.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772295/d1o0rknjxst0uiecpx2c.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772295/d1o0rknjxst0uiecpx2c.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772288/uj6upbre1vz90f1mqycm.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772288/uj6upbre1vz90f1mqycm.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772288/uj6upbre1vz90f1mqycm.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/qu0rtslwydf41ekxx94f.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/qu0rtslwydf41ekxx94f.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/qu0rtslwydf41ekxx94f.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768691/hpknftdfplif7yh7vdvd.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768691/hpknftdfplif7yh7vdvd.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768691/hpknftdfplif7yh7vdvd.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769753/t52eztzzatvjgcl9j6qi.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769753/t52eztzzatvjgcl9j6qi.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769753/t52eztzzatvjgcl9j6qi.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772295/d1o0rknjxst0uiecpx2c.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772295/d1o0rknjxst0uiecpx2c.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772295/d1o0rknjxst0uiecpx2c.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+    </div></div>
+    <div class="ab-col"><div class="ab-track" style="animation-duration:88s;animation-delay:-48.4s">
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776764522/hxvd9lzagymscenhtusq.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776764522/hxvd9lzagymscenhtusq.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776764522/hxvd9lzagymscenhtusq.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770624/y9joo3imqhi22aqsiujy.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770624/y9joo3imqhi22aqsiujy.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770624/y9joo3imqhi22aqsiujy.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769763/gfiyb7cjj9h8r4dz3sni.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769763/gfiyb7cjj9h8r4dz3sni.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769763/gfiyb7cjj9h8r4dz3sni.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954160/rflospnfuk8pugu6pbrv.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954160/rflospnfuk8pugu6pbrv.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954160/rflospnfuk8pugu6pbrv.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769128/atffhf6dvvszk0t5qmwj.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769128/atffhf6dvvszk0t5qmwj.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769128/atffhf6dvvszk0t5qmwj.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776764522/hxvd9lzagymscenhtusq.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776764522/hxvd9lzagymscenhtusq.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776764522/hxvd9lzagymscenhtusq.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770624/y9joo3imqhi22aqsiujy.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770624/y9joo3imqhi22aqsiujy.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770624/y9joo3imqhi22aqsiujy.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769763/gfiyb7cjj9h8r4dz3sni.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769763/gfiyb7cjj9h8r4dz3sni.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769763/gfiyb7cjj9h8r4dz3sni.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954160/rflospnfuk8pugu6pbrv.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954160/rflospnfuk8pugu6pbrv.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954160/rflospnfuk8pugu6pbrv.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769128/atffhf6dvvszk0t5qmwj.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769128/atffhf6dvvszk0t5qmwj.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769128/atffhf6dvvszk0t5qmwj.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+    </div></div>
+    <div class="ab-col"><div class="ab-track" style="animation-duration:60s;animation-delay:-51.6s">
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772291/jngjnkyykeredjnpk6ip.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772291/jngjnkyykeredjnpk6ip.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772291/jngjnkyykeredjnpk6ip.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769130/x4j1kh1uxu77wgoiqond.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769130/x4j1kh1uxu77wgoiqond.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769130/x4j1kh1uxu77wgoiqond.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769757/s4pntmgktu2bkc9ib8ix.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769757/s4pntmgktu2bkc9ib8ix.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769757/s4pntmgktu2bkc9ib8ix.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776771629/uhynhxhcwor5byhmcccq.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776771629/uhynhxhcwor5byhmcccq.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776771629/uhynhxhcwor5byhmcccq.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769766/jpb5yuqm5kr44ozziues.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769766/jpb5yuqm5kr44ozziues.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769766/jpb5yuqm5kr44ozziues.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772291/jngjnkyykeredjnpk6ip.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772291/jngjnkyykeredjnpk6ip.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772291/jngjnkyykeredjnpk6ip.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769130/x4j1kh1uxu77wgoiqond.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769130/x4j1kh1uxu77wgoiqond.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769130/x4j1kh1uxu77wgoiqond.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769757/s4pntmgktu2bkc9ib8ix.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769757/s4pntmgktu2bkc9ib8ix.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769757/s4pntmgktu2bkc9ib8ix.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776771629/uhynhxhcwor5byhmcccq.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776771629/uhynhxhcwor5byhmcccq.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776771629/uhynhxhcwor5byhmcccq.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+      <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769766/jpb5yuqm5kr44ozziues.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769766/jpb5yuqm5kr44ozziues.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769766/jpb5yuqm5kr44ozziues.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+    </div></div>
+  </div>
+  <div class="ab-scrim" aria-hidden="true"></div>
   <div class="wrap">
     <div class="ab-hero-meta rv">
       <span>Vol. 01 &middot; <b>Intro</b></span>
@@ -366,141 +460,6 @@
       <div>
         <h1 class="rv">Brilliant minds<br/><em>deserve</em> <span class="soft">to be</span><br/>connected<span class="amp">.</span></h1>
         <p class="ab-hero-sub rv">GCA is a non-profit, non-political global network dedicated to connecting scholars, professionals, and industry leaders — turning meaningful dialogue into impactful action.</p>
-      </div>
-      <div class="ab-hero-right rv">
-        <!-- Node graph -->
-        <div class="graph" role="img" aria-label="Diagram of the GCA network: the founding Shenzhen chapter as the largest figure, linked to the 31 member institutions and to one another.">
-          <div class="gc gc-tl">Fig. 01</div>
-          <div class="gc gc-tr">Member Institutions</div>
-          <div class="gc gc-bl">22.54°N · 114.06°E</div>
-          <div class="gc gc-br">31 Institutions</div>
-          <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
-            <defs>
-              <radialGradient id="hubGlow">
-                <stop offset="55%"  stop-color="#7B3FA0" stop-opacity=".16"/>
-                <stop offset="100%" stop-color="#7B3FA0" stop-opacity="0"/>
-              </radialGradient>
-              <!-- One member: a filled disc with the figure clipped to its edge, so
-                   the shoulders run out to the rim at every size. The disc takes
-                   its colour from the referencing element. -->
-              <symbol id="gx-person" viewBox="0 0 24 24">
-                <clipPath id="gx-disc"><circle cx="12" cy="12" r="12"/></clipPath>
-                <circle cx="12" cy="12" r="12" fill="currentColor"/>
-                <g clip-path="url(#gx-disc)" fill="#fbf9f3">
-                  <circle cx="12" cy="9.2" r="3.75"/>
-                  <path d="M12 14.2c-4.35 0-7.9 3.15-7.9 7.05V27h15.8v-5.75c0-3.9-3.55-7.05-7.9-7.05z"/>
-                </g>
-              </symbol>
-            </defs>
-            <!-- Connections: members know one another, and the chapter sits
-                 in the middle of the web rather than at the end of spokes. -->
-            <g class="gx-links" fill="none" stroke-linecap="round">
-              <line x1="198.0" y1="252.0" x2="265.4" y2="203.5" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
-              <line x1="198.0" y1="252.0" x2="207.5" y2="188.6" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
-              <line x1="198.0" y1="252.0" x2="120.9" y2="202.7" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
-              <line x1="198.0" y1="252.0" x2="278.9" y2="290.0" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
-              <line x1="198.0" y1="252.0" x2="131.1" y2="325.9" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
-              <line x1="198.0" y1="252.0" x2="197.8" y2="324.3" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
-              <line x1="198.0" y1="252.0" x2="139.8" y2="260.4" stroke="#5b2d7a" stroke-width="1.2" opacity="0.5"/>
-              <line x1="123.6" y1="129.9" x2="48.3" y2="82.5" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="123.6" y1="129.9" x2="120.9" y2="202.7" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="265.4" y1="203.5" x2="207.5" y2="188.6" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="265.4" y1="203.5" x2="278.9" y2="290.0" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="48.3" y1="82.5" x2="30.0" y2="115.7" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="340.4" y1="63.4" x2="298.2" y2="116.9" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="340.4" y1="63.4" x2="339.7" y2="141.0" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="374.4" y1="307.8" x2="345.6" y2="362.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="374.4" y1="307.8" x2="369.2" y2="265.1" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="30.0" y1="115.7" x2="64.5" y2="196.4" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="120.9" y1="202.7" x2="64.5" y2="196.4" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="120.9" y1="202.7" x2="51.4" y2="237.7" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="212.9" y1="379.7" x2="274.1" y2="375.6" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="212.9" y1="379.7" x2="197.8" y2="324.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="64.5" y1="196.4" x2="51.4" y2="237.7" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="205.1" y1="436.8" x2="212.9" y2="379.7" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="205.1" y1="436.8" x2="274.1" y2="375.6" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="205.1" y1="436.8" x2="300.4" y2="450.1" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="205.1" y1="436.8" x2="128.6" y2="440.2" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="278.9" y1="290.0" x2="274.1" y2="375.6" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="345.6" y1="362.3" x2="274.1" y2="375.6" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="298.2" y1="116.9" x2="339.7" y2="141.0" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="369.2" y1="265.1" x2="376.5" y2="203.7" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="274.1" y1="375.6" x2="300.4" y2="450.1" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="339.7" y1="141.0" x2="376.5" y2="203.7" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="131.1" y1="325.9" x2="197.8" y2="324.3" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="270.8" y1="50.4" x2="340.4" y2="63.4" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="270.8" y1="50.4" x2="298.2" y2="116.9" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="270.8" y1="50.4" x2="339.7" y2="141.0" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="270.8" y1="50.4" x2="218.9" y2="136.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="101.7" y1="385.9" x2="21.2" y2="373.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="101.7" y1="385.9" x2="131.1" y2="325.9" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="101.7" y1="385.9" x2="26.9" y2="426.5" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="101.7" y1="385.9" x2="60.8" y2="324.5" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="101.7" y1="385.9" x2="128.6" y2="440.2" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="139.8" y1="260.4" x2="120.9" y2="202.7" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="139.8" y1="260.4" x2="131.1" y2="325.9" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="139.8" y1="260.4" x2="197.8" y2="324.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="218.9" y1="136.3" x2="265.4" y2="203.5" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="218.9" y1="136.3" x2="207.5" y2="188.6" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="218.9" y1="136.3" x2="298.2" y2="116.9" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="218.9" y1="136.3" x2="131.9" y2="61.7" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="26.9" y1="426.5" x2="21.2" y2="373.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="26.9" y1="426.5" x2="128.6" y2="440.2" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="60.8" y1="324.5" x2="21.2" y2="373.3" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="60.8" y1="324.5" x2="131.1" y2="325.9" stroke="#241539" stroke-width="0.95" opacity="0.32"/>
-              <line x1="131.9" y1="61.7" x2="123.6" y2="129.9" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-              <line x1="131.9" y1="61.7" x2="48.3" y2="82.5" stroke="#8b52ad" stroke-width="0.95" opacity="0.32"/>
-            </g>
-            <!-- 31 member institutions -->
-            <g class="gx-nodes">
-              <use href="#gx-person" x="187.6" y="419.3" width="35.0" height="35.0" color="#241539"/>
-              <use href="#gx-person" x="253.3" y="32.9" width="35.0" height="35.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="84.2" y="368.4" width="35.0" height="35.0" color="#241539"/>
-              <use href="#gx-person" x="122.3" y="242.9" width="35.0" height="35.0" color="#241539"/>
-              <use href="#gx-person" x="205.9" y="123.3" width="26.0" height="26.0" color="#bfa0d8"/>
-              <use href="#gx-person" x="13.9" y="413.5" width="26.0" height="26.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="47.8" y="311.5" width="26.0" height="26.0" color="#241539"/>
-              <use href="#gx-person" x="115.6" y="427.2" width="26.0" height="26.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="118.9" y="48.7" width="26.0" height="26.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="110.6" y="116.9" width="26.0" height="26.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="252.4" y="190.5" width="26.0" height="26.0" color="#8b52ad"/>
-              <use href="#gx-person" x="35.3" y="69.5" width="26.0" height="26.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="327.4" y="50.4" width="26.0" height="26.0" color="#241539"/>
-              <use href="#gx-person" x="364.9" y="298.3" width="19.0" height="19.0" color="#bfa0d8"/>
-              <use href="#gx-person" x="198.0" y="179.1" width="19.0" height="19.0" color="#bfa0d8"/>
-              <use href="#gx-person" x="20.5" y="106.2" width="19.0" height="19.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="111.4" y="193.2" width="19.0" height="19.0" color="#bfa0d8"/>
-              <use href="#gx-person" x="203.4" y="370.2" width="19.0" height="19.0" color="#bfa0d8"/>
-              <use href="#gx-person" x="55.0" y="186.9" width="19.0" height="19.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="269.4" y="280.5" width="19.0" height="19.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="336.1" y="352.8" width="19.0" height="19.0" color="#8b52ad"/>
-              <use href="#gx-person" x="288.7" y="107.4" width="19.0" height="19.0" color="#8b52ad"/>
-              <use href="#gx-person" x="41.9" y="228.2" width="19.0" height="19.0" color="#bfa0d8"/>
-              <use href="#gx-person" x="359.7" y="255.6" width="19.0" height="19.0" color="#bfa0d8"/>
-              <use href="#gx-person" x="264.6" y="366.1" width="19.0" height="19.0" color="#bfa0d8"/>
-              <use href="#gx-person" x="11.7" y="363.8" width="19.0" height="19.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="330.2" y="131.5" width="19.0" height="19.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="367.0" y="194.2" width="19.0" height="19.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="121.6" y="316.4" width="19.0" height="19.0" color="#5b2d7a"/>
-              <use href="#gx-person" x="290.9" y="440.6" width="19.0" height="19.0" color="#8b52ad"/>
-              <use href="#gx-person" x="188.3" y="314.8" width="19.0" height="19.0" color="#5b2d7a"/>
-            </g>
-            <!-- Shenzhen: the founding chapter, the largest figure on the board -->
-            <g class="gx-hub">
-              <circle cx="198" cy="252" r="39.0" fill="url(#hubGlow)"/>
-              <use href="#gx-person" x="170.0" y="224.0" width="56.0" height="56.0" color="#241539"/>
-            </g>
-            <text class="gx-label" x="232" y="255" font-family="'JetBrains Mono',monospace" font-size="10" letter-spacing="1.5" fill="#4a2363" paint-order="stroke" stroke="#fbf9f3" stroke-width="4" stroke-linejoin="round">SHENZHEN</text>
-          </svg>
-        </div>
-        <!-- Location marker -->
-        <div class="marker">
-          <div>
-            <div class="ml">Inaugural Chapter</div>
-            <div class="mv">Shenzhen</div>
-          </div>
-          <div class="coord">22.54°N · 114.06°E</div>
-        </div>
       </div>
     </div>
   </div>
@@ -910,67 +869,6 @@
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.rv').forEach(function(el) { obs.observe(el); });
-
-  // ── Hero diagram reveal ───────────────────────────────────────────────────
-  // One orchestrated moment that performs what the diagram claims: the founding
-  // chapter arrives, connections grow outward from it, and each institution
-  // lands as its line reaches it. The wave spreads by real distance from the
-  // hub, so nearby institutions light up before distant ones.
-  //
-  // Everything animates transform and opacity only, and every tween runs FROM a
-  // hidden state, so the authored SVG is the finished picture — with no script,
-  // no GSAP, or reduced motion, the diagram simply renders as it stands.
-  (function revealDiagram() {
-    var svg = document.querySelector('.graph svg');
-    if (!svg || !window.gsap) return;
-    if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-
-    var HUB    = { x: 196, y: 250 };
-    var links  = svg.querySelectorAll('.gx-links line');
-    var nodes  = svg.querySelectorAll('.gx-nodes use');
-    var labels = svg.querySelectorAll('.gx-label');
-    if (!links.length || !nodes.length) return;
-
-    function span(x, y) { return Math.sqrt(Math.pow(x - HUB.x, 2) + Math.pow(y - HUB.y, 2)); }
-
-    // A connection runs between two members, so it knits outward from whichever
-    // end is closer to the chapter. A figure simply grows from its own middle.
-    function anchor(el) {
-      if (!el.hasAttribute('x2')) {
-        var w = +el.getAttribute('width'), h = +el.getAttribute('height');
-        return { x: +el.getAttribute('x') + w / 2, y: +el.getAttribute('y') + h / 2 };
-      }
-      var a = { x: +el.getAttribute('x1'), y: +el.getAttribute('y1') };
-      var b = { x: +el.getAttribute('x2'), y: +el.getAttribute('y2') };
-      return span(a.x, a.y) <= span(b.x, b.y) ? a : b;
-    }
-    function reach(el) { var p = anchor(el); return span(p.x, p.y); }
-    function originOf(i, el) { var p = anchor(el); return p.x + ' ' + p.y; }
-    var far = 1;
-    Array.prototype.forEach.call(links, function(l) { far = Math.max(far, reach(l)); });
-    var lead = function(i, el) { return 0.46 * reach(el) / far; };
-
-    var tl = gsap.timeline({ paused: true });
-    tl.from('.gx-hub', { scale: 0, svgOrigin: HUB.x + ' ' + HUB.y, duration: 0.5, ease: 'back.out(1.7)' })
-      .from(links,  { scale: 0, svgOrigin: originOf, duration: 0.45,
-                      ease: 'power2.out', stagger: lead }, 0.16)
-      .from(nodes,  { scale: 0, opacity: 0, duration: 0.4,
-                      svgOrigin: originOf,
-                      ease: 'back.out(2.2)',
-                      stagger: function(i, el) { return lead(i, el) + 0.2; } }, 0.16)
-      .from(labels, { opacity: 0, y: 5, duration: 0.45, ease: 'power2.out', stagger: 0.07 }, 0.6);
-
-    // Play once the frame is on screen, and give its own fade-in a head start so
-    // the diagram does not draw itself behind a half-transparent panel.
-    var watch = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (!e.isIntersecting) return;
-        watch.unobserve(e.target);
-        gsap.delayedCall(0.12, function() { tl.play(); });
-      });
-    }, { threshold: 0.25 });
-    watch.observe(svg);
-  })();
 
   // Character counter
   var why = document.getElementById('f-why');
