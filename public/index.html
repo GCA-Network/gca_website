@@ -60,12 +60,18 @@
 
     /* ─── LEDGER STRIP (marquee) ────────────────────────────────── */
     .ledger { border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-2); padding:18px 0; overflow:hidden; }
-    .led-track { display:flex; width:max-content; animation:ledger-scroll 34s linear infinite; will-change:transform; }
+    /* The script fills the track with as many identical sets as the screen needs
+       and then adds .is-looping. Sliding by 100% / --sets is always exactly one
+       set, however many copies there are, so the loop meets itself without a jump
+       and never runs out of text on a wide screen. Duration is time per set. */
+    .led-track { display:flex; width:max-content; will-change:transform; }
+    .led-track.is-looping { animation:ledger-scroll var(--led-dur, 34s) linear infinite; }
     .led-track > div { flex:0 0 auto; padding:0 48px; border-right:1px solid var(--border); font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--fg-subtle); white-space:nowrap; }
     .led-track > div b { display:block; color:var(--fg); font-weight:500; margin-top:4px; letter-spacing:.08em; }
     .ledger:hover .led-track { animation-play-state:paused; }
-    @keyframes ledger-scroll { from { transform:translateX(0); } to { transform:translateX(-50%); } }
-    @media (prefers-reduced-motion:reduce) { .led-track { animation:none; } }
+    @keyframes ledger-scroll { from { transform:translateX(0); } to { transform:translateX(calc(-100% / var(--sets, 2))); } }
+    /* Must match .led-track.is-looping, or that more specific rule keeps it moving. */
+    @media (prefers-reduced-motion:reduce) { .led-track.is-looping { animation:none; } }
 
     /* ─── INSTITUTIONS MARQUEE ──────────────────────────────────── */
     .insts { padding:56px 0 62px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-2); overflow:hidden; position:relative; }
@@ -297,7 +303,7 @@
       .apply-side { position:static; }
       .af-foot { align-items:stretch; }
       .af-submit { justify-content:space-between; }
-      .led-track { animation-duration:24s; }
+      .led-track { --led-dur:24s; }
       .led-track > div { padding:0 32px; }
     }
     @media (max-width:640px) {
@@ -426,10 +432,6 @@
     <div>Reach<b>10+ Countries represented</b></div>
     <div>Headquarters<b>Shenzhen · Shanghai</b></div>
     <div>Purpose<b>To connect, convene, advance</b></div>
-    <div aria-hidden="true">Status<b>Non-profit · Non-political</b></div>
-    <div aria-hidden="true">Reach<b>10+ Countries represented</b></div>
-    <div aria-hidden="true">Home<b>Shenzhen · Mainland China</b></div>
-    <div aria-hidden="true">Purpose<b>To connect, convene, advance</b></div>
   </div>
 </div>
 
@@ -763,6 +765,48 @@
       { slug:"tum",       name:"Technical University of Munich" },
       { slug:"berlin",    name:"Humboldt-Universität zu Berlin" } ]
   ];
+
+  (function loopLedger() {
+    // The items are written once; every other copy is a clone, so the copies
+    // cannot drift apart. The track holds enough sets that one set plus a full
+    // screen stays covered while it slides, then it loops by exactly one set.
+    var ledger = document.querySelector('.ledger');
+    var track  = ledger && ledger.querySelector('.led-track');
+    if (!track) return;
+    var set = Array.prototype.slice.call(track.children);
+    if (!set.length) return;
+    var sets = 0;
+
+    function fill() {
+      Array.prototype.forEach.call(track.querySelectorAll('[data-clone]'), function(n) { n.remove(); });
+      var setW = track.getBoundingClientRect().width;
+      if (!setW) return;
+      var need = Math.max(2, Math.ceil(ledger.clientWidth / setW) + 1);
+      var frag = document.createDocumentFragment();
+      for (var k = 1; k < need; k++) {
+        set.forEach(function(item) {
+          var c = item.cloneNode(true);
+          c.setAttribute('aria-hidden', 'true');
+          c.setAttribute('data-clone', '');
+          frag.appendChild(c);
+        });
+      }
+      track.appendChild(frag);
+      sets = need;
+      track.style.setProperty('--sets', need);
+      track.classList.add('is-looping');
+    }
+    fill();
+
+    // Refill only when the screen needs a different number of sets. The slide is
+    // always one set wide, so changing the count does not move the text.
+    if (window.ResizeObserver) {
+      new ResizeObserver(function() {
+        var originals = set.reduce(function(w, el) { return w + el.getBoundingClientRect().width; }, 0);
+        if (originals && Math.max(2, Math.ceil(ledger.clientWidth / originals) + 1) !== sets) fill();
+      }).observe(ledger);
+    }
+  })();
 
   (function buildInstitutions() {
     var rows = [document.getElementById('instRowA'), document.getElementById('instRowB')];
