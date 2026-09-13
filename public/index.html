@@ -24,7 +24,7 @@
     .rv.in { opacity:1; transform:none; }
 
     /* ─── HERO ──────────────────────────────────────────────────── */
-    .ab-hero { padding:148px 0 92px; position:relative; }
+    .ab-hero { padding:148px 0 92px; position:relative; isolation:isolate; overflow:hidden; }
     .ab-hero-grid { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:64px; align-items:end; }
     .ab-hero-meta { display:flex; gap:28px; flex-wrap:wrap; margin-bottom:44px; font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--fg-subtle); }
     .ab-hero-meta span b { color:var(--fg); font-weight:500; }
@@ -33,29 +33,45 @@
     .ab-hero h1 .soft { color:var(--fg-subtle); font-style:italic; }
     .ab-hero h1 .amp { font-style:italic; color:var(--accent); padding:0 .06em; }
     .ab-hero-sub { margin-top:30px; max-width:520px; font-size:16px; line-height:1.7; color:var(--fg-muted); }
-    .ab-hero-right { display:flex; flex-direction:column; gap:22px; padding-bottom:8px; }
-    .marker { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; border:1px solid var(--border); background:rgba(255,255,255,.5); border-radius:3px; }
-    .marker .ml { font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-4); }
-    .marker .mv { font-family:var(--display); font-size:22px; letter-spacing:-.01em; color:var(--fg); }
-    .marker .coord { font-family:var(--mono); font-size:11.5px; color:var(--fg-muted); letter-spacing:.05em; }
-
-    /* Node graph */
-    .graph { position:relative; border:1px solid var(--border); background:#fbf9f3; aspect-ratio:4/5; border-radius:3px; overflow:hidden; }
-    .graph svg { width:100%; height:100%; display:block; }
-    .gc { position:absolute; font-family:var(--mono); font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-4); }
-    .gc-tl { top:10px; left:12px; }
-    .gc-tr { top:10px; right:12px; color:var(--accent); }
-    .gc-bl { bottom:10px; left:12px; }
-    .gc-br { bottom:10px; right:12px; }
+    /* Event photo collage behind the hero. The headline stays the point; the
+       photos are evidence behind it. All thirty form one chain that snakes
+       through the columns, up the first, down the next, and so on, with the end
+       of the last column feeding back into the first out of sight, so no photo
+       spends its whole life behind the words. The page script lays the chain
+       out and moves it; without script the same photos sit as a still collage.
+       The brand tint is baked in by Cloudinary, so nothing blends on the page. */
+    .ab-collage { --cols:6; --gap:14px; position:absolute; inset:0; z-index:-2; padding:0 var(--gap); column-count:var(--cols); column-gap:var(--gap); pointer-events:none; opacity:0; transition:opacity .7s ease; }
+    .ab-collage.is-ready { opacity:1; }
+    .ab-tile { break-inside:avoid; margin:0 0 var(--gap); border-radius:3px; overflow:hidden; background:var(--bg-2); }
+    .ab-tile img { display:block; width:100%; height:auto; }
+    /* Chain mode: the script owns size and position. Photos in the hidden part
+       of the loop are taken out of rendering, so only on-screen ones hold a layer. */
+    .ab-collage.is-chain { column-count:auto; padding:0; }
+    .is-chain .ab-tile { display:none; position:absolute; top:0; left:0; margin:0; }
+    .is-chain .ab-tile.on { display:block; will-change:transform; }
+    /* The heading is ink on paper, so the scrim is paper rather than the usual
+       dark overlay: near-solid behind the words, clearing toward the right, and
+       fading to paper top and bottom so the hero meets the nav and the ledger
+       without a hard photo edge. */
+    .ab-scrim { position:absolute; inset:0; z-index:-1; pointer-events:none;
+      background:
+        linear-gradient(to bottom, var(--bg) 0, rgba(246,244,239,0) 17%, rgba(246,244,239,0) 80%, var(--bg) 100%),
+        linear-gradient(to right, var(--bg) 0, rgba(246,244,239,.96) 36%, rgba(246,244,239,.76) 52%, rgba(246,244,239,.18) 72%, rgba(246,244,239,0) 90%); }
 
     /* ─── LEDGER STRIP (marquee) ────────────────────────────────── */
     .ledger { border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-2); padding:18px 0; overflow:hidden; }
-    .led-track { display:flex; width:max-content; animation:ledger-scroll 34s linear infinite; will-change:transform; }
+    /* The script fills the track with as many identical sets as the screen needs
+       and then adds .is-looping. Sliding by 100% / --sets is always exactly one
+       set, however many copies there are, so the loop meets itself without a jump
+       and never runs out of text on a wide screen. Duration is time per set. */
+    .led-track { display:flex; width:max-content; will-change:transform; }
+    .led-track.is-looping { animation:ledger-scroll var(--led-dur, 34s) linear infinite; }
     .led-track > div { flex:0 0 auto; padding:0 48px; border-right:1px solid var(--border); font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--fg-subtle); white-space:nowrap; }
     .led-track > div b { display:block; color:var(--fg); font-weight:500; margin-top:4px; letter-spacing:.08em; }
     .ledger:hover .led-track { animation-play-state:paused; }
-    @keyframes ledger-scroll { from { transform:translateX(0); } to { transform:translateX(-50%); } }
-    @media (prefers-reduced-motion:reduce) { .led-track { animation:none; } }
+    @keyframes ledger-scroll { from { transform:translateX(0); } to { transform:translateX(calc(-100% / var(--sets, 2))); } }
+    /* Must match .led-track.is-looping, or that more specific rule keeps it moving. */
+    @media (prefers-reduced-motion:reduce) { .led-track.is-looping { animation:none; } }
 
     /* ─── INSTITUTIONS MARQUEE ──────────────────────────────────── */
     .insts { padding:56px 0 62px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-2); overflow:hidden; position:relative; }
@@ -268,6 +284,10 @@
     /* ─── Responsive ─────────────────────────────────────────────── */
     @media (max-width:1100px) {
       .ab-hero-grid { grid-template-columns:1fr; gap:40px; }
+      .ab-collage { --cols:4; }
+      /* Heaviest near the top, where the small meta row sits, and easing through
+         the headline, whose size carries its own contrast. */
+      .ab-scrim { background:linear-gradient(to bottom, var(--bg) 0, rgba(246,244,239,.96) 14%, rgba(246,244,239,.95) 38%, rgba(246,244,239,.86) 60%, rgba(246,244,239,.88) 80%, var(--bg) 100%); }
       .st-grid { grid-template-columns:1fr; gap:28px; }
       .st-label { position:static; flex-direction:row; align-items:center; }
       .shen-head { grid-template-columns:1fr; gap:24px; }
@@ -283,18 +303,20 @@
       .apply-side { position:static; }
       .af-foot { align-items:stretch; }
       .af-submit { justify-content:space-between; }
-      .led-track { animation-duration:24s; }
+      .led-track { --led-dur:24s; }
       .led-track > div { padding:0 32px; }
     }
     @media (max-width:640px) {
       .wrap { padding:0 20px; }
       .ab-hero { padding:128px 0 68px; }
+      .ab-collage { --cols:3; --gap:8px; }
       .af-row-2 { grid-template-columns:1fr; }
       .apply-form { padding:26px 22px 22px; }
       .vgrid { grid-template-columns:1fr; }
       .vq { padding:28px 22px 32px; }
     }
   </style>
+  <noscript><style>.ab-collage{opacity:1}</style></noscript>
 </head>
 <body>
 
@@ -353,6 +375,41 @@
 
 <!-- ═══════════════════════ HERO ═══════════════════════════════ -->
 <section class="ab-hero">
+  <!-- Event photo collage: one chain of real GCA event photos, curated from
+       the published stories. Decorative behind the headline. -->
+  <div class="ab-collage" aria-hidden="true">
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769749/mxj1pqkvoiam7ugagyxc.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769749/mxj1pqkvoiam7ugagyxc.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769749/mxj1pqkvoiam7ugagyxc.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772289/seppzmzdxh4l3ur9tlyo.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772289/seppzmzdxh4l3ur9tlyo.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772289/seppzmzdxh4l3ur9tlyo.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769764/mfnp17vnvfucdsfmhx9d.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769764/mfnp17vnvfucdsfmhx9d.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769764/mfnp17vnvfucdsfmhx9d.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768689/ipfruixzmugbakdke1rb.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768689/ipfruixzmugbakdke1rb.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768689/ipfruixzmugbakdke1rb.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769758/tbtvlzpv0rgexynahcuy.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769758/tbtvlzpv0rgexynahcuy.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769758/tbtvlzpv0rgexynahcuy.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772294/lkxeswmpcndrg2ihosdu.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772294/lkxeswmpcndrg2ihosdu.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772294/lkxeswmpcndrg2ihosdu.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/u7uqwwlzesbaippbrrej.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/u7uqwwlzesbaippbrrej.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/u7uqwwlzesbaippbrrej.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769131/bfvvnmobnmptpmizsnoc.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769131/bfvvnmobnmptpmizsnoc.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769131/bfvvnmobnmptpmizsnoc.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769759/kmiq7c9uqabbxtcimhgs.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769759/kmiq7c9uqabbxtcimhgs.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769759/kmiq7c9uqabbxtcimhgs.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772287/n1nlczxnjtzskjgk1n1b.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772287/n1nlczxnjtzskjgk1n1b.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772287/n1nlczxnjtzskjgk1n1b.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769765/evtysbfn7jcxnqb5vi8x.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769765/evtysbfn7jcxnqb5vi8x.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769765/evtysbfn7jcxnqb5vi8x.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769132/tdphtcvglftmsjlfi1er.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769132/tdphtcvglftmsjlfi1er.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769132/tdphtcvglftmsjlfi1er.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/qu0rtslwydf41ekxx94f.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/qu0rtslwydf41ekxx94f.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769768/qu0rtslwydf41ekxx94f.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772288/uj6upbre1vz90f1mqycm.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772288/uj6upbre1vz90f1mqycm.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772288/uj6upbre1vz90f1mqycm.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769753/t52eztzzatvjgcl9j6qi.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769753/t52eztzzatvjgcl9j6qi.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769753/t52eztzzatvjgcl9j6qi.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768691/hpknftdfplif7yh7vdvd.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768691/hpknftdfplif7yh7vdvd.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776768691/hpknftdfplif7yh7vdvd.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769763/gfiyb7cjj9h8r4dz3sni.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769763/gfiyb7cjj9h8r4dz3sni.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769763/gfiyb7cjj9h8r4dz3sni.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954162/axeeszygynlrgkhxekrs.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954162/axeeszygynlrgkhxekrs.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954162/axeeszygynlrgkhxekrs.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770865/cdwg46ed4rr3kwwib1qb.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770865/cdwg46ed4rr3kwwib1qb.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770865/cdwg46ed4rr3kwwib1qb.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769757/s4pntmgktu2bkc9ib8ix.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769757/s4pntmgktu2bkc9ib8ix.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769757/s4pntmgktu2bkc9ib8ix.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772295/d1o0rknjxst0uiecpx2c.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772295/d1o0rknjxst0uiecpx2c.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772295/d1o0rknjxst0uiecpx2c.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769128/atffhf6dvvszk0t5qmwj.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769128/atffhf6dvvszk0t5qmwj.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769128/atffhf6dvvszk0t5qmwj.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954164/yfbrtz9aox4ra9rvhcnv.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954164/yfbrtz9aox4ra9rvhcnv.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954164/yfbrtz9aox4ra9rvhcnv.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770624/y9joo3imqhi22aqsiujy.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770624/y9joo3imqhi22aqsiujy.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776770624/y9joo3imqhi22aqsiujy.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769766/jpb5yuqm5kr44ozziues.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769766/jpb5yuqm5kr44ozziues.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769766/jpb5yuqm5kr44ozziues.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772291/jngjnkyykeredjnpk6ip.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_375,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772291/jngjnkyykeredjnpk6ip.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_600,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776772291/jngjnkyykeredjnpk6ip.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="600" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769130/x4j1kh1uxu77wgoiqond.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_240,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769130/x4j1kh1uxu77wgoiqond.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_384,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776769130/x4j1kh1uxu77wgoiqond.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="384" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954160/rflospnfuk8pugu6pbrv.jpg" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_330,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954160/rflospnfuk8pugu6pbrv.jpg 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_528,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1788954160/rflospnfuk8pugu6pbrv.jpg 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="528" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776771629/uhynhxhcwor5byhmcccq.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_276,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776771629/uhynhxhcwor5byhmcccq.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_442,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776771629/uhynhxhcwor5byhmcccq.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="442" alt="" decoding="async"></figure>
+    <figure class="ab-tile"><img src="https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776764522/hxvd9lzagymscenhtusq.png" srcset="https://res.cloudinary.com/ddblh2ahs/image/upload/w_300,h_390,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776764522/hxvd9lzagymscenhtusq.png 300w, https://res.cloudinary.com/ddblh2ahs/image/upload/w_480,h_624,c_fill,g_auto,e_saturation:-20/e_tint:22:7b3fa0,f_auto,q_auto/v1776764522/hxvd9lzagymscenhtusq.png 480w" sizes="(max-width:640px) 34vw, (max-width:1100px) 26vw, 17vw" width="480" height="624" alt="" decoding="async"></figure>
+  </div>
+  <div class="ab-scrim" aria-hidden="true"></div>
   <div class="wrap">
     <div class="ab-hero-meta rv">
       <span>Vol. 01 &middot; <b>Intro</b></span>
@@ -363,63 +420,6 @@
       <div>
         <h1 class="rv">Brilliant minds<br/><em>deserve</em> <span class="soft">to be</span><br/>connected<span class="amp">.</span></h1>
         <p class="ab-hero-sub rv">GCA is a non-profit, non-political global network dedicated to connecting scholars, professionals, and industry leaders — turning meaningful dialogue into impactful action.</p>
-      </div>
-      <div class="ab-hero-right rv">
-        <!-- Node graph -->
-        <div class="graph" aria-hidden="true">
-          <div class="gc gc-tl">Fig. 01</div>
-          <div class="gc gc-tr">● Live</div>
-          <div class="gc gc-bl">22.54°N · 114.06°E</div>
-          <div class="gc gc-br">Nodes · 20+</div>
-          <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
-            <defs>
-              <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
-                <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#d9d3c5" stroke-width=".5"/>
-              </pattern>
-            </defs>
-            <rect width="400" height="500" fill="url(#grid)" opacity=".6"/>
-            <!-- Connection lines -->
-            <g stroke="#c8bfac" stroke-width=".8" opacity=".6">
-              <line x1="200" y1="250" x2="80"  y2="110"/>
-              <line x1="200" y1="250" x2="330" y2="140"/>
-              <line x1="200" y1="250" x2="60"  y2="340"/>
-              <line x1="200" y1="250" x2="340" y2="360"/>
-              <line x1="200" y1="250" x2="180" y2="60"/>
-              <line x1="200" y1="250" x2="220" y2="430"/>
-              <line x1="200" y1="250" x2="300" y2="250"/>
-              <line x1="200" y1="250" x2="100" y2="250"/>
-              <line x1="80"  y1="110" x2="180" y2="60"/>
-              <line x1="330" y1="140" x2="300" y2="250"/>
-              <line x1="60"  y1="340" x2="100" y2="250"/>
-              <line x1="340" y1="360" x2="220" y2="430"/>
-            </g>
-            <!-- Satellite nodes -->
-            <g fill="#e9e3d3" stroke="#c8bfac" stroke-width="1">
-              <circle cx="80"  cy="110" r="5"/>
-              <circle cx="330" cy="140" r="5"/>
-              <circle cx="60"  cy="340" r="5"/>
-              <circle cx="340" cy="360" r="5"/>
-              <circle cx="180" cy="60"  r="5"/>
-              <circle cx="220" cy="430" r="5"/>
-              <circle cx="300" cy="250" r="5"/>
-              <circle cx="100" cy="250" r="5"/>
-            </g>
-            <!-- Centre node -->
-            <circle cx="200" cy="250" r="14" fill="#7B3FA0" opacity=".18"/>
-            <circle cx="200" cy="250" r="8"  fill="#7B3FA0"/>
-            <circle cx="200" cy="250" r="4"  fill="#fff"/>
-            <!-- Label -->
-            <text x="215" y="246" font-family="'JetBrains Mono',monospace" font-size="9" fill="#6c6558" letter-spacing=".14em" text-transform="uppercase">SHENZHEN</text>
-          </svg>
-        </div>
-        <!-- Location marker -->
-        <div class="marker">
-          <div>
-            <div class="ml">Inaugural Chapter</div>
-            <div class="mv">Shenzhen</div>
-          </div>
-          <div class="coord">22.54°N · 114.06°E</div>
-        </div>
       </div>
     </div>
   </div>
@@ -432,10 +432,6 @@
     <div>Reach<b>10+ Countries represented</b></div>
     <div>Headquarters<b>Shenzhen · Shanghai</b></div>
     <div>Purpose<b>To connect, convene, advance</b></div>
-    <div aria-hidden="true">Status<b>Non-profit · Non-political</b></div>
-    <div aria-hidden="true">Reach<b>10+ Countries represented</b></div>
-    <div aria-hidden="true">Home<b>Shenzhen · Mainland China</b></div>
-    <div aria-hidden="true">Purpose<b>To connect, convene, advance</b></div>
   </div>
 </div>
 
@@ -770,6 +766,48 @@
       { slug:"berlin",    name:"Humboldt-Universität zu Berlin" } ]
   ];
 
+  (function loopLedger() {
+    // The items are written once; every other copy is a clone, so the copies
+    // cannot drift apart. The track holds enough sets that one set plus a full
+    // screen stays covered while it slides, then it loops by exactly one set.
+    var ledger = document.querySelector('.ledger');
+    var track  = ledger && ledger.querySelector('.led-track');
+    if (!track) return;
+    var set = Array.prototype.slice.call(track.children);
+    if (!set.length) return;
+    var sets = 0;
+
+    function fill() {
+      Array.prototype.forEach.call(track.querySelectorAll('[data-clone]'), function(n) { n.remove(); });
+      var setW = track.getBoundingClientRect().width;
+      if (!setW) return;
+      var need = Math.max(2, Math.ceil(ledger.clientWidth / setW) + 1);
+      var frag = document.createDocumentFragment();
+      for (var k = 1; k < need; k++) {
+        set.forEach(function(item) {
+          var c = item.cloneNode(true);
+          c.setAttribute('aria-hidden', 'true');
+          c.setAttribute('data-clone', '');
+          frag.appendChild(c);
+        });
+      }
+      track.appendChild(frag);
+      sets = need;
+      track.style.setProperty('--sets', need);
+      track.classList.add('is-looping');
+    }
+    fill();
+
+    // Refill only when the screen needs a different number of sets. The slide is
+    // always one set wide, so changing the count does not move the text.
+    if (window.ResizeObserver) {
+      new ResizeObserver(function() {
+        var originals = set.reduce(function(w, el) { return w + el.getBoundingClientRect().width; }, 0);
+        if (originals && Math.max(2, Math.ceil(ledger.clientWidth / originals) + 1) !== sets) fill();
+      }).observe(ledger);
+    }
+  })();
+
   (function buildInstitutions() {
     var rows = [document.getElementById('instRowA'), document.getElementById('instRowB')];
     if (!rows[0] || !rows[1]) return;
@@ -829,6 +867,125 @@
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.rv').forEach(function(el) { obs.observe(el); });
+
+  // ── Hero photo chain ──────────────────────────────────────────────────────
+  // The collage is one continuous chain rather than separate columns. It runs
+  // up the first column, down the second, up the third and so on, then feeds
+  // from the end of the last column back into the start of the first out of
+  // sight. Every photo therefore travels through every column, so none stays
+  // parked behind the headline. Each visit opens at a random point in the
+  // chain, so different photos land in the open part of the hero.
+  //
+  // A photo crossing a turn shows in two columns at once, so each has one
+  // clone. Turns sit at the hero's top and bottom edges, where the hero clips
+  // whatever runs past and the scrim has already faded to paper.
+  (function photoChain() {
+    var hero = document.querySelector('.ab-hero');
+    var box  = document.querySelector('.ab-collage');
+    if (!box) return;
+    function reveal() { box.classList.add('is-ready'); }
+    if (!hero || !window.requestAnimationFrame || !window.ResizeObserver) { reveal(); return; }
+
+    var photos = Array.prototype.map.call(box.querySelectorAll('.ab-tile'), function(fig) {
+      var img = fig.querySelector('img');
+      return { els: [fig], on: [false, false], h: 0, at: 0,
+               ratio: (+img.getAttribute('height')) / (+img.getAttribute('width')) };
+    });
+    if (!photos.length) { reveal(); return; }
+    photos.forEach(function(p) { p.els.push(box.appendChild(p.els[0].cloneNode(true))); });
+    box.classList.add('is-chain');
+
+    var SPEED  = 22;                                   // px per second along the chain
+    var reduce = window.matchMedia('(prefers-reduced-motion:reduce)');
+    var cols, gap, colX, V, L, run, pos = 0;
+
+    function layout() {
+      var cs = getComputedStyle(box);
+      cols = parseInt(cs.getPropertyValue('--cols'), 10) || 6;
+      gap  = parseFloat(cs.getPropertyValue('--gap')) || 14;
+      V    = box.clientHeight;
+      var w = (box.clientWidth - gap * (cols + 1)) / cols;
+      colX = [];
+      for (var k = 0; k < cols; k++) colX.push(gap + k * (w + gap));
+      L = 0;
+      photos.forEach(function(p) {
+        p.h = w * p.ratio; p.at = L; L += p.h + gap;
+        p.els.forEach(function(el) { el.style.width = w + 'px'; });
+      });
+      run = cols * V;                                  // the visible length of the chain
+    }
+
+    function place(p, c, x, y) {
+      var el = p.els[c];
+      if (!p.on[c]) { el.classList.add('on'); p.on[c] = true; }
+      el.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0)';
+    }
+    function park(p, c) {
+      if (!p.on[c]) return;
+      p.els[c].classList.remove('on'); p.on[c] = false;
+    }
+
+    function draw() {
+      photos.forEach(function(p) {
+        var used = 0, a0 = ((p.at + pos) % L + L) % L;
+        // Near the end of the loop a photo can also reach into its beginning.
+        [a0, a0 - L].forEach(function(a) {
+          if (a + p.h <= 0 || a >= run) return;        // wholly in the hidden return
+          for (var k = 0; k < cols && used < 2; k++) {
+            var local = a - k * V;
+            if (local < V && local + p.h > 0) {
+              // Odd columns run down; even columns run up.
+              place(p, used++, colX[k], k % 2 ? local : V - local - p.h);
+            }
+          }
+        });
+        for (var c = used; c < 2; c++) park(p, c);
+      });
+    }
+
+    var running = false, last = 0;
+    function tick(now) {
+      if (!running) return;
+      if (last) pos += SPEED * Math.min(0.1, (now - last) / 1000);   // no leap after a hidden tab
+      last = now;
+      draw();
+      requestAnimationFrame(tick);
+    }
+    function start() {
+      if (running || reduce.matches) return;
+      running = true; last = 0; requestAnimationFrame(tick);
+    }
+    function stop() { running = false; }
+
+    layout();
+    // Thirty photos are far longer than the visible run at any real hero size;
+    // if that ever stops being true the chain would show gaps, so stay still.
+    if (L <= run) {
+      photos.forEach(function(p) { p.els[1].remove(); p.els.length = 1; });
+      box.classList.remove('is-chain');
+      reveal();
+      return;
+    }
+    pos = Math.random() * L;
+    draw();
+    requestAnimationFrame(reveal);
+
+    // Re-flow when the hero changes size, whether from a resize or late fonts,
+    // keeping the same place along the chain.
+    new ResizeObserver(function() {
+      var through = pos / L; layout(); pos = through * L; draw();
+    }).observe(hero);
+
+    // Only move while the hero is on screen.
+    var onScreen = false;
+    new IntersectionObserver(function(entries) {
+      onScreen = entries[0].isIntersecting;
+      onScreen ? start() : stop();
+    }).observe(hero);
+
+    var onMotion = function() { reduce.matches ? stop() : (onScreen && start()); };
+    reduce.addEventListener ? reduce.addEventListener('change', onMotion) : reduce.addListener(onMotion);
+  })();
 
   // Character counter
   var why = document.getElementById('f-why');
