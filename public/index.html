@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Global Communication Association</title>
+  <title>GCA Global Alumni Network</title>
+  <link rel="icon" type="image/png" href="/brand_assets/GCA%20Logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -24,7 +25,8 @@
     .rv.in { opacity:1; transform:none; }
 
     /* ─── HERO ──────────────────────────────────────────────────── */
-    .ab-hero { padding:148px 0 92px; position:relative; isolation:isolate; overflow:hidden; }
+    .ab-hero { min-height:100vh; min-height:100svh; display:flex; flex-direction:column; justify-content:center; padding:100px 0; position:relative; isolation:isolate; overflow:hidden; }
+    .ab-hero > .wrap { width:100%; max-width:none; margin:0; }
     .ab-hero-grid { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:64px; align-items:end; }
     .ab-hero-meta { display:flex; gap:28px; flex-wrap:wrap; margin-bottom:44px; font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--fg-subtle); }
     .ab-hero-meta span b { color:var(--fg); font-weight:500; }
@@ -49,29 +51,10 @@
     .ab-collage.is-chain { column-count:auto; padding:0; }
     .is-chain .ab-tile { display:none; position:absolute; top:0; left:0; margin:0; }
     .is-chain .ab-tile.on { display:block; will-change:transform; }
-    /* The heading is ink on paper, so the scrim is paper rather than the usual
-       dark overlay: near-solid behind the words, clearing toward the right, and
-       fading to paper top and bottom so the hero meets the nav and the ledger
-       without a hard photo edge. */
+    /* Keep the opening viewport photographic, with paper behind all hero copy. */
     .ab-scrim { position:absolute; inset:0; z-index:-1; pointer-events:none;
-      background:
-        linear-gradient(to bottom, var(--bg) 0, rgba(246,244,239,0) 17%, rgba(246,244,239,0) 80%, var(--bg) 100%),
-        linear-gradient(to right, var(--bg) 0, rgba(246,244,239,.96) 36%, rgba(246,244,239,.76) 52%, rgba(246,244,239,.18) 72%, rgba(246,244,239,0) 90%); }
+      background:linear-gradient(to right, var(--bg) 0%, rgba(246,244,239,.98) 40%, rgba(246,244,239,.90) 53%, rgba(246,244,239,0) 83%); }
 
-    /* ─── LEDGER STRIP (marquee) ────────────────────────────────── */
-    .ledger { border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-2); padding:18px 0; overflow:hidden; }
-    /* The script fills the track with as many identical sets as the screen needs
-       and then adds .is-looping. Sliding by 100% / --sets is always exactly one
-       set, however many copies there are, so the loop meets itself without a jump
-       and never runs out of text on a wide screen. Duration is time per set. */
-    .led-track { display:flex; width:max-content; will-change:transform; }
-    .led-track.is-looping { animation:ledger-scroll var(--led-dur, 34s) linear infinite; }
-    .led-track > div { flex:0 0 auto; padding:0 48px; border-right:1px solid var(--border); font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--fg-subtle); white-space:nowrap; }
-    .led-track > div b { display:block; color:var(--fg); font-weight:500; margin-top:4px; letter-spacing:.08em; }
-    .ledger:hover .led-track { animation-play-state:paused; }
-    @keyframes ledger-scroll { from { transform:translateX(0); } to { transform:translateX(calc(-100% / var(--sets, 2))); } }
-    /* Must match .led-track.is-looping, or that more specific rule keeps it moving. */
-    @media (prefers-reduced-motion:reduce) { .led-track.is-looping { animation:none; } }
 
     /* ─── INSTITUTIONS MARQUEE ──────────────────────────────────── */
     .insts { padding:56px 0 62px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg-2); overflow:hidden; position:relative; }
@@ -97,7 +80,7 @@
       .inst span { font-size:13px; }
     }
 
-    /* ─── §01 EVENTS ────────────────────────────────────────────── */
+    /* ─── §02 EVENTS ────────────────────────────────────────────── */
     /* Underlaid on the same dark ground as the Mission Statement (.pquote). */
     .evsec { padding:96px 0 104px; background:var(--fg); color:#f6f2e8; position:relative; overflow:hidden; }
     .evsec::before { content:""; position:absolute; inset:0; background:radial-gradient(1200px 500px at 20% 0%, rgba(123,63,160,.28), transparent 60%),radial-gradient(900px 400px at 90% 100%, rgba(123,63,160,.18), transparent 60%); pointer-events:none; }
@@ -137,7 +120,7 @@
     .ev-empty a { color:#c8a6e0; font-weight:600; text-decoration:none; }
     .ev-empty a:hover { color:#fff; }
 
-    /* ─── §02 STATEMENT ─────────────────────────────────────────── */
+    /* ─── §01 STATEMENT ─────────────────────────────────────────── */
     .statement { padding:0 0 110px; }
     .statement > .wrap { border-top:1px solid var(--border); padding-top:110px; }
     .st-grid { display:grid; grid-template-columns:1fr 2.1fr; gap:72px; align-items:start; }
@@ -153,25 +136,6 @@
     .st-body .drop { float:left; font-family:var(--display); font-size:78px; line-height:.82; padding:8px 12px 0 0; color:var(--accent); }
     .zh { font-size:15.5px; line-height:1.9; color:var(--fg-subtle); font-style:italic; margin-top:18px; padding-top:18px; border-top:1px dashed var(--border); }
 
-    /* ─── §03 CHAPTERS GRID ─────────────────────────────────────── */
-    .shen { padding:0 0 110px; }
-    .shen-top { padding-top:90px; border-top:1px solid var(--border); }
-    .shen-head { display:grid; grid-template-columns:1fr 1.6fr; gap:64px; align-items:end; margin-bottom:56px; }
-    .shen-head h2 { font-family:var(--display); font-weight:400; font-size:clamp(42px,5.2vw,76px); line-height:.98; letter-spacing:-.025em; color:var(--fg); }
-    .shen-head h2 em { font-style:italic; color:var(--accent); }
-    .shen-head p { font-size:15.5px; line-height:1.75; color:var(--fg-muted); max-width:52ch; padding-bottom:10px; }
-    .shen-grid { display:grid; grid-template-columns:repeat(12,1fr); gap:0; border-top:1px solid var(--border); border-left:1px solid var(--border); }
-    .cell { grid-column:span 4; padding:36px 32px 44px; border-right:1px solid var(--border); border-bottom:1px solid var(--border); background:transparent; transition:background .25s; }
-    .cell:hover { background:rgba(255,255,255,.55); }
-    .cell.wide { grid-column:span 6; }
-    .cell.narrow { grid-column:span 3; }
-    .cell-n { font-family:var(--mono); font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-4); margin-bottom:20px; display:flex; justify-content:space-between; }
-    .cell-n .acc { color:var(--accent); }
-    .cell h3 { font-family:var(--display); font-size:30px; line-height:1.05; letter-spacing:-.01em; color:var(--fg); font-weight:400; margin-bottom:12px; }
-    .cell p { font-size:14px; line-height:1.72; color:var(--fg-muted); }
-    .cell .ctag { display:inline-flex; align-items:center; gap:7px; font-family:var(--mono); font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--accent); margin-top:16px; }
-    .cell .ctag::before { content:""; width:14px; height:1px; background:var(--accent); }
-
     /* ─── PULL QUOTE ────────────────────────────────────────────── */
     .pquote { padding:120px 0; background:var(--fg); color:#f6f2e8; position:relative; overflow:hidden; }
     .pquote::before { content:""; position:absolute; inset:0; background:radial-gradient(1200px 500px at 20% 0%, rgba(123,63,160,.28), transparent 60%),radial-gradient(900px 400px at 90% 100%, rgba(123,63,160,.18), transparent 60%); pointer-events:none; }
@@ -182,8 +146,8 @@
     .pq-cite { font-family:var(--mono); font-size:11.5px; letter-spacing:.18em; text-transform:uppercase; color:rgba(246,242,232,.55); display:flex; align-items:center; gap:14px; }
     .pq-cite::before { content:""; width:34px; height:1px; background:rgba(246,242,232,.3); }
 
-    /* ─── §04 VOICES ────────────────────────────────────────────── */
-    .voices { padding:0 0 120px; }
+    /* ─── §03 VOICES ────────────────────────────────────────────── */
+    .voices { padding:96px 0 120px; }
     .voices-top { display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:26px; }
     .voices-cta span { display:inline-block; transition:transform .28s cubic-bezier(.34,1.56,.64,1); }
     .voices-cta:hover span, .voices-cta:focus-visible span { transform:translate(2px,-2px); }
@@ -192,24 +156,29 @@
     .voices-head h2 em { font-style:italic; color:var(--accent); }
     .voices-head p { font-size:15.5px; line-height:1.75; color:var(--fg-muted); max-width:56ch; padding-bottom:10px; }
     .voices-head p i { font-style:italic; color:var(--fg); padding-right:.12em; }
-    .vgrid { display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--border); border-left:1px solid var(--border); }
-    /* The grid carries .rv only as the scroll trigger — the cells do the moving. */
+    .vgrid { display:flex; flex-direction:column; gap:20px; }
     .vgrid.rv, .vtags.rv { opacity:1; transform:none; transition:none; }
-    .vq { position:relative; display:flex; flex-direction:column; gap:18px; margin:0; padding:34px 30px 38px; border-right:1px solid var(--border); border-bottom:1px solid var(--border); opacity:0; transform:translateY(18px); transition:opacity .75s cubic-bezier(.2,.7,.2,1), transform .75s cubic-bezier(.2,.7,.2,1), background .25s ease; }
+    .vq { display:flex; flex-direction:column; align-items:flex-start; gap:12px; width:82%; max-width:850px; margin:0; opacity:0; transform:translateY(18px); transition:opacity .75s cubic-bezier(.2,.7,.2,1), transform .75s cubic-bezier(.2,.7,.2,1); }
+    .vq:nth-child(even) { align-self:flex-end; align-items:flex-end; }
     .vgrid.in .vq { opacity:1; transform:none; }
     .vgrid.in .vq:nth-child(2) { transition-delay:.07s; }
     .vgrid.in .vq:nth-child(3) { transition-delay:.14s; }
     .vgrid.in .vq:nth-child(4) { transition-delay:.21s; }
     .vgrid.in .vq:nth-child(5) { transition-delay:.28s; }
     .vgrid.in .vq:nth-child(6) { transition-delay:.35s; }
-    .vq::before { content:""; position:absolute; left:-1px; top:0; bottom:0; width:2px; background:var(--accent); transform:scaleY(0); transform-origin:50% 0; transition:transform .35s cubic-bezier(.2,.7,.2,1); }
-    .vq:hover { background:rgba(255,255,255,.55); }
-    .vq:hover::before { transform:scaleY(1); }
-    .vq:hover .vq-n span:last-child { color:var(--accent); }
-    .vq-n { display:flex; justify-content:space-between; gap:12px; font-family:var(--mono); font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-4); }
-    .vq-n span:last-child { transition:color .25s ease; }
-    .vq-n .acc { color:var(--accent); }
-    .vq blockquote { font-family:var(--display); font-weight:400; font-size:20px; line-height:1.45; letter-spacing:-.005em; color:var(--fg); margin:0; }
+    .vq-bubble { --bubble-bg:#fbf9f3; position:relative; width:100%; min-width:0; padding:20px 26px; border:1px solid var(--border); border-radius:26px 26px 26px 7px; background:var(--bubble-bg); box-shadow:0 4px 10px -8px rgba(45,28,55,.12),0 18px 35px -28px rgba(45,28,55,.2); }
+    .vq:nth-child(even) .vq-bubble { --bubble-bg:#f1eaf5; border-radius:26px 26px 7px 26px; }
+    .vq-bubble::before { content:""; position:absolute; left:25px; bottom:-9px; width:16px; height:16px; background:var(--bubble-bg); border-left:1px solid var(--border); border-bottom:1px solid var(--border); transform:rotate(-45deg); }
+    .vq:nth-child(even) .vq-bubble::before { left:auto; right:25px; }
+    .vq-speaker { display:flex; align-items:center; gap:14px; max-width:100%; padding:0 8px; color:var(--accent); }
+    .vq:nth-child(even) .vq-speaker { flex-direction:row-reverse; text-align:right; }
+    .vq-avatar { display:flex; align-items:center; justify-content:center; flex:0 0 52px; width:52px; height:52px; border-radius:50%; background:var(--accent-dim); border:1px solid var(--accent-line); }
+    .vq-avatar svg { width:30px; height:30px; }
+    .vq-speaker-copy { display:flex; flex-direction:column; gap:5px; min-width:0; }
+    .vq-speaker-name { font-size:14px; font-weight:600; line-height:1.4; color:var(--fg); }
+    .vq-speaker-label { font-size:12px; line-height:1.5; color:var(--fg-muted); }
+    .vq blockquote { font-family:var(--display); font-weight:400; font-size:clamp(19px,1.65vw,22px); line-height:1.4; letter-spacing:-.005em; color:var(--fg); margin:0; }
+    .vq blockquote mark { color:#542573; background:none; font-weight:400; font-style:italic; }
     .vtags { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:36px; }
     .vtags-label { display:inline-flex; align-items:center; gap:9px; font-family:var(--mono); font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--fg-subtle); margin-right:4px; }
     .vtags-label::before { content:""; width:22px; height:1px; background:var(--fg-subtle); }
@@ -226,12 +195,12 @@
     .vtag:hover { border-color:var(--accent-line); background:var(--accent-dim); color:var(--accent-hi); transform:translateY(-2px); }
     @media (prefers-reduced-motion:reduce) {
       .vgrid .vq, .vtags .vtag { opacity:1; transform:none; transition:background .25s ease, border-color .18s ease, color .18s ease; }
-      .vq::before, .voices-cta span { transition:none; }
+      .voices-cta span { transition:none; }
       .vtag:hover { transform:none; }
     }
 
 
-    /* ─── §05 APPLICATION FORM ──────────────────────────────────── */
+    /* ─── §04 APPLICATION FORM ──────────────────────────────────── */
     .apply { padding:110px 0 130px; border-top:1px solid var(--border); background:linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%); }
     .apply-grid { display:grid; grid-template-columns:1fr 1.15fr; gap:72px; align-items:start; }
     .apply-side { position:sticky; top:110px; }
@@ -283,28 +252,23 @@
 
     /* ─── Responsive ─────────────────────────────────────────────── */
     @media (max-width:1100px) {
+      /* Alignment follows the top-to-bottom overlay at this same breakpoint. */
+      .ab-hero { justify-content:flex-start; padding:148px 0 92px; }
       .ab-hero-grid { grid-template-columns:1fr; gap:40px; }
       .ab-collage { --cols:4; }
-      /* Heaviest near the top, where the small meta row sits, and easing through
-         the headline, whose size carries its own contrast. */
-      .ab-scrim { background:linear-gradient(to bottom, var(--bg) 0, rgba(246,244,239,.96) 14%, rgba(246,244,239,.95) 38%, rgba(246,244,239,.86) 60%, rgba(246,244,239,.88) 80%, var(--bg) 100%); }
+      .ab-scrim { background:linear-gradient(to bottom, var(--bg) 0%, rgba(246,244,239,.96) var(--copy-bottom,70%), rgba(246,244,239,0) calc(var(--copy-bottom,70%) + 120px)); }
       .st-grid { grid-template-columns:1fr; gap:28px; }
       .st-label { position:static; flex-direction:row; align-items:center; }
-      .shen-head { grid-template-columns:1fr; gap:24px; }
-      .shen-grid { grid-template-columns:repeat(6,1fr); }
-      .cell, .cell.wide, .cell.narrow { grid-column:span 6; }
       .ev-head { flex-direction:column; align-items:flex-start; }
       .ev-side { align-items:flex-start; }
       .ev-note { text-align:left; }
       .ev-grid { grid-template-columns:1fr; }
       .voices-head { grid-template-columns:1fr; gap:24px; }
-      .vgrid { grid-template-columns:repeat(2,1fr); }
+      .vq { width:90%; }
       .apply-grid { grid-template-columns:1fr; gap:36px; }
       .apply-side { position:static; }
       .af-foot { align-items:stretch; }
       .af-submit { justify-content:space-between; }
-      .led-track { --led-dur:24s; }
-      .led-track > div { padding:0 32px; }
     }
     @media (max-width:640px) {
       .wrap { padding:0 20px; }
@@ -312,8 +276,16 @@
       .ab-collage { --cols:3; --gap:8px; }
       .af-row-2 { grid-template-columns:1fr; }
       .apply-form { padding:26px 22px 22px; }
-      .vgrid { grid-template-columns:1fr; }
-      .vq { padding:28px 22px 32px; }
+      .vgrid { gap:20px; }
+      .vq { width:96%; gap:12px; }
+      .vq-speaker { gap:10px; padding:0 4px; }
+      .vq-avatar { flex-basis:44px; width:44px; height:44px; }
+      .vq-avatar svg { width:26px; height:26px; }
+      .vq-speaker-name { font-size:13px; }
+      .vq-speaker-label { font-size:11px; }
+      .vq-bubble { padding:18px 20px; }
+      .vq-bubble::before { left:18px; }
+      .vq:nth-child(even) .vq-bubble::before { right:18px; }
     }
   </style>
   <noscript><style>.ab-collage{opacity:1}</style></noscript>
@@ -331,7 +303,7 @@
   <div class="nav-inner">
     <a href="/" class="nav-logo" aria-label="GCA Home">
       <img src="/brand_assets/GCA Logo.png" alt="GCA Logo" />
-      <span class="nav-logo-name">Global Communication<br>Association</span>
+      <span class="nav-logo-name">GCA Global<br>Alumni Network</span>
     </a>
     <ul class="nav-links" role="list">
       <li><a href="/" style="color:var(--fg)">About</a></li>
@@ -425,33 +397,23 @@
   </div>
 </section>
 
-<!-- ═══════════════════════ LEDGER STRIP ══════════════════════ -->
-<div class="ledger">
-  <div class="led-track">
-    <div>Status<b>Non-profit · Non-political</b></div>
-    <div>Reach<b>10+ Countries represented</b></div>
-    <div>Headquarters<b>Shenzhen · Shanghai</b></div>
-    <div>Purpose<b>To connect, convene, advance</b></div>
-  </div>
-</div>
-
-<!-- ═══════════════════════ §01 EVENTS ════════════════════════ -->
-<section class="evsec" id="events">
+<!-- ═══════════════════════ §01 WHO WE ARE ════════════════════ -->
+<section class="statement">
   <div class="wrap">
-    <div class="ev-head">
-      <div class="rv">
-        <div class="eyebrow ey-accent" style="margin-bottom:18px">§ 01 — Events</div>
-        <h2>The latest, <em>on the record.</em></h2>
+    <div class="st-grid">
+      <aside class="st-label rv">
+        <div class="sn">§ 01</div>
+        <div class="st">Who we are</div>
+      </aside>
+      <div class="st-body">
+        <h2 class="rv">Who <em>we are.</em></h2>
+        <p class="st-motto rv">The alumni network for <em>international students and scholars.</em></p>
+        <p class="lede rv">
+          <span class="drop">G</span>CA is a non-profit, non-political global network dedicated to connecting scholars, professionals, and industry leaders worldwide. Humans are social by nature — our greatest ideas are rarely born in isolation.
+        </p>
+        <p class="rv">At GCA, we believe that brilliant minds deserve to be connected, because when visionary individuals unite, extraordinary outcomes follow. Our mission is simple: to connect people across borders, cultures, and disciplines — turning meaningful dialogue into impactful actions that advances humanity.</p>
+        <p class="zh rv">GCA（国际交流协会）致力于汇聚全球学者、专业人士与行业领袖。人类生而具有社会属性——伟大的创想往往在群星闪耀时诞生。我们的使命很简单：打破地域、文化与领域的界限，将深刻对话转化为推动人类进步的切实行动。</p>
       </div>
-      <div class="ev-side rv">
-        <p class="ev-note">Recaps and updates from exchanges, talks, and socials — posted by members.</p>
-        <a href="/events.html" class="btn btn-md btn-outline">View all events <span aria-hidden="true">↗</span></a>
-      </div>
-    </div>
-    <div class="ev-grid rv" id="ev-grid" hidden></div>
-    <div class="ev-empty rv" id="ev-empty" hidden>
-      <p><b>No event posts yet.</b></p>
-      <p>Stories published from the member dashboard will appear here. <a href="/events.html">Browse the events page ↗</a></p>
     </div>
   </div>
 </section>
@@ -467,115 +429,95 @@
   <ul id="instList" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></ul>
 </section>
 
-<!-- ═══════════════════════ §02 WHO WE ARE ════════════════════ -->
-<section class="statement">
+<!-- ═══════════════════════ §02 EVENTS ════════════════════════ -->
+<section class="evsec" id="events">
   <div class="wrap">
-    <div class="st-grid">
-      <aside class="st-label rv">
-        <div class="sn">§ 02</div>
-        <div class="st">Who we are</div>
-      </aside>
-      <div class="st-body">
-        <h2 class="rv">Who <em>we are.</em></h2>
-        <p class="st-motto rv">When <em>visionary</em> individuals unite,<br/>extraordinary outcomes follow.</p>
-        <p class="lede rv">
-          <span class="drop">G</span>CA is a non-profit, non-political global network dedicated to connecting scholars, professionals, and industry leaders worldwide. Humans are social by nature — our greatest ideas are rarely born in isolation.
-        </p>
-        <p class="rv">At GCA, we believe that brilliant minds deserve to be connected, because when visionary individuals unite, extraordinary outcomes follow. Our mission is simple: to connect people across borders, cultures, and disciplines — turning meaningful dialogue into impactful actions that advances humanity.</p>
-        <p class="rv">We bridge the gap between rigorous scholarship and real-world practice — convening minds across journalism, public relations, digital media, linguistics, and intercultural communication to address the most urgent communicative challenges of our era.</p>
-        <p class="zh rv">GCA（Global Communication Association，国际交流协会）致力于汇聚全球学者、专业人士与行业领袖。人类生而具有社会属性——伟大的创想往往在群星闪耀时诞生。我们的使命很简单：打破地域、文化与领域的界限，将深刻对话转化为推动人类进步的切实行动。</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════ §03 ON THE GROUND ════════════════ -->
-<section class="shen" id="programs">
-  <div class="shen-top wrap">
-    <div class="shen-head">
+    <div class="ev-head">
       <div class="rv">
-        <div class="eyebrow ey-accent" style="margin-bottom:18px">§ 03 — What we do</div>
-        <h2>What <em>we do.</em></h2>
+        <div class="eyebrow ey-accent" style="margin-bottom:18px">§ 02 — Events</div>
+        <h2>The latest, <em>on the record.</em></h2>
       </div>
-      <p class="rv">We started in Shenzhen and build outward. Every chapter runs programs that step off campus on purpose &mdash; bringing students and professionals together in labs, galleries, studios, and the neighborhoods in between, wherever that chapter sits.</p>
+      <div class="ev-side rv">
+        <p class="ev-note">Recaps and updates from exchanges, talks, and socials — posted by members.</p>
+        <a href="/events.html" class="btn btn-md btn-outline">View all events <span aria-hidden="true">↗</span></a>
+      </div>
     </div>
-    <div class="shen-grid rv">
-      <div class="cell wide">
-        <div class="cell-n"><span>A · 01</span><span class="acc">Integration</span></div>
-        <h3>Anchored to the campus. Open to the city.</h3>
-        <p>Each chapter sits inside a district of founders, researchers, and operators. We run programs that step off campus on purpose — into labs, galleries, studios, and the ordinary neighborhoods in between.</p>
-        <div class="ctag">Bridge programming</div>
-      </div>
-      <div class="cell narrow">
-        <div class="cell-n"><span>A · 02</span><span>Dialogue</span></div>
-        <h3>Cultural exchange nights.</h3>
-        <p>Evenings built around food, music, and unhurried conversation. Members host in rotation — no panel, no podium.</p>
-      </div>
-      <div class="cell narrow">
-        <div class="cell-n"><span>A · 03</span><span>Learning</span></div>
-        <h3>Workshops &amp; seminars.</h3>
-        <p>Practical skill sessions: public speaking, intercultural communication, media literacy — taught by members for members.</p>
-      </div>
-      <div class="cell">
-        <div class="cell-n"><span>A · 04</span><span>People</span></div>
-        <h3>Speaker series.</h3>
-        <p>Scholars, journalists, and practitioners from inside and outside the university, in small rooms where questions still fit.</p>
-        <div class="ctag">Quarterly cadence</div>
-      </div>
-      <div class="cell">
-        <div class="cell-n"><span>A · 05</span><span>Belonging</span></div>
-        <h3>Networking socials.</h3>
-        <p>Casual get-togethers with fellow members from 10+ countries — right on campus, and out in the city.</p>
-        <div class="ctag">Members from 10+ countries</div>
-      </div>
-      <div class="cell">
-        <div class="cell-n"><span>A · 06</span><span class="acc">Mission</span></div>
-        <h3>Dialogue into action.</h3>
-        <p>We measure ourselves by what members take away and put to work — not by attendance, not by posts, not by decks.</p>
-        <div class="ctag">Outcome-led</div>
-      </div>
+    <div class="ev-grid rv" id="ev-grid" hidden></div>
+    <div class="ev-empty rv" id="ev-empty" hidden>
+      <p><b>No event posts yet.</b></p>
+      <p>Stories published from the member dashboard will appear here. <a href="/events.html">Browse the events page ↗</a></p>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════ §04 IN THEIR WORDS ═══════════════ -->
+<!-- ═══════════════════════ §03 IN THEIR WORDS ═══════════════ -->
 <section class="voices" id="voices">
   <div class="wrap">
     <div class="voices-top rv">
-      <div class="eyebrow ey-accent">§ 04 — In their words</div>
+      <div class="eyebrow ey-accent">§ 03 — In their words</div>
       <a href="/leadership.html" class="btn btn-sm btn-outline voices-cta">Meet the leadership <span aria-hidden="true">&#8599;</span></a>
     </div>
     <div class="voices-head">
       <div class="rv">
         <h2>Why we<br/><em>joined GCA.</em></h2>
       </div>
-      <p class="rv">Everyone who applies answers the same question &mdash; <i>what excites you most about our mission?</i> A few responses from the 2025&ndash;26 intake, excerpted in their own words.</p>
+      <p class="rv">Everyone who applies answers the same question &mdash; <i>what excites you most about our mission?</i> A few responses from current members, excerpted in their own words.</p>
     </div>
 
     <div class="vgrid rv">
       <figure class="vq">
-        <div class="vq-n"><span>V &middot; 01</span><span class="acc">Beyond campus</span></div>
-        <blockquote>&ldquo;The chance to transform student experiences into something that extends beyond the campus. The idea of connecting people from different backgrounds and disciplines to create tangible global impact is quite crucial in a top university like Tsinghua, and also to the student experience.&rdquo;</blockquote>
+        <div class="vq-bubble">
+          <blockquote>“Exploring <mark>different mindsets across cultures.</mark>”</blockquote>
+        </div>
+        <figcaption class="vq-speaker">
+          <span class="vq-avatar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="16" cy="10" r="5"/><path d="M6 28v-3a10 10 0 0 1 20 0v3"/></svg></span>
+          <span class="vq-speaker-copy"><span class="vq-speaker-name">Laylo Saidova</span><span class="vq-speaker-label">Tsinghua University · Inducted 2025</span></span>
+        </figcaption>
       </figure>
       <figure class="vq">
-        <div class="vq-n"><span>V &middot; 02</span><span class="acc">Bridging viewpoints</span></div>
-        <blockquote>&ldquo;The focus on creating tangible global impact through uniting diverse perspectives. Having worked in international relations and cultural exchange, I&rsquo;ve seen how bridging different viewpoints leads to meaningful progress.&rdquo;</blockquote>
+        <div class="vq-bubble">
+          <blockquote>“The focus on creating tangible global impact through uniting diverse perspectives. Having worked in international relations and cultural exchange, I&rsquo;ve seen how <mark>bridging different viewpoints</mark> leads to meaningful progress.”</blockquote>
+        </div>
+        <figcaption class="vq-speaker">
+          <span class="vq-avatar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="16" cy="10" r="5"/><path d="M6 28v-3a10 10 0 0 1 20 0v3"/></svg></span>
+          <span class="vq-speaker-copy"><span class="vq-speaker-name">Durdieva Kumush Khemraevna</span><span class="vq-speaker-label">Tsinghua University · Inducted 2025</span></span>
+        </figcaption>
       </figure>
       <figure class="vq">
-        <div class="vq-n"><span>V &middot; 03</span><span class="acc">Dialogue into action</span></div>
-        <blockquote>&ldquo;The mission to turn &lsquo;meaningful dialogue into impactful actions.&rsquo; I am thrilled by the prospect of using my skills in marketing and live-stream production to amplify these crucial cross-border dialogues, ensuring they reach a global audience and translate that talk into tangible engagement and results.&rdquo;</blockquote>
+        <div class="vq-bubble">
+          <blockquote>“The mission to turn &lsquo;meaningful dialogue into impactful actions.&rsquo; I am thrilled by the prospect of using my skills in marketing and live-stream production to <mark>amplify these crucial cross-border dialogues</mark>, ensuring they reach a global audience and <mark>translate that talk into tangible engagement and results.</mark>”</blockquote>
+        </div>
+        <figcaption class="vq-speaker">
+          <span class="vq-avatar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="16" cy="10" r="5"/><path d="M6 28v-3a10 10 0 0 1 20 0v3"/></svg></span>
+          <span class="vq-speaker-copy"><span class="vq-speaker-name">Oualid Belamkadem</span><span class="vq-speaker-label">Harbin Institute of Technology · Inducted 2025</span></span>
+        </figcaption>
       </figure>
       <figure class="vq">
-        <div class="vq-n"><span>V &middot; 04</span><span>Without limits</span></div>
-        <blockquote>&ldquo;To help create a place where great minds can thrive without limits.&rdquo;</blockquote>
+        <div class="vq-bubble">
+          <blockquote>“To help create a place where great minds can <mark>thrive without limits.</mark>”</blockquote>
+        </div>
+        <figcaption class="vq-speaker">
+          <span class="vq-avatar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="16" cy="10" r="5"/><path d="M6 28v-3a10 10 0 0 1 20 0v3"/></svg></span>
+          <span class="vq-speaker-copy"><span class="vq-speaker-name">Li Yuan</span><span class="vq-speaker-label">Harbin Institute of Technology · Inducted 2025</span></span>
+        </figcaption>
       </figure>
       <figure class="vq">
-        <div class="vq-n"><span>V &middot; 05</span><span>Interdisciplinary</span></div>
-        <blockquote>&ldquo;The potential to translate interdisciplinary dialogue into tangible, global solutions.&rdquo;</blockquote>
+        <div class="vq-bubble">
+          <blockquote>“The potential to translate <mark>interdisciplinary dialogue</mark> into tangible, global solutions.”</blockquote>
+        </div>
+        <figcaption class="vq-speaker">
+          <span class="vq-avatar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="16" cy="10" r="5"/><path d="M6 28v-3a10 10 0 0 1 20 0v3"/></svg></span>
+          <span class="vq-speaker-copy"><span class="vq-speaker-name">Abdur Rehman Nasrullah</span><span class="vq-speaker-label">Tsinghua University · 2025 intake</span></span>
+        </figcaption>
       </figure>
       <figure class="vq">
-        <div class="vq-n"><span>V &middot; 06</span><span>Brilliant minds</span></div>
-        <blockquote>&ldquo;I believe through this platform I can meet some of the brilliant minds that could help me enhance and reshape my skills.&rdquo;</blockquote>
+        <div class="vq-bubble">
+          <blockquote>“Getting the opportunity to <mark>connect to a global community.</mark>”</blockquote>
+        </div>
+        <figcaption class="vq-speaker">
+          <span class="vq-avatar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="16" cy="10" r="5"/><path d="M6 28v-3a10 10 0 0 1 20 0v3"/></svg></span>
+          <span class="vq-speaker-copy"><span class="vq-speaker-name">Akter Nayema</span><span class="vq-speaker-label">Tsinghua University · Inducted 2025</span></span>
+        </figcaption>
       </figure>
     </div>
 
@@ -603,12 +545,12 @@
   </div>
 </section>
 
-<!-- ═══════════════════════ §05 APPLICATION ══════════════════ -->
+<!-- ═══════════════════════ §04 APPLICATION ══════════════════ -->
 <section class="apply" id="join">
   <div class="wrap">
     <div class="apply-grid">
       <aside class="apply-side rv">
-        <div class="eyebrow ey-accent" style="margin-bottom:22px">§ 05 — Membership</div>
+        <div class="eyebrow ey-accent" style="margin-bottom:22px">§ 04 — Membership</div>
         <h2>Come in. <em>Stay a while.</em><br/>Leave different.</h2>
         <p class="apply-lede">GCA membership is open to scholars, practitioners, educators, and anyone committed to building genuine cross-cultural connections. There are no fees — applying is completely free.</p>
         <ul class="apply-steps">
@@ -766,48 +708,6 @@
       { slug:"berlin",    name:"Humboldt-Universität zu Berlin" } ]
   ];
 
-  (function loopLedger() {
-    // The items are written once; every other copy is a clone, so the copies
-    // cannot drift apart. The track holds enough sets that one set plus a full
-    // screen stays covered while it slides, then it loops by exactly one set.
-    var ledger = document.querySelector('.ledger');
-    var track  = ledger && ledger.querySelector('.led-track');
-    if (!track) return;
-    var set = Array.prototype.slice.call(track.children);
-    if (!set.length) return;
-    var sets = 0;
-
-    function fill() {
-      Array.prototype.forEach.call(track.querySelectorAll('[data-clone]'), function(n) { n.remove(); });
-      var setW = track.getBoundingClientRect().width;
-      if (!setW) return;
-      var need = Math.max(2, Math.ceil(ledger.clientWidth / setW) + 1);
-      var frag = document.createDocumentFragment();
-      for (var k = 1; k < need; k++) {
-        set.forEach(function(item) {
-          var c = item.cloneNode(true);
-          c.setAttribute('aria-hidden', 'true');
-          c.setAttribute('data-clone', '');
-          frag.appendChild(c);
-        });
-      }
-      track.appendChild(frag);
-      sets = need;
-      track.style.setProperty('--sets', need);
-      track.classList.add('is-looping');
-    }
-    fill();
-
-    // Refill only when the screen needs a different number of sets. The slide is
-    // always one set wide, so changing the count does not move the text.
-    if (window.ResizeObserver) {
-      new ResizeObserver(function() {
-        var originals = set.reduce(function(w, el) { return w + el.getBoundingClientRect().width; }, 0);
-        if (originals && Math.max(2, Math.ceil(ledger.clientWidth / originals) + 1) !== sets) fill();
-      }).observe(ledger);
-    }
-  })();
-
   (function buildInstitutions() {
     var rows = [document.getElementById('instRowA'), document.getElementById('instRowB')];
     if (!rows[0] || !rows[1]) return;
@@ -877,8 +777,7 @@
   // chain, so different photos land in the open part of the hero.
   //
   // A photo crossing a turn shows in two columns at once, so each has one
-  // clone. Turns sit at the hero's top and bottom edges, where the hero clips
-  // whatever runs past and the scrim has already faded to paper.
+  // rendering copy per visible turn. The hero clips photos crossing its edges.
   (function photoChain() {
     var hero = document.querySelector('.ab-hero');
     var box  = document.querySelector('.ab-collage');
@@ -886,36 +785,63 @@
     function reveal() { box.classList.add('is-ready'); }
     if (!hero || !window.requestAnimationFrame || !window.ResizeObserver) { reveal(); return; }
 
-    var photos = Array.prototype.map.call(box.querySelectorAll('.ab-tile'), function(fig) {
+    var originals = Array.prototype.map.call(box.querySelectorAll('.ab-tile'), function(fig) {
       var img = fig.querySelector('img');
-      return { els: [fig], on: [false, false], h: 0, at: 0,
-               ratio: (+img.getAttribute('height')) / (+img.getAttribute('width')) };
+      return { el:fig, ratio:(+img.getAttribute('height')) / (+img.getAttribute('width')) };
     });
-    if (!photos.length) { reveal(); return; }
-    photos.forEach(function(p) { p.els.push(box.appendChild(p.els[0].cloneNode(true))); });
+    if (!originals.length) { reveal(); return; }
+    var photos = [], copies = 0;
     box.classList.add('is-chain');
 
-    var SPEED  = 22;                                   // px per second along the chain
-    var reduce = window.matchMedia('(prefers-reduced-motion:reduce)');
+    var SPEED = 22;                                    // original chain speed, px per second
     var cols, gap, colX, V, L, run, pos = 0;
 
     function layout() {
       var cs = getComputedStyle(box);
       cols = parseInt(cs.getPropertyValue('--cols'), 10) || 6;
-      gap  = parseFloat(cs.getPropertyValue('--gap')) || 14;
-      V    = box.clientHeight;
-      var w = (box.clientWidth - gap * (cols + 1)) / cols;
+      gap = parseFloat(cs.getPropertyValue('--gap')) || 14;
+      V = box.clientHeight;
+      var w = Math.max(1, (box.clientWidth - gap * (cols + 1)) / cols);
       colX = [];
       for (var k = 0; k < cols; k++) colX.push(gap + k * (w + gap));
+      run = cols * V;
+      var cycle = 0, tallest = 0;
+      originals.forEach(function(p) {
+        cycle += w * p.ratio + gap;
+        tallest = Math.max(tallest, w * p.ratio);
+      });
+      // Keep a complete off-screen return, even on narrow/tall displays.
+      // Repeat the same ordered sequence instead of falling back to a still collage.
+      var needed = Math.max(1, Math.ceil((run + tallest + gap) / cycle));
+      if (needed !== copies) {
+        photos.forEach(function(p) { p.els.forEach(function(el) { el.remove(); }); });
+        photos = [];
+        var fragment = document.createDocumentFragment();
+        for (var repeat = 0; repeat < needed; repeat++) {
+          originals.forEach(function(p) {
+            var el = repeat ? p.el.cloneNode(true) : p.el;
+            el.classList.remove('on');
+            fragment.appendChild(el);
+            photos.push({ els:[el], on:[false], ratio:p.ratio, h:0, at:0 });
+          });
+        }
+        box.appendChild(fragment);
+        copies = needed;
+      }
       L = 0;
       photos.forEach(function(p) {
         p.h = w * p.ratio; p.at = L; L += p.h + gap;
         p.els.forEach(function(el) { el.style.width = w + 'px'; });
       });
-      run = cols * V;                                  // the visible length of the chain
     }
 
     function place(p, c, x, y) {
+      // Very wide, short viewports can put a tall photo across several turns.
+      if (!p.els[c]) {
+        p.els[c] = box.appendChild(p.els[0].cloneNode(true));
+        p.els[c].classList.remove('on');
+        p.on[c] = false;
+      }
       var el = p.els[c];
       if (!p.on[c]) { el.classList.add('on'); p.on[c] = true; }
       el.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0)';
@@ -931,7 +857,7 @@
         // Near the end of the loop a photo can also reach into its beginning.
         [a0, a0 - L].forEach(function(a) {
           if (a + p.h <= 0 || a >= run) return;        // wholly in the hidden return
-          for (var k = 0; k < cols && used < 2; k++) {
+          for (var k = 0; k < cols; k++) {
             var local = a - k * V;
             if (local < V && local + p.h > 0) {
               // Odd columns run down; even columns run up.
@@ -939,7 +865,7 @@
             }
           }
         });
-        for (var c = used; c < 2; c++) park(p, c);
+        for (var c = used; c < p.els.length; c++) park(p, c);
       });
     }
 
@@ -952,20 +878,12 @@
       requestAnimationFrame(tick);
     }
     function start() {
-      if (running || reduce.matches) return;
+      if (running) return;
       running = true; last = 0; requestAnimationFrame(tick);
     }
     function stop() { running = false; }
 
     layout();
-    // Thirty photos are far longer than the visible run at any real hero size;
-    // if that ever stops being true the chain would show gaps, so stay still.
-    if (L <= run) {
-      photos.forEach(function(p) { p.els[1].remove(); p.els.length = 1; });
-      box.classList.remove('is-chain');
-      reveal();
-      return;
-    }
     pos = Math.random() * L;
     draw();
     requestAnimationFrame(reveal);
@@ -973,18 +891,13 @@
     // Re-flow when the hero changes size, whether from a resize or late fonts,
     // keeping the same place along the chain.
     new ResizeObserver(function() {
-      var through = pos / L; layout(); pos = through * L; draw();
+      var through = L ? pos / L : 0; layout(); pos = through * L; draw();
     }).observe(hero);
 
-    // Only move while the hero is on screen.
-    var onScreen = false;
+    // Scroll regardless of reduced motion, while the hero is on screen.
     new IntersectionObserver(function(entries) {
-      onScreen = entries[0].isIntersecting;
-      onScreen ? start() : stop();
+      entries[0].isIntersecting ? start() : stop();
     }).observe(hero);
-
-    var onMotion = function() { reduce.matches ? stop() : (onScreen && start()); };
-    reduce.addEventListener ? reduce.addEventListener('change', onMotion) : reduce.addListener(onMotion);
   })();
 
   // Character counter
@@ -1129,6 +1042,20 @@
   mobileMenu.querySelectorAll('a').forEach(function(a) {
     a.addEventListener('click', closeMenu);
   });
+})();
+</script>
+<script>
+// Let the compact hero fade follow the actual text, including after fonts load.
+(function() {
+  var hero = document.querySelector('.ab-hero');
+  var copy = hero.querySelector('.ab-hero-sub');
+  function updateFade() {
+    hero.style.setProperty('--copy-bottom', Math.ceil(copy.getBoundingClientRect().bottom - hero.getBoundingClientRect().top + 20) + 'px');
+  }
+  new ResizeObserver(updateFade).observe(hero.querySelector('.wrap'));
+  window.addEventListener('resize', updateFade, { passive:true });
+  if (document.fonts) document.fonts.ready.then(updateFade);
+  updateFade();
 })();
 </script>
 </body>
