@@ -89,36 +89,18 @@
     .ev-head h2 { font-family:var(--display); font-weight:400; font-size:clamp(42px,5vw,72px); line-height:.98; letter-spacing:-.025em; color:#f6f2e8; }
     .ev-head h2 em { font-style:italic; color:#c8a6e0; }
     .evsec .ey-accent { color:#c8a6e0; }            /* --accent-hi is too dark on the dark ground */
-    .ev-side { display:flex; flex-direction:column; align-items:flex-end; gap:16px; padding-bottom:8px; }
-    .ev-note { font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:rgba(246,242,232,.55); max-width:30ch; text-align:right; }
+    .ev-footer { display:flex; justify-content:center; margin-top:40px; }
     .evsec .btn-outline { color:#f6f2e8; border-color:rgba(246,242,232,.28); }
     .evsec .btn-outline:hover { background:rgba(246,242,232,.08); border-color:rgba(246,242,232,.5); transform:translateY(-1px); }
-    /* Event cards — the exact format from the events page (events.html .post-card),
-       image area included. Card ground is the resolved near-white so cards read the
-       same as on the events page now that the section sits on the dark underlay. */
-    .ev-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
-    .ev-grid[hidden] { display:none; }
-    .post-card { border:1px solid var(--border); border-radius:var(--r); background:#fbf9f3; overflow:hidden; display:flex; flex-direction:column; transition:border-color 0.18s ease, box-shadow 0.18s ease, transform 0.22s cubic-bezier(0.34,1.56,0.64,1); cursor:pointer; text-decoration:none; color:inherit; }
-    .post-card:hover { border-color:var(--border-hi); box-shadow:0 12px 34px rgba(0,0,0,0.35); transform:translateY(-3px); }
-    .post-card:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
-    .post-img { width:100%; aspect-ratio:16/9; background:var(--surface); position:relative; overflow:hidden; }
-    .post-img img { width:100%; height:100%; object-fit:cover; display:block; }
-    .post-tag-overlay { position:absolute; top:12px; left:12px; font-family:var(--mono); font-size:9px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:#fff; background:var(--accent); padding:3px 10px; border-radius:100px; }
-    .post-body { padding:1.4rem; flex:1; display:flex; flex-direction:column; }
-    .post-meta { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.75rem; }
-    .post-date { font-family:var(--mono); font-size:10px; color:var(--fg-subtle); font-weight:400; letter-spacing:0.1em; }
-    .post-sep { width:3px; height:3px; background:var(--border-hi); border-radius:50%; }
-    .post-read { font-family:var(--mono); font-size:10px; color:var(--fg-subtle); font-weight:400; letter-spacing:0.1em; }
-    .post-title { font-family:var(--display); font-size:1.2rem; font-weight:400; letter-spacing:-0.015em; line-height:1.2; color:var(--fg); margin-bottom:0.6rem; }
-    .post-excerpt { font-family:var(--ff); font-size:13px; line-height:1.72; color:var(--fg-muted); flex:1; margin-bottom:1.2rem; }
-    .post-author { display:flex; align-items:center; gap:0.6rem; padding-top:1rem; border-top:1px solid var(--border); margin-top:auto; }
-    .post-avatar { width:26px; height:26px; border-radius:50%; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; color:var(--fg-muted); flex-shrink:0; }
-    .post-author-name { font-family:var(--mono); font-size:10px; font-weight:500; letter-spacing:0.06em; color:var(--fg-muted); }
-    .ev-empty { border:1px dashed rgba(246,242,232,.22); border-radius:var(--r); padding:56px 24px; text-align:center; }
-    .ev-empty p { font-size:14px; color:rgba(246,242,232,.6); }
-    .ev-empty p b { font-family:var(--display); font-size:20px; font-weight:400; color:#f6f2e8; display:block; margin-bottom:6px; }
-    .ev-empty a { color:#c8a6e0; font-weight:600; text-decoration:none; }
-    .ev-empty a:hover { color:#fff; }
+    /* Curated homepage highlights; independent of the events directory. */
+    .ev-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.5rem; align-items:start; }
+    .showcase-card { border:1px solid var(--border); border-radius:var(--r); background:#fbf9f3; overflow:hidden; display:flex; flex-direction:column; }
+    .showcase-image { width:100%; background:var(--surface); overflow:hidden; }
+    .showcase-image img { width:100%; height:auto; display:block; }
+    .showcase-body { padding:1.4rem; }
+    .showcase-tag { display:inline-block; font-family:var(--mono); font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:14px; }
+    .showcase-title { font-family:var(--display); font-size:1.65rem; font-weight:400; letter-spacing:-.015em; line-height:1.15; color:var(--fg); margin-bottom:12px; }
+    .showcase-description { font-family:var(--ff); font-size:13px; line-height:1.72; color:var(--fg-muted); margin:0; }
 
     /* ─── §01 STATEMENT ─────────────────────────────────────────── */
     .statement { padding:0 0 110px; }
@@ -260,8 +242,6 @@
       .st-grid { grid-template-columns:1fr; gap:28px; }
       .st-label { position:static; flex-direction:row; align-items:center; }
       .ev-head { flex-direction:column; align-items:flex-start; }
-      .ev-side { align-items:flex-start; }
-      .ev-note { text-align:left; }
       .ev-grid { grid-template-columns:1fr; }
       .voices-head { grid-template-columns:1fr; gap:24px; }
       .vq { width:90%; }
@@ -424,22 +404,59 @@
 </section>
 
 <!-- ═══════════════════════ §02 EVENTS ════════════════════════ -->
-<section class="evsec" id="events">
+<section class="evsec" id="events" aria-labelledby="showcase-heading">
   <div class="wrap">
     <div class="ev-head">
       <div class="rv">
         <div class="eyebrow ey-accent" style="margin-bottom:18px">§ 02 — Events</div>
-        <h2>The latest, <em>on the record.</em></h2>
-      </div>
-      <div class="ev-side rv">
-        <p class="ev-note">Recaps and updates from exchanges, talks, and socials — posted by members.</p>
-        <a href="/events.html" class="btn btn-md btn-outline">View all events <span aria-hidden="true">↗</span></a>
+        <h2 id="showcase-heading">Our events, <em>on the record.</em></h2>
       </div>
     </div>
-    <div class="ev-grid rv" id="ev-grid" hidden></div>
-    <div class="ev-empty rv" id="ev-empty" hidden>
-      <p><b>No event posts yet.</b></p>
-      <p>Stories published from the member dashboard will appear here. <a href="/events.html">Browse the events page ↗</a></p>
+    <!-- Edit these highlights here. They intentionally do not load from /api/posts. -->
+    <div class="ev-grid">
+      <article class="showcase-card">
+        <div class="showcase-image">
+          <img src="/assets/events/German-China-US-inno-night.jpg?v=0ea566abea" alt="Participants at Germany-China-US Founders Innovation Night" loading="lazy" decoding="async">
+        </div>
+        <div class="showcase-body">
+          <span class="showcase-tag">Networking</span>
+          <h3 class="showcase-title">Germany-China-US Founders Innovation Night</h3>
+          <p class="showcase-description">A founders session bringing together friends from Tsinghua, PKU, TU Munich, Stanford, MIT, Berkeley, Harvard, ETH, and beyond. With thanks to Airwallex for supporting the event and Ken for sharing his office.</p>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <div class="showcase-image">
+          <img src="/assets/events/gca-welcome-speaker-series.jpg?v=7427746700" alt="Professor Florence speaking at the 2025 welcome speaker series" loading="lazy" decoding="async">
+        </div>
+        <div class="showcase-body">
+          <span class="showcase-tag">Speaker series</span>
+          <h3 class="showcase-title">2025 Welcome Night Speaker Series</h3>
+          <p class="showcase-description">Professor Florence from Environment and Ecology and Dean Peter Russell from Architecture welcome new students with insights on finding their own path, thinking across disciplines, and making the most of university life.</p>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <div class="showcase-image">
+          <img src="/assets/events/cbd-gca-shanghai-sz.jpg?v=2908099a1a" alt="World AI Conference after-party gatherings in Shanghai and Shenzhen" loading="lazy" decoding="async">
+        </div>
+        <div class="showcase-body">
+          <span class="showcase-tag">Partnership</span>
+          <h3 class="showcase-title">World AI Conference After Party<br>Shanghai × Shenzhen</h3>
+          <p class="showcase-description">Tsinghua GCA, CBD AI Community, and Peking University’s Youth Entrepreneur Association (YEA) bring together founders, builders, researchers, students, and investors for an evening of ideas and connections across two cities.</p>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <div class="showcase-image">
+          <img src="/assets/events/gca-tgyd.jpg" alt="Participants at the GCA × TGYD Forum" loading="lazy" decoding="async">
+        </div>
+        <div class="showcase-body">
+          <span class="showcase-tag">Partnership</span>
+          <h3 class="showcase-title">GCA × TGYD Forum</h3>
+          <p class="showcase-description">An evening of global connection. Tsinghua GCA and Tsinghua Global Youth Dialogue welcome young leaders from the world’s top 50 universities to exchange perspectives, share ideas, and build friendships across borders.</p>
+        </div>
+      </article>
+    </div>
+    <div class="ev-footer">
+      <a href="/events.html" class="btn btn-md btn-outline">View all events <span aria-hidden="true">↗</span></a>
     </div>
   </div>
 </section>
@@ -947,57 +964,6 @@
       });
     });
   }
-})();
-</script>
-<script>
-(function() {
-  // Latest event posts on the homepage
-  var grid  = document.getElementById('ev-grid');
-  var empty = document.getElementById('ev-empty');
-  if (!grid) return;
-  function esc(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-  function showEmpty() {
-    grid.hidden = true;
-    empty.hidden = false;
-  }
-  fetch('/api/posts')
-    .then(function(r) { return r.json(); })
-    .then(function(posts) {
-      if (!posts || !posts.length) { showEmpty(); return; }
-      grid.hidden = false;
-      posts.slice(0, 3).forEach(function(p) {
-        var a = document.createElement('a');
-        a.className = 'post-card';
-        a.href = '/events.html';
-        // Same image handling as the events page: use the post image, else a
-        // category-labelled placeholder (there are no post images yet).
-        var coverSrc = p.image
-          ? esc(p.image)
-          : 'https://placehold.co/600x338/f4f4f5/a1a1aa?text=' + encodeURIComponent(p.category || 'Event');
-        a.innerHTML =
-          '<div class="post-img">' +
-            '<img src="' + coverSrc + '" alt="" style="width:100%;height:100%;object-fit:contain;display:block;background:#f4f4f5" />' +
-            '<span class="post-tag-overlay">' + esc(p.category || 'Event') + '</span>' +
-          '</div>' +
-          '<div class="post-body">' +
-            '<div class="post-meta">' +
-              '<span class="post-date">' + esc(p.date || '') + '</span>' +
-              '<span class="post-sep"></span>' +
-              '<span class="post-read">' + esc(p.readTime || '') + '</span>' +
-            '</div>' +
-            '<h3 class="post-title">' + esc(p.title || '') + '</h3>' +
-            '<p class="post-excerpt">' + esc(p.excerpt || '') + '</p>' +
-            '<div class="post-author">' +
-              '<div class="post-avatar">' + esc((p.author || '?').charAt(0).toUpperCase()) + '</div>' +
-              '<span class="post-author-name">' + esc(p.author || '') + '</span>' +
-            '</div>' +
-          '</div>';
-        grid.appendChild(a);
-      });
-    })
-    .catch(showEmpty);
 })();
 </script>
 <script>
