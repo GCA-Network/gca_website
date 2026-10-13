@@ -6,3 +6,7 @@ data/
 public/uploads/
 temporary screenshots/
 .DS_Store
+
+.vercel/
+
+.env.*
