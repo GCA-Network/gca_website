@@ -98,9 +98,9 @@
     .showcase-image { width:100%; background:var(--surface); overflow:hidden; }
     .showcase-image img { width:100%; height:auto; display:block; }
     .showcase-body { padding:1.4rem; }
-    .showcase-tag { display:inline-block; font-family:var(--mono); font-size:10px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:14px; }
-    .showcase-title { font-family:var(--display); font-size:1.65rem; font-weight:400; letter-spacing:-.015em; line-height:1.15; color:var(--fg); margin-bottom:12px; }
-    .showcase-description { font-family:var(--ff); font-size:13px; line-height:1.72; color:var(--fg-muted); margin:0; }
+    .showcase-tag { display:inline-block; font-family:var(--mono); font-size:12px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:14px; }
+    .showcase-title { font-family:var(--display); font-size:1.7rem; font-weight:400; letter-spacing:-.015em; line-height:1.15; color:var(--fg); margin-bottom:12px; }
+    .showcase-description { font-family:var(--ff); font-size:15px; line-height:1.72; color:var(--fg-muted); margin:0; }
 
     /* ─── §01 STATEMENT ─────────────────────────────────────────── */
     .statement { padding:0 0 110px; }
@@ -243,6 +243,10 @@
       .st-label { position:static; flex-direction:row; align-items:center; }
       .ev-head { flex-direction:column; align-items:flex-start; }
       .ev-grid { grid-template-columns:1fr; }
+      /* Use the original showcase type sizes with the compact landing layout. */
+      .showcase-tag { font-size:10px; }
+      .showcase-title { font-size:1.65rem; }
+      .showcase-description { font-size:13px; }
       .voices-head { grid-template-columns:1fr; gap:24px; }
       .vq { width:90%; }
       .apply-grid { grid-template-columns:1fr; gap:36px; }
@@ -441,7 +445,7 @@
         <div class="showcase-body">
           <span class="showcase-tag">Partnership</span>
           <h3 class="showcase-title">World AI Conference After Party<br>Shanghai × Shenzhen</h3>
-          <p class="showcase-description">Tsinghua GCA, CBD AI Community, and Peking University’s Youth Entrepreneur Association (YEA) brought together founders, researchers, students, investors, and professionals from Tencent, ByteDance, Alibaba, DJI, Bilibili, frontier labs, and more for an evening of ideas and connections across two cities.</p>
+          <p class="showcase-description">Tsinghua GCA, Shanghai CBD AI Community, and Peking University’s Youth Entrepreneur Association (YEA) brought together founders, researchers, students, investors, and professionals from Tencent, ByteDance, Alibaba, DJI, frontier labs and more for an evening of ideas and connections across two cities held simultaneously in Shanghai and Shenzhen to discuss topics raised at World AI Conference (WAIC).</p>
         </div>
       </article>
       <article class="showcase-card">
