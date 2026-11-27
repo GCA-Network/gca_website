@@ -92,7 +92,8 @@
       roles:[{ term:"2024–25", role:"VP of Marketing" }],
       teams:[{ term:"2025–26", dept:"Marketing & Branding" }] },
     { id:"dario", name:"Dario", photo:"/assets/members/dario.jpg", sort:"Dario", inducted:"2024",
-      uni:"Tsinghua University", teams:[{ term:"2024–25", dept:"Outreach & Curation" }] }
+      uni:"Tsinghua University",
+      teams:[{ term:"2025–26", dept:"Outreach & Curation" }, { term:"2024–25", dept:"Outreach & Curation" }] }
   ];
 
 // Fields the public Leadership page has no use for. `email` is the reason the
